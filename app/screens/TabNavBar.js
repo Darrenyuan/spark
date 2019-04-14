@@ -23,10 +23,10 @@ import NearbyDetail from "../pages/nearby/NearbyDetail";
 import { BlurView } from "react-native-blur";
 import Publish from "../pages/publish/Publish";
 import PublishEntrance from "../pages/publish/PublishEntrance";
-import Profile from "../pages/profile/Profile"
-import Settings from "../pages/settings/Settings"
-import SettingsAbout from "../pages/settings/SettingsAbout"
-import SettingsEditAccount from "../pages/settings/SettingsEditAccount"
+import Profile from "../pages/profile/Profile";
+import Settings from "../pages/settings/Settings";
+import SettingsAbout from "../pages/settings/SettingsAbout";
+import SettingsEditAccount from "../pages/settings/SettingsEditAccount";
 import SettingsEditAccountPhone from "../pages/settings/SettingsEditAccountPhone";
 import SettingsEditAccountPassword from "../pages/settings/SettingsEditAccountPassword";
 import SettingsEditProfile from "../pages/settings/SettingsEditProfile";
@@ -63,10 +63,10 @@ export default class TabNavBar extends React.Component {
       <View
         style={{
           borderRadius: 31,
-          shadowColor: styleUtil.themeColor,
-          shadowOffset: { height: -1, width: 0 },
-          shadowOpacity: 0.5,
-          // shadowRadius: 3,
+          shadowColor: "#e8e8e8",
+          shadowOffset: { height: -0.5, width: 0 },
+          shadowOpacity: 1,
+          shadowRadius: 0,
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "white",
@@ -97,11 +97,8 @@ export default class TabNavBar extends React.Component {
       Platform.OS === "android"
         ? null
         : {
-            borderTopWidth: 0,
-            shadowColor: styleUtil.themeColor,
-            shadowOffset: { height: -1 },
-            shadowOpacity: 0.5,
-            // shadowRadius: 1,
+            borderTopWidth: 0.5,
+            borderTopColor: "#e8e8e8",
             backgroundColor: "white"
           };
 
@@ -174,7 +171,9 @@ export default class TabNavBar extends React.Component {
           icon={require("../assets/image/tabbar_mine.png")}
           activeIcon={require("../assets/image/tabbar_mine_highlight.png")}
         >
-          <Profile style={{backgroundColor:"transparent", borderBottomWidth:0}} />
+          <Profile
+            style={{ backgroundColor: "transparent", borderBottomWidth: 0 }}
+          />
         </TabView.Sheet>
       </TabView>
     );

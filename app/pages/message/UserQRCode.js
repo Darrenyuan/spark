@@ -46,12 +46,12 @@ export default class UserQRCode extends NavigatorPage {
           }
           bottomContent={
             <TouchableOpacity
-              style={styles.buttonTouchable}
+              style={{marginBottom:30}}
               onPress={_ => {
                 this.setState({ scanMode: false });
               }}
             >
-              <Text style={styles.buttonText}>我的二维码</Text>
+              <Text style={{fontSize:14, color:"#00FF00"}}>我的二维码</Text>
             </TouchableOpacity>
           }
         />

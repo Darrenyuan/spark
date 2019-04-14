@@ -33,14 +33,15 @@ import SettingsEditProfile from "../pages/settings/SettingsEditProfile";
 import SettingsEditProfileName from "../pages/settings/SettingsEditProfileName";
 import Notification from "../pages/notification/Notification";
 import ChatList from "../pages/message/ChatList";
-import QRScanner from "../pages/message/QRScanner";
 import UserQRCode from "../pages/message/UserQRCode";
+import navigate from "./navigate";
+import Search from "../pages/discovery/Search";
 
 export default class TabNavBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeIndex: 2,
+      activeIndex: 0,
       modalVisible: false
     };
   }
@@ -63,9 +64,9 @@ export default class TabNavBar extends React.Component {
         style={{
           borderRadius: 31,
           shadowColor: styleUtil.themeColor,
-          shadowOffset: { height: -12, width: 0 },
-          shadowOpacity: 0.3,
-          shadowRadius: 13,
+          shadowOffset: { height: -1, width: 0 },
+          shadowOpacity: 0.5,
+          // shadowRadius: 3,
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "white",
@@ -98,9 +99,9 @@ export default class TabNavBar extends React.Component {
         : {
             borderTopWidth: 0,
             shadowColor: styleUtil.themeColor,
-            shadowOffset: { height: -2 },
-            shadowOpacity: 0.4,
-            shadowRadius: 13,
+            shadowOffset: { height: -1 },
+            shadowOpacity: 0.5,
+            // shadowRadius: 1,
             backgroundColor: "white"
           };
 
@@ -122,16 +123,14 @@ export default class TabNavBar extends React.Component {
             renderRightView={
               <NavigationBar.Button
                 onPress={_ => {
-                  navigate.pushNotNavBar(Search, {
-                    selectValue: "题目"
-                  });
+                  navigate.pushNotNavBar(Search);
                 }}
               >
                 <Icon
                   name={"ios-search"}
                   type={"ionicon"}
                   color={styleUtil.navIconColor}
-                  size={30}
+                  size={22}
                 />
               </NavigationBar.Button>
             }
@@ -168,14 +167,14 @@ export default class TabNavBar extends React.Component {
           icon={require("../assets/image/tabbar_chat.png")}
           activeIcon={require("../assets/image/tabbar_chat_highlight.png")}
         >
-          <UserQRCode />
+          <ChatList />
         </TabView.Sheet>
         <TabView.Sheet
           title="我的"
           icon={require("../assets/image/tabbar_mine.png")}
           activeIcon={require("../assets/image/tabbar_mine_highlight.png")}
         >
-          <NearbyDetail />
+          <Profile style={{backgroundColor:"transparent", borderBottomWidth:0}} />
         </TabView.Sheet>
       </TabView>
     );

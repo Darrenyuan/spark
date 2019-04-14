@@ -13,6 +13,8 @@ import TabNavBar from "./app/screens/TabNavBar";
 import { Theme } from "teaset";
 import styleUtil from "./app/common/styleUtil";
 import navigate from "./app/screens/navigate";
+import IMessage from "./app/common/IMessage";
+import Request from './app/common/request'
 
 const instructions = Platform.select({
   ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
@@ -59,6 +61,12 @@ Theme.set({
   rowActionButtonTitleFontSize: 15,
   rowActionButtonPaddingHorizontal: 12,
 });
+
+// global.request = Request;
+// global.config = config;
+// global.storageUtil = storageUtil;
+// global.toast = toast;
+global.imessage = new IMessage();
 
 type Props = {};
 export default class App extends Component<Props> {

@@ -6,13 +6,14 @@ import {
 	ActionSheet
 } from 'teaset'
 import {InteractionManager} from 'react-native'
+import request from "./request";
 
 const DEV_HOST = "http://192.168.0.2:8080/";
 const DEV_SOCKET = "http://192.168.0.2:3000/chat/";
 const PROD_HOST = "https://www";
 const PROD_SOCKET = "wss://www";
 
-export default {
+let config = {
 	key: 'BDKHFSDKJFHSDKFHWEFH-REACT-NATIVE',
 	header: {
 		method: 'POST',
@@ -530,3 +531,5 @@ export default {
 		})
 	}
 }
+
+export default config

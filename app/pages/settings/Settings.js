@@ -7,17 +7,19 @@ import {
   Image,
   ImageBackground,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
 import LoadingMore from "../../components/load/LoadingMore";
 import navigate from "../../screens/navigate";
 import { ListRow } from "teaset";
-import SettingsAbout from "./SettingsAbout"
+import SettingsAbout from "./SettingsAbout";
 import SettingsEditAccount from "./SettingsEditAccount";
 import SettingsEditProfile from "./SettingsEditProfile";
 import ShareWeChat from "../../components/ShareWeChat";
+import { Icon } from "react-native-elements";
 
 export default class Settings extends NavigatorPage {
   static defaultProps = {
@@ -30,31 +32,101 @@ export default class Settings extends NavigatorPage {
   constructor(props) {
     super(props);
     Object.assign(this.state, {
-      phone: ""
+      modalVisible: false
     });
   }
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
 
-  renderPage() {
-    const { phone } = this.state;
+  _renderSparkAlert = off => {
+    let imagePath = off
+      ? require("../../assets/image/chat_spark.png")
+      : require("../../assets/image/chat_spark_highlight.png");
+    let title = off
+      ? "太久没联系，需要面对面扫码才能复燃火花"
+      : "想让火花持久不灭？\n保持线上互动，或者线下见个面吧";
+    let buttonTitle = off ? "复燃火花" : "加满燃料";
 
+    return (
+      <Modal
+        animationType={"slide"}
+        transparent={true}
+        visible={this.state.modalVisible}
+      >
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <View
+            style={{
+              width: "80%",
+              height: 257,
+              backgroundColor: "white",
+              shadowColor: "black",
+              shadowOffset: { height: 2 },
+              shadowOpacity: 0.4,
+              shadowBlur: 10,
+              borderRadius: 8,
+              alignItems: "center"
+            }}
+          >
+            <TouchableOpacity
+              style={{ position: "absolute", right: 5, top: 2 }}
+              onPress={() => this.setState({ modalVisible: false })}
+            >
+              <Icon
+                name={"md-close"}
+                type={"ionicon"}
+                size={20}
+                color={styleUtil.themeColor}
+              />
+            </TouchableOpacity>
+            <Image style={{ marginTop: 35 }} source={imagePath} />
+            <Text style={{ color: "#616161", fontSize: 14, marginTop: 33, textAlign:"center", flex:1 }}>
+              {title}
+            </Text>
+            <TouchableOpacity
+              style={{
+                backgroundColor: styleUtil.themeColor,
+                height: 36,
+                borderRadius: 18,
+                paddingHorizontal: 15,
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 15
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 16 }}>
+                {buttonTitle}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  renderPage() {
     return (
       <View style={{ backgroundColor: "white", flex: 1 }}>
         <View style={{ flex: 1 }}>
           <ListRow
             title={"邀请好友"}
             onPress={_ => {
-              ShareWeChat.show({
-                type: 'news',
-                title: '于何处，寻找价值观一致的同类人',
-                description: '有些人，只是我们短暂人生的过客，很快便在我们的记忆中被抹掉；还有些人，却在与我们插肩而过之后，让我们的心为之改变。人生若之如初见，那是怎样的美好。在这里，遇见对的人，就是你一生的幸福……',
-                // thumbImage: config.api.imageURI + 'uploads/image/app_icon.png',
-                // imageUrl: config.api.imageURI + 'uploads/image/app_icon.png',
-                webpageUrl: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.whereapp'
-              }, success => {
-
-              })
+              // ShareWeChat.show({
+              //   type: 'news',
+              //   title: '于何处，寻找价值观一致的同类人',
+              //   description: '有些人，只是我们短暂人生的过客，很快便在我们的记忆中被抹掉；还有些人，却在与我们插肩而过之后，让我们的心为之改变。人生若之如初见，那是怎样的美好。在这里，遇见对的人，就是你一生的幸福……',
+              //   // thumbImage: config.api.imageURI + 'uploads/image/app_icon.png',
+              //   // imageUrl: config.api.imageURI + 'uploads/image/app_icon.png',
+              //   webpageUrl: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.whereapp'
+              // }, success => {
+              //
+              // })
+              this.setState({ modalVisible: true });
             }}
             icon={require("../../assets/image/settings_invite.png")}
             topSeparator={"none"}
@@ -70,25 +142,37 @@ export default class Settings extends NavigatorPage {
             bottomSeparator={"indent"}
           />
           <ListRow
-              title={"修改账户信息"}
-              onPress={_ => {
-                navigate.pushNotNavBar(SettingsEditAccount);
-              }}
-              icon={require("../../assets/image/settings_edit_account.png")}
-              topSeparator={"none"}
-              bottomSeparator={"indent"}
+            title={"修改账户信息"}
+            onPress={_ => {
+              navigate.pushNotNavBar(SettingsEditAccount);
+            }}
+            icon={require("../../assets/image/settings_edit_account.png")}
+            topSeparator={"none"}
+            bottomSeparator={"indent"}
           />
           <ListRow
-              title={"关于我们"}
-              onPress={_ => {
-                navigate.pushNotNavBar(SettingsAbout);
-              }}
-              icon={require("../../assets/image/settings_about.png")}
-              topSeparator={"none"}
-              bottomSeparator={"indent"}
+            title={"关于我们"}
+            onPress={_ => {
+              navigate.pushNotNavBar(SettingsAbout);
+            }}
+            icon={require("../../assets/image/settings_about.png")}
+            topSeparator={"none"}
+            bottomSeparator={"indent"}
           />
         </View>
-        <TouchableOpacity style={{alignItems: "center", justifyContent:"center", height:80}}><Text style={{fontSize:16, color:styleUtil.themeColor, fontWeight:"700"}}>{"退出登录"}</Text></TouchableOpacity>
+        <TouchableOpacity
+          style={{ alignItems: "center", justifyContent: "center", height: 80 }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              color: styleUtil.themeColor,
+              fontWeight: "700"
+            }}
+          >
+            {"退出登录"}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }

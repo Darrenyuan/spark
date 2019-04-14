@@ -53,23 +53,6 @@ export default class SearchView extends React.Component {
 				alignItems: 'center',
 				// justifyContent:'space-around'
 			}}>
-				{showSelectValue && <Select
-					style={{
-						width: 60,
-						marginLeft:8
-					}}
-					value={this.props.selectValue}
-					valueStyle={{
-						flex: 1,
-						color: '#8a6d3b',
-						textAlign: 'center',
-						fontSize:14
-					}}
-					size={'sm'}
-					pickerType={'popover'}
-					items={this.items}
-					onSelected={(item, index) => this.props.onSelectedValue(item, index)}
-				/>}
 				<SearchBar
 					ref={search => this.searchView = search}
 					lightTheme
@@ -79,7 +62,7 @@ export default class SearchView extends React.Component {
 						borderBottomWidth: 0,
 						borderTopWidth: 0,
 					}, {
-						width: isSearch ? styleUtil.window.width - 50 - leftWidth : styleUtil.window.width - 10 - leftWidth
+						width: styleUtil.window.width
 					}]}
 					inputStyle={{
 						backgroundColor: '#fff'

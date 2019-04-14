@@ -8,6 +8,7 @@ import navigate from "../../screens/navigate";
 import ImageCached from "../../components/ImageCached";
 import { ImageCache } from "react-native-img-cache/build/index";
 import NearbyDetail from "./NearbyDetail";
+import Profile from "../profile/Profile";
 
 const icons = item => [
   {
@@ -38,9 +39,11 @@ export default class NearbyItem extends React.Component {
     const { item } = this.state;
     const { another } = this.props;
     return (
-      <TouchableOpacity onPress={() => {
+      <TouchableOpacity
+        onPress={() => {
           navigate.pushNotNavBar(NearbyDetail);
-      }}>
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -78,10 +81,16 @@ export default class NearbyItem extends React.Component {
                 overflow: "hidden"
               }}
             >
-              <Image
-                style={{ width: 36, height: 36 }}
-                source={require("../../assets/image/avatar.png")}
-              />
+              <TouchableOpacity
+                onPress={() => {
+                  navigate.pushNotNavBar(Profile);
+                }}
+              >
+                <Image
+                  style={{ width: 36, height: 36 }}
+                  source={require("../../assets/image/avatar.png")}
+                />
+              </TouchableOpacity>
               <Text
                 numberOfLines={2}
                 style={{
@@ -92,8 +101,8 @@ export default class NearbyItem extends React.Component {
                 }}
               >
                 {another
-                  ? "xxxx食材很新鲜xxxx食材很新鲜xxxx食材很新鲜xxxx食材很新鲜xxxx食材很新鲜"
-                  : "yyyy食材很新鲜yyyy食材很新鲜yyyy食材很新鲜yyyy食材很新鲜yyyy食材很新鲜"}
+                  ? "这家火锅很好吃，食材很新鲜，品种齐全，下次再来…"
+                  : "这家火锅很好吃，食材很新鲜，品种齐全，下次再来…"}
               </Text>
               <Text style={{ marginLeft: 10, color: "#C1C1C1", fontSize: 12 }}>
                 {"3小时前"}
@@ -107,59 +116,71 @@ export default class NearbyItem extends React.Component {
                 marginLeft: 46
               }}
             >
-              <Image
+              <ImageCached
+                source={require("../../assets/image/example.png")}
+                images={[require("../../assets/image/example.png")]}
+                isOnPress
                 style={{
                   marginTop: 10,
                   marginRight: 10,
                   width: 50,
                   height: 50
                 }}
-                source={require("../../assets/image/example.png")}
               />
-              <Image
+              <ImageCached
+                source={require("../../assets/image/example.png")}
+                images={[require("../../assets/image/example.png")]}
+                isOnPress
                 style={{
                   marginTop: 10,
                   marginRight: 10,
                   width: 50,
                   height: 50
                 }}
-                source={require("../../assets/image/example.png")}
               />
-              <Image
+              <ImageCached
+                source={require("../../assets/image/example.png")}
+                images={[require("../../assets/image/example.png")]}
+                isOnPress
                 style={{
                   marginTop: 10,
                   marginRight: 10,
                   width: 50,
                   height: 50
                 }}
-                source={require("../../assets/image/example.png")}
               />
-              <Image
+              <ImageCached
+                source={require("../../assets/image/example.png")}
+                images={[require("../../assets/image/example.png")]}
+                isOnPress
                 style={{
                   marginTop: 10,
                   marginRight: 10,
                   width: 50,
                   height: 50
                 }}
-                source={require("../../assets/image/example.png")}
               />
-              <Image
+              <ImageCached
+                source={require("../../assets/image/example.png")}
+                images={[require("../../assets/image/example.png")]}
+                isOnPress
                 style={{
                   marginTop: 10,
                   marginRight: 10,
                   width: 50,
                   height: 50
                 }}
-                source={require("../../assets/image/example.png")}
               />
-              <Image
+              <ImageCached
+                source={require("../../assets/image/example.png")}
+                images={[require("../../assets/image/example.png")]}
+                isOnPress
                 style={{
                   marginTop: 10,
                   marginRight: 10,
                   width: 50,
                   height: 50
                 }}
-                source={require("../../assets/image/example.png")}
               />
             </View>
           </View>

@@ -35,7 +35,7 @@ export class AlphaBetaList extends Component {
 		return (
 			<View style={[styles.alphaBetaList, {
 				position: 'absolute',
-				top: styleUtil.window.height / 2 - this.itemHeight - styleUtil.navBarHeight,
+				top: styleUtil.window.height / 2 - 60 - styleUtil.navBarHeight,
 				right: -2,
 			}]}>
 				<View onLayout={this.onLayout}>

@@ -5413,6 +5413,11 @@ react-native-image-crop-picker@^0.23.1:
   resolved "http://registry.npm.taobao.org/react-native-image-crop-picker/download/react-native-image-crop-picker-0.23.1.tgz#26c1b899dbe4358b9f2c98369109a42a8141682a"
   integrity sha1-JsG4mdvkNYufLJg2kQmkKoFBaCo=
 
+react-native-image-picker@^0.28.1:
+  version "0.28.1"
+  resolved "http://registry.npm.taobao.org/react-native-image-picker/download/react-native-image-picker-0.28.1.tgz#1127460522e0c9741fc62f3d040271d298fb6a6e"
+  integrity sha1-ESdGBSLgyXQfxi89BAJx0pj7am4=
+
 react-native-img-cache@^1.6.0:
   version "1.6.0"
   resolved "http://registry.npm.taobao.org/react-native-img-cache/download/react-native-img-cache-1.6.0.tgz#79635bd249146f4973629d53047edac05d6f9533"

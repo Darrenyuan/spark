@@ -13,7 +13,7 @@ import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
 import LoadingMore from "../../components/load/LoadingMore";
 import OverlayModal from "../../components/OverlayModal";
-import { Icon } from "react-native-elements";
+import {Avatar, Icon} from "react-native-elements";
 import { NavigationBar } from "teaset";
 import config from "../../common/config";
 import ImageCropPicker from "react-native-image-crop-picker";
@@ -124,8 +124,10 @@ export default class LoginEnterInfo extends NavigatorPage {
               }}
               onPress={_ => this.showAction("avatar")}
             >
-              <Image
-                source={require("../../assets/image/login_default_avatar.png")}
+              <Avatar
+                  xlarge
+                  rounded
+                  source={require("../../assets/image/avatar.png")}
               />
               <Text style={{ fontSize: 14, color: "white", marginTop: 10 }}>
                 {"修改头像"}

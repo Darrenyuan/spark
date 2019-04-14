@@ -16,7 +16,7 @@ import LoadingMore from "../../components/load/LoadingMore";
 import navigate from "../../screens/navigate";
 import { ListRow } from "teaset";
 import config from "../../common/config";
-import { Icon } from "react-native-elements";
+import { Avatar, Icon } from "react-native-elements";
 
 export default class Notification extends NavigatorPage {
   static defaultProps = {
@@ -40,80 +40,103 @@ export default class Notification extends NavigatorPage {
 
   _renderRelationshipRows = () => {
     return (
+      <View
+        style={{
+          flexDirection: "row",
+          paddingHorizontal: 15,
+          paddingTop: 15,
+          // opacity: 0.5
+          height: 70
+        }}
+      >
+        <Avatar
+          xlarge
+          rounded
+          source={require("../../assets/image/avatar.png")}
+        />
         <View
-            style={{
-              flexDirection: "row",
-              paddingHorizontal: 15,
-              paddingTop: 15,
-              // opacity: 0.5
-              height: 70,
-            }}
+          style={{
+            marginLeft: 10,
+            flex: 1,
+            flexDirection: "row",
+            paddingBottom: 15,
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#D8D8D8"
+          }}
         >
           <Image
-              style={{ marginRight: 15 }}
-              source={require("../../assets/image/avatar.png")}
+            style={{ marginRight: 10 }}
+            source={require("../../assets/image/spark_14x20.png")}
           />
-          <View
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                paddingBottom: 15,
-                borderBottomWidth: 0.5,
-                borderBottomColor: "#D8D8D8"
-              }}
-          >
-              <Image
-                  style={{ marginRight: 10 }}
-                  source={require("../../assets/image/spark_14x20.png")}
-              />
-              <Text style={{ color: "#454545", fontSize: 16, fontWeight: "600" }}>
-                {"你与TA的火花即将熄灭"}
-              </Text>
-          </View>
+          <Text style={{ color: "#454545", fontSize: 16, fontWeight: "600" }}>
+            {"你与TA的火花即将熄灭"}
+          </Text>
         </View>
+      </View>
     );
   };
 
   _renderHonorRows = () => {
     return (
+      <View
+        style={{
+          flexDirection: "row",
+          paddingHorizontal: 15,
+          paddingTop: 15,
+          height: 70
+          // opacity: 0.5
+        }}
+      >
+        <Avatar
+          xlarge
+          rounded
+          source={require("../../assets/image/avatar.png")}
+        />
         <View
+          style={{
+            flex: 1,
+            paddingBottom: 15,
+            marginLeft: 10,
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#D8D8D8"
+          }}
+        >
+          <View
             style={{
               flexDirection: "row",
-              paddingHorizontal: 15,
-              paddingTop: 15,
-              height: 70,
-              // opacity: 0.5
+              marginBottom: 8,
+              alignItems: "center"
             }}
-        >
-          <Image
-              style={{ marginRight: 15 }}
-              source={require("../../assets/image/avatar.png")}
-          />
-          <View
-              style={{
-                flex: 1,
-                paddingBottom: 15,
-                borderBottomWidth: 0.5,
-                borderBottomColor: "#D8D8D8"
-              }}
           >
-            <View style={{ flexDirection: "row", marginBottom: 8, alignItems:"center" }}>
-              <Text style={{ color: "#454545", fontSize: 16, fontWeight: "600" }}>
-                {"恭喜！你获得标签"}
-              </Text>
-              <View style={{backgroundColor:styleUtil.themeColor, marginLeft:10, paddingHorizontal:8, height:24, borderRadius:12, justifyContent:"center" }}><Text style={{fontSize:14, color:"white"}}>{"种子用户"}</Text></View>
-            </View>
-
+            <Text style={{ color: "#454545", fontSize: 16, fontWeight: "600" }}>
+              {"恭喜！你获得标签"}
+            </Text>
             <View
-                style={{
-                  flexDirection: "row",
-                  flex: 1
-                }}
+              style={{
+                backgroundColor: styleUtil.themeColor,
+                marginLeft: 10,
+                paddingHorizontal: 8,
+                height: 24,
+                borderRadius: 12,
+                justifyContent: "center"
+              }}
             >
-              <Text style={{ color: "#888787", fontSize: 14 }}>{"前1000名注册用户可获得"}</Text>
+              <Text style={{ fontSize: 14, color: "white" }}>{"种子用户"}</Text>
             </View>
           </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1
+            }}
+          >
+            <Text style={{ color: "#888787", fontSize: 14 }}>
+              {"前1000名注册用户可获得"}
+            </Text>
+          </View>
         </View>
+      </View>
     );
   };
 
@@ -124,17 +147,19 @@ export default class Notification extends NavigatorPage {
           flexDirection: "row",
           paddingHorizontal: 15,
           paddingTop: 15,
-          height: 70,
+          height: 70
           // opacity: 0.5
         }}
       >
-        <Image
-          style={{ marginRight: 15 }}
+        <Avatar
+          xlarge
+          rounded
           source={require("../../assets/image/avatar.png")}
         />
         <View
           style={{
             flex: 1,
+            marginLeft: 10,
             paddingBottom: 15,
             borderBottomWidth: 0.5,
             borderBottomColor: "#D8D8D8"
@@ -176,17 +201,19 @@ export default class Notification extends NavigatorPage {
           flexDirection: "row",
           paddingHorizontal: 15,
           paddingTop: 15,
-          height: 70,
+          height: 70
           // opacity: 0.5
         }}
       >
-        <Image
-          style={{ marginRight: 15 }}
+        <Avatar
+          xlarge
+          rounded
           source={require("../../assets/image/avatar.png")}
         />
         <View
           style={{
             flex: 1,
+            marginLeft: 10,
             paddingBottom: 15,
             borderBottomWidth: 0.5,
             borderBottomColor: "#D8D8D8"
@@ -264,17 +291,17 @@ export default class Notification extends NavigatorPage {
     );
   };
 
-  _renderRows = (item) => {
-    if (item.index==0) {
+  _renderRows = item => {
+    if (item.index == 0) {
       return this._renderEventRows();
     }
-    if (item.index==1) {
+    if (item.index == 1) {
       return this._renderRelationshipRows();
     }
-    if (item.index==2) {
+    if (item.index == 2) {
       return this._renderHonorRows();
     }
-    if (item.index==3) {
+    if (item.index == 3) {
       return this._renderCommentRows();
     }
   };

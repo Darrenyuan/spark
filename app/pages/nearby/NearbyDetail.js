@@ -14,7 +14,8 @@ import NavigatorPage from "../../components/NavigatorPage";
 import NearbyItem from "./NearbyItem";
 import config from "../../common/config";
 import LoadingMore from "../../components/load/LoadingMore";
-import { Image, Icon } from "react-native-elements";
+import {Image, Icon, Avatar} from "react-native-elements";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default class NearbyList extends NavigatorPage {
   static defaultProps = {
@@ -84,7 +85,11 @@ export default class NearbyList extends NavigatorPage {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image source={require("../../assets/image/avatar.png")} />
+            <Avatar
+                size={43}
+                rounded
+                source={require("../../assets/image/avatar.png")}
+            />
           <View
             style={{
               flexDirection: "column",
@@ -302,7 +307,11 @@ export default class NearbyList extends NavigatorPage {
         }}
       >
         <View style={{ flexDirection: "row" }}>
-          <Image source={require("../../assets/image/avatar.png")} />
+            <Avatar
+                large
+                rounded
+                source={require("../../assets/image/avatar.png")}
+            />
           <View
             style={{
               marginLeft: 10,
@@ -336,7 +345,7 @@ export default class NearbyList extends NavigatorPage {
               <Text style={{ width: 40, fontSize: 12, color: "#252525" }}>
                 {3}
               </Text>
-              <Image source={require("../../assets/image/more.png")} />
+              <Ionicons name={"ios-more"} size={18} color={"#818181"} />
             </View>
 
             <View
@@ -349,7 +358,11 @@ export default class NearbyList extends NavigatorPage {
               }}
             >
               <View style={{ flexDirection: "row" }}>
-                <Image source={require("../../assets/image/avatar.png")} />
+                  <Avatar
+                      large
+                      rounded
+                      source={require("../../assets/image/avatar.png")}
+                  />
                 <View
                   style={{
                     marginLeft: 10,
@@ -383,7 +396,7 @@ export default class NearbyList extends NavigatorPage {
                     <Text style={{ width: 40, fontSize: 12, color: "#252525" }}>
                       {3}
                     </Text>
-                    <Image source={require("../../assets/image/more.png")} />
+                    <Ionicons name={"ios-more"} size={18} color={"#818181"} />
                   </View>
                 </View>
               </View>
@@ -404,7 +417,11 @@ export default class NearbyList extends NavigatorPage {
           backgroundColor: "white"
         }}
       >
-        <Image source={require("../../assets/image/avatar.png")} />
+          <Avatar
+              large
+              rounded
+              source={require("../../assets/image/avatar.png")}
+          />
         <View
           style={{
             flex: 1,
@@ -435,7 +452,11 @@ export default class NearbyList extends NavigatorPage {
           backgroundColor: "white"
         }}
       >
-        <Image source={require("../../assets/image/avatar.png")} />
+          <Avatar
+              large
+              rounded
+              source={require("../../assets/image/avatar.png")}
+          />
         <View
           style={{
             flex: 1,

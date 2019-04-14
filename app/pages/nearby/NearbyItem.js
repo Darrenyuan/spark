@@ -37,7 +37,7 @@ export default class NearbyItem extends React.Component {
 
   render() {
     const { item } = this.state;
-    const { another } = this.props;
+    const { another, first = false } = this.props;
     return (
       <TouchableOpacity
         onPress={() => {
@@ -56,14 +56,28 @@ export default class NearbyItem extends React.Component {
             style={{
               flexDirection: "row",
               justifyContent: "center",
-              width: 30
+              marginRight: 10
             }}
           >
-            <View style={{ width: 1, backgroundColor: "#D8D8D8" }} />
-            <Image
-              style={{ marginTop: 26, position: "absolute" }}
-              source={require("../../assets/image/heart_1.png")}
-            />
+            <View style={{ alignItems: "center" }}>
+              <View
+                style={{
+                  height: 23,
+                  width: 0.5,
+                  backgroundColor: first? "white" : "#D8D8D8",
+                  marginBottom: 2
+                }}
+              />
+              <Image source={require("../../assets/image/dynamic.png")} />
+              <View
+                style={{
+                  flex: 1,
+                  width: 0.5,
+                  backgroundColor: "#D8D8D8",
+                  marginTop: 2
+                }}
+              />
+            </View>
           </View>
           <View
             style={{
@@ -86,8 +100,9 @@ export default class NearbyItem extends React.Component {
                   navigate.pushNotNavBar(Profile);
                 }}
               >
-                <Image
-                  style={{ width: 36, height: 36 }}
+                <Avatar
+                  size={36}
+                  rounded
                   source={require("../../assets/image/avatar.png")}
                 />
               </TouchableOpacity>

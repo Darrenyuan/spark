@@ -47,14 +47,14 @@ export default class TabBar extends React.Component {
 		if (Platform.OS === 'ios') {
 			this.setTextStyle(this.fonts[0], {fontSize: maxSize});
 			if (this.props.scrollValue) {
-				// this._listener = this.props.scrollValue.addListener(this.setAnimationValue.bind(this));
+				this._listener = this.props.scrollValue.addListener(this.setAnimationValue.bind(this));
 			}
 			this._startTrackingPosition()
 		}
 	}
 	
 	componentWillUnmount() {
-		// this.props.scrollValue && this.props.scrollValue.removeListener(this._listener);
+		this.props.scrollValue && this.props.scrollValue.removeListener(this._listener);
 		this._stopTrackingPosition()
 	}
 	
@@ -243,7 +243,7 @@ export default class TabBar extends React.Component {
 		}
 		
 		const scaleValue = (defaultScale) => {
-			let number = 4
+			let number = 5
 			let arr = new Array(number * 2)
 			return arr.fill(0).reduce(function (pre, cur, idx) {
 				idx === 0 ? pre.inputRange.push(cur) : pre.inputRange.push(pre.inputRange[idx - 1] + 0.5);

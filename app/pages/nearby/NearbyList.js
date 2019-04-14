@@ -75,6 +75,7 @@ export default class NearbyList extends NavigatorPage {
       <NearbyItem
         item={item}
         another={this.state.another}
+        first={!index}
         // removeTopic={this.removeTopic}
         // deleteRow={this.deleteRow}
         // profileUser={this.props.profileUser}

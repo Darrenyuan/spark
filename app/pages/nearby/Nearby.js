@@ -23,6 +23,15 @@ export default class Nearby extends React.Component {
     this.state = { tabs, activeIndex: 0, fromIndex: 0 };
   }
 
+  onChangeTab = ({ i, ref, from }) => {
+    if (this.state.activeIndex !== i) {
+      this.setState({
+        activeIndex: i,
+        fromIndex: from
+      });
+    }
+  };
+
   renderNavBar = props => {
     return (
       <NavBar
@@ -51,40 +60,22 @@ export default class Nearby extends React.Component {
   };
 
   render() {
-    // return (
-    //   <View
-    //     style={{
-    //       // flex:1,
-    //       backgroundColor: "white",
-    //       height: 400,
-    //       marginTop: 200
-    //       // flexDirection: "column",
-    //       //   alignItems: "flex-start"
-    //     }}
-    //   >
-    //     <View
-    //         style={{ backgroundColor: "red", flex:1, width:'auto'}}><View style={{width: 1000, height:120, backgroundColor:'yellow'}}></View></View>
-    //     <View style={{ backgroundColor: "blue", flex:1 }} />
-    //     {/*<View style={{ backgroundColor: "yellow", height: 100 }} />*/}
-    //   </View>
-    // );
-
     return (
       <ScrollableTabView
         tabBarPosition={"top"}
         renderTabBar={this.renderNavBar}
-        // onChangeTab={this.onChangeTab}
+        onChangeTab={this.onChangeTab}
         initialPage={0}
       >
         {this.state.tabs.map((v, i) => (
           <NearbyList
-          key={v.name}
-          // {...this.props}
-          tabLabel={v.name}
-          // uri={v.uri}
-          activeIndex={this.state.activeIndex}
-          leftHidden={this.props.leftHidden}
-          // getListType={this.props.getListType}
+            key={v.name}
+            // {...this.props}
+            tabLabel={v.name}
+            // uri={v.uri}
+            activeIndex={this.state.activeIndex}
+            leftHidden={this.props.leftHidden}
+            // getListType={this.props.getListType}
           />
         ))}
       </ScrollableTabView>

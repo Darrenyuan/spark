@@ -62,6 +62,7 @@
 		B948C22E2254B78F00CAEE86 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B948C22D2254B78F00CAEE86 /* libsqlite3.0.tbd */; };
 		B948C2302254B79C00CAEE86 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B948C22F2254B79C00CAEE86 /* libc++.tbd */; };
 		B948C2322254B7A300CAEE86 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B948C2312254B7A300CAEE86 /* libz.tbd */; };
+		B95F29D72263188900A11E08 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B95F29D62263188800A11E08 /* iconfont.ttf */; };
 		B9D124322253412E00B2F061 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D1242A2253411300B2F061 /* libRNBlur.a */; };
 		CB1F42E1EC0F460887A60C59 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 513AF95BC0E14DCA88401D28 /* MaterialIcons.ttf */; };
 		D1013FB527BB4CB8A72F5C39 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C6186A6A5644DCAA840DB5B /* Ionicons.ttf */; };
@@ -494,6 +495,7 @@
 		B948C22D2254B78F00CAEE86 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		B948C22F2254B79C00CAEE86 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		B948C2312254B7A300CAEE86 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		B95F29D62263188800A11E08 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = iconfont.ttf; path = ../../../Downloads/font_1141202_3bl226wctsu/iconfont.ttf; sourceTree = "<group>"; };
 		B9D123FD2253411300B2F061 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
 		C61E5F13DA95432785C66329 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		D544FB79F75B4B48B9E55219 /* RCTWeChat.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTWeChat.xcodeproj; path = "../node_modules/react-native-wechat/ios/RCTWeChat.xcodeproj"; sourceTree = "<group>"; };
@@ -885,6 +887,7 @@
 		FAA14C6845A745E88331B6C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B95F29D62263188800A11E08 /* iconfont.ttf */,
 				8B0A76CE397B4E18A8C2D24E /* AntDesign.ttf */,
 				4772C9519DCF487F83B6A6BF /* Entypo.ttf */,
 				FD69D7FE3D3648198B50E817 /* EvilIcons.ttf */,
@@ -1479,6 +1482,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				B95F29D72263188900A11E08 /* iconfont.ttf in Resources */,
 				3D4747BA30944C119046C572 /* AntDesign.ttf in Resources */,
 				0126F0494CC845AA86587AB1 /* Entypo.ttf in Resources */,
 				9DB427FF6B3441819058BE41 /* EvilIcons.ttf in Resources */,

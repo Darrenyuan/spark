@@ -84,7 +84,7 @@ export default class NearbyList extends NavigatorPage {
     );
   };
 
-  renderPage() {
+  render() {
     return (
       <View style={styleUtil.container}>
         <FlatList

@@ -16,6 +16,7 @@ import { Icon } from "react-native-elements";
 import navigate from "../../screens/navigate";
 import LoginEnterInfo from "./LoginEnterInfo";
 import LoginAgreement from "./LoginAgreement";
+import CountDownText from "../../components/countdown/countDownText";
 
 export default class LoginSetPassword extends NavigatorPage {
   static defaultProps = {
@@ -46,8 +47,42 @@ export default class LoginSetPassword extends NavigatorPage {
     Object.assign(this.state, {
       verifyCode: "",
       password: "",
-      showPassword: false
+      showPassword: false,
+      isSend: false,
+      isCountEnd: false,
     });
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+
+    this._sendVerifyCode();
+  }
+
+  _sendVerifyCode = () => {
+    let phone = this.props.phone;
+
+    toast.modalLoading();
+    request.post(config.api.sendVerifyCode, {
+      phone
+    }).then(res => {
+      toast.modalLoadingHide()
+      if (res.code === 1) {
+        toast.success('短信验证码已发送');
+
+        this._verifyCode = res.data.code;
+        this.setState({
+          isSend: true,
+          isCountEnd: false
+        })
+      }
+    })
+  }
+
+  _countEnd = () => {
+    this.setState({
+      isCountEnd: true
+    })
   }
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
@@ -117,15 +152,26 @@ export default class LoginSetPassword extends NavigatorPage {
                   this.setState({ verifyCode: text });
                 }}
               />
-              <Text
-                style={{
-                  color: styleUtil.themeColor,
-                  fontSize: 12,
-                  position: "absolute"
-                }}
-              >
-                {"*验证码错误"}
-              </Text>
+              {/*<Text*/}
+                {/*style={{*/}
+                  {/*color: styleUtil.themeColor,*/}
+                  {/*fontSize: 12,*/}
+                  {/*position: "absolute"*/}
+                {/*}}*/}
+              {/*>*/}
+                {/*{"*验证码错误"}*/}
+              {/*</Text>*/}
+              <CountDownText
+                  style={[styles.countBtnText, {fontSize: 13}]}
+                  countType='seconds' // 计时类型：seconds / date
+                  auto={true} // 自动开始
+                  afterEnd={this._countEnd} // 结束回调
+                  timeLeft={60} // 正向计时 时间起点为0秒
+                  step={-1} // 计时步长，以秒为单位，正数则为正计时，负数为倒计时
+                  startText='获取验证码' // 开始的文本
+                  endText='获取验证码' // 结束的文本
+                  intervalText={(sec) => sec + '秒重新获取'} // 定时的文本回调
+              />
             </View>
             <View
               style={{

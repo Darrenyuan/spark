@@ -4,7 +4,7 @@ import QueryString from 'query-string'
 import _ from 'lodash'
 import toast from "./toast";
 import navigate from "../screens/navigate";
-// import PhoneLogin from "../pages/account/PhoneLogin";
+import DeviceInfo from 'react-native-device-info';
 
 /**
  * http请求
@@ -20,9 +20,14 @@ let request = {
 		return _fetchData(url, options)
 	},
 	post(url: string, params = {}) {
-		// console.log(config.user)
-		params.currentUserId = config.user._id;
-		params.accessToken = config.user.accessToken;
+		url = config.api.baseURI + url;
+
+		params.auid = config.user._id;
+		params.M0 = DeviceInfo.getUniqueID();
+		params.M2 = config.user.accessToken;
+		params.M3 = "120.45435,132.32424";
+		params.M9 = new Date().getTime();
+
 		for (let key in params) {
 			if (params[key] === undefined || params[key] === null) {
 				delete params[key];
@@ -72,6 +77,7 @@ const _fetchData = (url, options, callback) => {
 		body,
 		requestHeader
 	} = options;
+	console.log(url);
 	return new Promise((resolve, reject) => {
 		const handler = function () {
 			try {
@@ -83,8 +89,6 @@ const _fetchData = (url, options, callback) => {
 		};
 		let xhr = new XMLHttpRequest();
 		xhr.open(method, url)
-		// xhr.setRequestHeader('Accept', 'application/json')
-		// xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 		xhr.setRequestHeader('Content-Type', requestHeader)
 		xhr.onload = handler;
 		xhr.timeout = 20000;
@@ -97,16 +101,14 @@ const _fetchData = (url, options, callback) => {
 		// console.log(response)
 		if (response.readyState === 4 && response.status === 200) {
 			let res = JSON.parse(response.responseText);
-			if (res.code === 1) {//用户未登录
-				toast.info("请先登录");
-				navigate.push(PhoneLogin)
+			console.log(res);
+			if (res.code === 1) {//请求ok
 			}
-			else if (res.code === 1000) {//业务逻辑错误
+			else if (res.code === 2) {//错误请求
 				toast.fail(res.msg)
 			}
-			else if (res.code < 0) {//非法请求或者服务器异常
+			else if (res.code === 4) {//接口异常
 				toast.fail(res.msg)
-				// toast.fail('系统出错了');
 			}
 			return res;
 		}

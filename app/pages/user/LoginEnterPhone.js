@@ -11,15 +11,18 @@ import {
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
-import LoadingMore from "../../components/load/LoadingMore";
 import navigate from "../../screens/navigate";
 import LoginSetPassword from "./LoginSetPassword";
+import request from "../../common/request";
+import toast from "../../common/toast";
+import LoginEnterPassword from "./LoginEnterPassword";
 
 export default class LoginEnterPhone extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navBarHidden: true,
-    navigationBarInsets: false
+    navigationBarInsets: false,
+    scene: navigate.sceneConfig.FloatFromBottom,
   };
 
   constructor(props) {
@@ -27,6 +30,30 @@ export default class LoginEnterPhone extends NavigatorPage {
     Object.assign(this.state, {
       phone: ""
     });
+  }
+
+
+  _netCheckPhone = () => {
+    let body = {
+      phone: this.state.phone,
+    };
+
+    toast.modalLoading();
+    request.post(config.api.login, body)
+        .then(res => {
+          toast.modalLoadingHide()
+          if (res.code === 1) {
+            if (res.data.registFlag == 0) {
+              navigate.pushNotNavBar(LoginSetPassword, {phone: this.state.phone});
+            }
+            else {
+              navigate.pushNotNavBar(LoginEnterPassword, {phone: this.state.phone});
+            }
+          }
+        })
+        .catch(err => {
+          toast.modalLoadingHide()
+        })
   }
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
@@ -100,7 +127,7 @@ export default class LoginEnterPhone extends NavigatorPage {
               ]}
               onPress={_ => {
                 if (phone.length == 11) {
-                  navigate.pushNotNavBar(LoginSetPassword);
+                  this._netCheckPhone();
                 }
               }}
             >

@@ -8,6 +8,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "immutability-helper": "^3.0.0",
     "lodash": "latest",
     "moment": "^2.24.0",
     "node-emoji": "^1.10.0",
@@ -16,6 +17,7 @@
     "react-native": "0.59.1",
     "react-native-blur": "^3.2.2",
     "react-native-camera": "^1.13.1",
+    "react-native-device-info": "^1.5.0",
     "react-native-elements": "^1.1.0",
     "react-native-fetch-blob": "^0.10.8",
     "react-native-image-crop-picker": "^0.23.1",

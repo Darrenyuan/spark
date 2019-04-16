@@ -5339,6 +5339,14 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-addons-update@^15.6.2:
+  version "15.6.2"
+  resolved "http://registry.npm.taobao.org/react-addons-update/download/react-addons-update-15.6.2.tgz#e53753c5b34887974510c882d7fb075851d5e504"
+  integrity sha1-5TdTxbNIh5dFEMiC1/sHWFHV5QQ=
+  dependencies:
+    fbjs "^0.8.9"
+    object-assign "^4.1.0"
+
 react-clone-referenced-element@^1.0.1:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/react-clone-referenced-element/download/react-clone-referenced-element-1.1.0.tgz#9cdda7f2aeb54fea791f3ab8c6ab96c7a77d0158"
@@ -5386,6 +5394,11 @@ react-native-camera@^1.13.1:
     prop-types "^15.5.10"
     react-timer-mixin "^0.13.2"
     rebound "^0.0.13"
+
+react-native-device-info@^1.5.0:
+  version "1.5.0"
+  resolved "http://registry.npm.taobao.org/react-native-device-info/download/react-native-device-info-1.5.0.tgz#09e17c8199ac51082d72193f17eb445e9c83e68d"
+  integrity sha1-CeF8gZmsUQgtchk/F+tEXpyD5o0=
 
 react-native-elements@^1.1.0:
   version "1.1.0"

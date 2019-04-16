@@ -7,8 +7,10 @@ import {
 } from 'teaset'
 import {InteractionManager} from 'react-native'
 import request from "./request";
+import navigate from "../screens/navigate";
+import LoginEnterPhone from "../pages/user/LoginEnterPhone";
 
-const DEV_HOST = "http://192.168.0.2:8080/";
+const DEV_HOST = "http://kk.melepark.com:8099/kkserver/";
 const DEV_SOCKET = "http://192.168.0.2:3000/chat/";
 const PROD_HOST = "https://www";
 const PROD_SOCKET = "wss://www";
@@ -25,7 +27,9 @@ let config = {
 	api: {
 		webSocketURI: PROD_SOCKET,
 		imageURI: 'https://www',
-		baseURI: PROD_HOST,
+		baseURI: DEV_HOST,
+		login: 'HICService.y?cmd=checkPhone',
+		sendVerifyCode: 'HICService.y?cmd=sendCodeToPhone',
 	},
 	pageSize: 15,
 	loadingTime: 350,
@@ -144,10 +148,17 @@ let config = {
 				map[toId] = {};
 			})
 	},
-	getUser() {
+	getUserThenLoginIfNil() {
+		if (!config.user._id) {
+			navigate.pushNotNavBar(LoginEnterPhone);
+			return;
+		}
+		return config.user;
+	},
+	getUserFromStorage() {
 		return storageUtil.getItem('user', this.user)
 	},
-	setUser(user) {
+	setUserToStorage(user) {
 		this.user = user
 		return storageUtil.setItem('user', user)
 	},

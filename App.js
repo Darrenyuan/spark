@@ -15,6 +15,8 @@ import styleUtil from "./app/common/styleUtil";
 import navigate from "./app/screens/navigate";
 import IMessage from "./app/common/IMessage";
 import Request from './app/common/request'
+import config from "./app/common/config";
+import toast from "./app/common/toast";
 
 const instructions = Platform.select({
   ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
@@ -62,10 +64,9 @@ Theme.set({
   rowActionButtonPaddingHorizontal: 12,
 });
 
-// global.request = Request;
-// global.config = config;
-// global.storageUtil = storageUtil;
-// global.toast = toast;
+global.request = Request;
+global.config = config;
+global.toast = toast;
 global.imessage = new IMessage();
 
 type Props = {};

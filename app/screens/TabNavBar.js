@@ -17,6 +17,7 @@ import Profile from "../pages/profile/Profile";
 import ChatList from "../pages/message/ChatList";
 import navigate from "./navigate";
 import Search from "../pages/discovery/Search";
+import config from "../common/config";
 
 export default class TabNavBar extends React.Component {
   constructor(props) {
@@ -28,7 +29,9 @@ export default class TabNavBar extends React.Component {
   }
 
   _onClickPublish = () => {
-    this.setState({ modalVisible: true });
+    if (config.getUserThenLoginIfNil()) {
+      this.setState({ modalVisible: true });
+    }
   };
 
   _callbackPublishClose = () => {

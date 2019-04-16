@@ -132,16 +132,14 @@ export default class TabNavBar extends React.Component {
             renderRightView={
               <NavigationBar.Button
                 onPress={_ => {
-                  navigate.pushNotNavBar(Search, {
-                    selectValue: "题目"
-                  });
+                  navigate.pushNotNavBar(Search);
                 }}
               >
                 <Icon
                   name={"ios-search"}
                   type={"ionicon"}
                   color={styleUtil.navIconColor}
-                  size={30}
+                  size={22}
                 />
               </NavigationBar.Button>
             }

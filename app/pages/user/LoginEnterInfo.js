@@ -11,16 +11,13 @@ import {
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
-import LoadingMore from "../../components/load/LoadingMore";
 import OverlayModal from "../../components/OverlayModal";
-import {Avatar, Icon} from "react-native-elements";
-import { NavigationBar } from "teaset";
+import { Avatar, Icon } from "react-native-elements";
 import config from "../../common/config";
 import ImageCropPicker from "react-native-image-crop-picker";
 import navigate from "../../screens/navigate";
-import LoginAgreement from "./LoginAgreement";
 import DatePicker from "../../components/DatePicker";
-import LoginMoreInfo from "./LoginMoreInfo"
+import LoginMoreInfo from "./LoginMoreInfo";
 
 export default class LoginEnterInfo extends NavigatorPage {
   static defaultProps = {
@@ -31,12 +28,32 @@ export default class LoginEnterInfo extends NavigatorPage {
 
   constructor(props) {
     super(props);
-    Object.assign(this.state, {
+    this.state = {
+      face: "",
       nickName: "",
-      birthday: "",
-      male: true
-    });
+      birth: "",
+      sex: true
+    };
   }
+
+  _netSubmitUserInfo = () => {
+    const { face, nickName, birth, sex } = this.state;
+
+    toast.modalLoading();
+    request
+      .post(config.api.register, {
+        face,
+        nickName,
+        birth,
+        sex
+      })
+      .then(res => {
+        toast.modalLoadingHide();
+        if (res.code === 1) {
+          navigate.pushNotNavBar(LoginMoreInfo);
+        }
+      });
+  };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
 
@@ -85,23 +102,23 @@ export default class LoginEnterInfo extends NavigatorPage {
   };
 
   showDatePicker = () => {
-    let birthday = this.state.birthday;
-    let arr = birthday.split("-");
+    let birth = this.state.birth;
+    let arr = birth.split("-");
     OverlayModal.show(
       <DatePicker
         selectedYear={arr[0]}
         selectedMonth={arr[1]}
         selectedDate={arr[2]}
         onDone={arr => {
-          birthday = arr.join("-");
-          this.setState({ birthday: birthday });
+          birth = arr.join("-");
+          this.setState({ birth: birth });
         }}
       />
     );
   };
 
   renderPage() {
-    const { nickName, birthday, male } = this.state;
+    const { nickName, birth, sex } = this.state;
 
     return (
       <View style={styleUtil.container}>
@@ -124,11 +141,7 @@ export default class LoginEnterInfo extends NavigatorPage {
               }}
               onPress={_ => this.showAction("avatar")}
             >
-              <Avatar
-                  xlarge
-                  rounded
-                  source={require("../../assets/image/avatar.png")}
-              />
+              <Avatar size={71} rounded source={config.defaultAvatar()} />
               <Text style={{ fontSize: 14, color: "white", marginTop: 10 }}>
                 {"修改头像"}
               </Text>
@@ -180,7 +193,7 @@ export default class LoginEnterInfo extends NavigatorPage {
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
                 style={[styles.inputField, { flex: 1 }]}
-                value={birthday}
+                value={birth}
                 maxLength={11}
               />
               <TouchableOpacity
@@ -204,10 +217,10 @@ export default class LoginEnterInfo extends NavigatorPage {
             >
               <TouchableOpacity
                 style={{ flexDirection: "row", alignItems: "center" }}
-                onPress={_ => this.setState({ male: !male })}
+                onPress={_ => this.setState({ sex: !sex })}
               >
                 <Icon
-                  name={male ? "ios-radio-button-on" : "ios-radio-button-off"}
+                  name={sex ? "ios-radio-button-on" : "ios-radio-button-off"}
                   type={"ionicon"}
                   color={styleUtil.themeColor}
                   size={25}
@@ -224,10 +237,10 @@ export default class LoginEnterInfo extends NavigatorPage {
                   alignItems: "center",
                   marginLeft: 60
                 }}
-                onPress={_ => this.setState({ male: !male })}
+                onPress={_ => this.setState({ sex: !sex })}
               >
                 <Icon
-                  name={male ? "ios-radio-button-off" : "ios-radio-button-on"}
+                  name={sex ? "ios-radio-button-off" : "ios-radio-button-on"}
                   type={"ionicon"}
                   color={styleUtil.themeColor}
                   size={25}
@@ -240,23 +253,21 @@ export default class LoginEnterInfo extends NavigatorPage {
               </TouchableOpacity>
             </View>
             <TouchableOpacity
-              activeOpacity={
-                nickName.length > 0 && birthday.length > 0 ? 0.5 : 1
-              }
+              activeOpacity={nickName.length > 0 && birth.length > 0 ? 0.5 : 1}
               style={[
                 styles.buttonBox,
                 {
                   backgroundColor: this._btnStyle(
-                    nickName.length > 0 && birthday.length > 0
+                    nickName.length > 0 && birth.length > 0
                   ),
                   borderColor: this._btnStyle(
-                    nickName.length > 0 && birthday.length > 0
+                    nickName.length > 0 && birth.length > 0
                   )
                 }
               ]}
               onPress={_ => {
-                if (nickName.length > 0 && birthday.length > 0) {
-                  navigate.pushNotNavBar(LoginMoreInfo);
+                if (nickName.length > 0 && birth.length > 0) {
+                  this._netSubmitUserInfo();
                 }
               }}
             >

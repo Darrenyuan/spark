@@ -28,8 +28,10 @@ let config = {
 		webSocketURI: PROD_SOCKET,
 		imageURI: 'https://www',
 		baseURI: DEV_HOST,
-		login: 'HICService.y?cmd=checkPhone',
+		checkPhone: 'HICService.y?cmd=checkPhone',
 		sendVerifyCode: 'HICService.y?cmd=sendCodeToPhone',
+		register: 'HICService.y?cmd=regist',
+		login: 'HICService.y?cmd=login',
 	},
 	pageSize: 15,
 	loadingTime: 350,
@@ -308,7 +310,7 @@ let config = {
 		ActionSheet.show(items, cancelItem);
 	},
 	defaultAvatar(avatar) {
-		return avatar && avatar !== '0' ? {uri: avatar} : require('../assets/image/head.png')
+		return avatar && avatar !== '0' ? {uri: avatar} : require('../assets/image/login_default_avatar.png')
 	},
 	defaultAvatars(avatars = []) {
 		if (!Array.isArray(avatars)) {

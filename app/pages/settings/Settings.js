@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
-import LoadingMore from "../../components/load/LoadingMore";
 import navigate from "../../screens/navigate";
 import { ListRow } from "teaset";
 import SettingsAbout from "./SettingsAbout";
@@ -116,16 +115,16 @@ export default class Settings extends NavigatorPage {
           <ListRow
             title={"邀请好友"}
             onPress={_ => {
-              // ShareWeChat.show({
-              //   type: 'news',
-              //   title: '于何处，寻找价值观一致的同类人',
-              //   description: '有些人，只是我们短暂人生的过客，很快便在我们的记忆中被抹掉；还有些人，却在与我们插肩而过之后，让我们的心为之改变。人生若之如初见，那是怎样的美好。在这里，遇见对的人，就是你一生的幸福……',
-              //   // thumbImage: config.api.imageURI + 'uploads/image/app_icon.png',
-              //   // imageUrl: config.api.imageURI + 'uploads/image/app_icon.png',
-              //   webpageUrl: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.whereapp'
-              // }, success => {
-              //
-              // })
+              ShareWeChat.show({
+                type: 'news',
+                title: '于何处，寻找价值观一致的同类人',
+                description: '有些人，只是我们短暂人生的过客，很快便在我们的记忆中被抹掉；还有些人，却在与我们插肩而过之后，让我们的心为之改变。人生若之如初见，那是怎样的美好。在这里，遇见对的人，就是你一生的幸福……',
+                // thumbImage: config.api.imageURI + 'uploads/image/app_icon.png',
+                // imageUrl: config.api.imageURI + 'uploads/image/app_icon.png',
+                webpageUrl: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.whereapp'
+              }, success => {
+
+              })
               this.setState({ modalVisible: true });
             }}
             icon={require("../../assets/image/settings_invite.png")}

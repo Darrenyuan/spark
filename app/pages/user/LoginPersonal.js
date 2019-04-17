@@ -11,14 +11,10 @@ import {
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
-import LoadingMore from "../../components/load/LoadingMore";
 import { Icon } from "react-native-elements";
-import { NavigationBar } from "teaset";
 import TabBar from "../../components/tabbar/TabBar";
 import ScrollableTabView from "react-native-scrollable-tab-view";
-import DefaultTabBar from "../../components/tabbar/DefaultTabBar";
 import navigate from "../../screens/navigate";
-import LoginSetPassword from "./LoginSetPassword";
 
 const tabs = [
   { name: "性格", labels: ["开朗", "抑郁"] },

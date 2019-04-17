@@ -110,6 +110,10 @@ function popToTop() {
 	})
 }
 
+function popToRoute(route) {
+	_navigator.popToRoute(route)
+}
+
 function popN(n) {
 	_navigator.popN(n)
 }
@@ -124,6 +128,7 @@ export default {
 	push,
 	pop,
 	popToTop,
+	popToRoute,
 	popN,
 	resetTo,
 	pushNotNavBar,

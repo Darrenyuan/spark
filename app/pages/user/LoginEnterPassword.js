@@ -11,17 +11,25 @@ import {
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
-import LoadingMore from "../../components/load/LoadingMore";
 import { Icon } from "react-native-elements";
+import navigate from "../../screens/navigate";
+import LoginSetPassword from "./LoginSetPassword";
+import CryptoJS from "react-native-crypto-js";
+import LoginEnterInfo from "./LoginEnterInfo";
 
 export default class LoginEnterPassword extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
-    // navBarHidden: true,
     navigationBarInsets: false,
     style: { backgroundColor: "transparent", borderBottomWidth: 0 },
+    scene: navigate.sceneConfig.PushFromRight,
     leftView: (
-      <TouchableOpacity style={{ paddingLeft: 10 }}>
+      <TouchableOpacity
+        style={{ paddingLeft: 10 }}
+        onPress={() => {
+          navigate.pop();
+        }}
+      >
         <Icon
           name={"ios-arrow-back"}
           type={"ionicon"}
@@ -33,11 +41,29 @@ export default class LoginEnterPassword extends NavigatorPage {
   };
 
   constructor(props) {
+    console.log("LoginEnterPassword");
     super(props);
     Object.assign(this.state, {
-      user: props.user
+      password: ""
     });
   }
+
+  _netLogin = () => {
+    let phone = this.props.phone;
+    let encoded = CryptoJS.MD5(this.state.password);
+    toast.modalLoading();
+    request
+      .post(config.api.login, {
+        phone,
+        password: encoded
+      })
+      .then(res => {
+        toast.modalLoadingHide();
+        if (res.code === 1) {
+          navigate.popN(2);
+        }
+      });
+  };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
 
@@ -89,13 +115,10 @@ export default class LoginEnterPassword extends NavigatorPage {
                 placeholderTextColor="#E5E5E5"
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
-                keyboardType={"number-pad"}
                 style={[styles.inputField, { flex: 1 }]}
-                // value={this.state.verifyCode}
-                maxLength={11}
                 autoFocus={true}
                 onChangeText={text => {
-                  // this.setState({verifyCode: text})
+                  this.setState({ password: text });
                 }}
               />
             </View>
@@ -108,6 +131,9 @@ export default class LoginEnterPassword extends NavigatorPage {
                   borderColor: this._btnStyle(false)
                 }
               ]}
+              onPress={() => {
+                this._netLogin();
+              }}
             >
               <Text style={styles.buttonText}>{"登录"}</Text>
             </TouchableOpacity>
@@ -115,6 +141,12 @@ export default class LoginEnterPassword extends NavigatorPage {
               style={{
                 marginTop: 30,
                 alignItems: "center"
+              }}
+              onPress={() => {
+                navigate.pushNotNavBar(LoginSetPassword, {
+                  phone: this.props.phone,
+                  resetPassword: true
+                });
               }}
             >
               <Text style={{ color: styleUtil.themeColor, fontSize: 14 }}>

@@ -191,7 +191,11 @@ export default class LoginMoreInfo extends NavigatorPage {
             <Text style={styles.buttonText}>{"完成"}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigate.popN(3);
+            }}
+          >
             <Text
               style={{
                 fontSize: 14,

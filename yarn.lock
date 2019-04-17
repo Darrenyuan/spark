@@ -2956,6 +2956,13 @@ image-size@^0.6.0:
   resolved "http://registry.npm.taobao.org/image-size/download/image-size-0.6.3.tgz#e7e5c65bb534bd7cdcedd6cb5166272a85f75fb2"
   integrity sha1-5+XGW7U0vXzc7dbLUWYnKoX3X7I=
 
+immutability-helper@^3.0.0:
+  version "3.0.0"
+  resolved "http://registry.npm.taobao.org/immutability-helper/download/immutability-helper-3.0.0.tgz#a74e989c60e2ddab85a6abeed8078981b2d13271"
+  integrity sha1-p06YnGDi3auFpqvu2AeJgbLRMnE=
+  dependencies:
+    invariant "^2.2.4"
+
 immutable@~3.7.6:
   version "3.7.6"
   resolved "http://registry.npm.taobao.org/immutable/download/immutable-3.7.6.tgz#13b4d3cb12befa15482a26fe1b2ebae640071e4b"
@@ -5339,14 +5346,6 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-addons-update@^15.6.2:
-  version "15.6.2"
-  resolved "http://registry.npm.taobao.org/react-addons-update/download/react-addons-update-15.6.2.tgz#e53753c5b34887974510c882d7fb075851d5e504"
-  integrity sha1-5TdTxbNIh5dFEMiC1/sHWFHV5QQ=
-  dependencies:
-    fbjs "^0.8.9"
-    object-assign "^4.1.0"
-
 react-clone-referenced-element@^1.0.1:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/react-clone-referenced-element/download/react-clone-referenced-element-1.1.0.tgz#9cdda7f2aeb54fea791f3ab8c6ab96c7a77d0158"
@@ -5383,6 +5382,11 @@ react-native-camera@^1.13.1:
   integrity sha1-GSd8yuCknb8blgSdpblchH6nr/I=
   dependencies:
     prop-types "^15.6.2"
+
+react-native-crypto-js@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/react-native-crypto-js/download/react-native-crypto-js-1.0.0.tgz#e677e022e147f41b35614416c92d655f87e2450a"
+  integrity sha1-5nfgIuFH9Bs1YUQWyS1lX4fiRQo=
 
 "react-native-deprecated-custom-components@github:facebookarchive/react-native-custom-components":
   version "0.1.1"

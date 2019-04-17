@@ -6,7 +6,7 @@ import { Theme } from "teaset";
 
 const scale = PixelRatio.get();
 
-const BACKGROUND_COLOR = "#F9F9F9";
+const BACKGROUND_COLOR = "white";
 const THEME_COLOR = "#FE7733";
 
 export default {

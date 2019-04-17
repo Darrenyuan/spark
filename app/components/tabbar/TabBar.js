@@ -44,6 +44,8 @@ export default class TabBar extends React.Component {
 	}
 	
 	componentDidMount() {
+		console.log(this.props.scrollValue);
+		console.log(this.props.scrollValue.removeListener);
 		if (Platform.OS === 'ios') {
 			this.setTextStyle(this.fonts[0], {fontSize: maxSize});
 			if (this.props.scrollValue) {
@@ -54,7 +56,7 @@ export default class TabBar extends React.Component {
 	}
 	
 	componentWillUnmount() {
-		this.props.scrollValue && this.props.scrollValue.removeListener(this._listener);
+		this.props.scrollValue.removeListener && this.props.scrollValue.removeListener(this._listener);
 		this._stopTrackingPosition()
 	}
 	

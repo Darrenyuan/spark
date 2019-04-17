@@ -39,7 +39,7 @@ export default class LoginEnterPhone extends NavigatorPage {
     };
 
     toast.modalLoading();
-    request.post(config.api.login, body)
+    request.post(config.api.checkPhone, body)
         .then(res => {
           toast.modalLoadingHide()
           if (res.code === 1) {

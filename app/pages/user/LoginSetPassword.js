@@ -11,12 +11,12 @@ import {
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
-import LoadingMore from "../../components/load/LoadingMore";
 import { Icon } from "react-native-elements";
 import navigate from "../../screens/navigate";
 import LoginEnterInfo from "./LoginEnterInfo";
 import LoginAgreement from "./LoginAgreement";
 import CountDownText from "../../components/countdown/countDownText";
+import CryptoJS from "react-native-crypto-js";
 
 export default class LoginSetPassword extends NavigatorPage {
   static defaultProps = {
@@ -24,7 +24,7 @@ export default class LoginSetPassword extends NavigatorPage {
     // navBarHidden: true,
     navigationBarInsets: false,
     style: { backgroundColor: "transparent", borderBottomWidth: 0 },
-    scene: navigate.sceneConfig.Suspension,
+    scene: navigate.sceneConfig.PushFromRight,
     leftView: (
       <TouchableOpacity
         style={{ paddingLeft: 10 }}
@@ -49,46 +49,86 @@ export default class LoginSetPassword extends NavigatorPage {
       password: "",
       showPassword: false,
       isSend: false,
-      isCountEnd: false,
+      isCountEnd: false
     });
+    this._verifyCode = "1111";
   }
 
   componentDidMount() {
     super.componentDidMount();
 
-    this._sendVerifyCode();
+    this._netSendVerifyCode();
   }
 
-  _sendVerifyCode = () => {
+  _netSendVerifyCode = () => {
     let phone = this.props.phone;
 
+    toast.loadingShow("获取短信验证码...");
+    request
+      .post(config.api.sendVerifyCode, {
+        phone
+      })
+      .then(res => {
+        toast.loadingHide();
+        if (res.code === 1) {
+          toast.success("短信验证码已发送");
+          // this._verifyCode = res.data.code;
+          this.setState({
+            isSend: true,
+            isCountEnd: false
+          });
+        }
+      });
+  };
+
+  _netRegister = () => {
+    let phone = this.props.phone;
+    let encoded = CryptoJS.MD5(this.state.password);
     toast.modalLoading();
-    request.post(config.api.sendVerifyCode, {
-      phone
-    }).then(res => {
-      toast.modalLoadingHide()
-      if (res.code === 1) {
-        toast.success('短信验证码已发送');
+    request
+      .post(config.api.register, {
+        phone,
+        password: encoded
+      })
+      .then(res => {
+        toast.modalLoadingHide();
+        if (res.code === 1) {
+          navigate.pushNotNavBar(LoginEnterInfo);
+        }
+      });
+  };
 
-        this._verifyCode = res.data.code;
-        this.setState({
-          isSend: true,
-          isCountEnd: false
-        })
-      }
-    })
-  }
+  _checkCodeValid = () => {
+    const { verifyCode } = this.state;
+    if (verifyCode.length == 4 && verifyCode == this._verifyCode) {
+      return true;
+    }
+    return false;
+  };
 
-  _countEnd = () => {
+  _checkAllInputValid = () => {
+    const { verifyCode, password } = this.state;
+    if (
+      verifyCode.length == 4 &&
+      verifyCode == this._verifyCode &&
+      password.length >= 6
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  _onCountEnd = () => {
     this.setState({
       isCountEnd: true
-    })
-  }
+    });
+  };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
 
   renderPage() {
     const { verifyCode, password, showPassword } = this.state;
+    const { resetPassword } = this.props;
 
     return (
       <View style={styleUtil.container}>
@@ -152,32 +192,62 @@ export default class LoginSetPassword extends NavigatorPage {
                   this.setState({ verifyCode: text });
                 }}
               />
-              {/*<Text*/}
-                {/*style={{*/}
-                  {/*color: styleUtil.themeColor,*/}
-                  {/*fontSize: 12,*/}
-                  {/*position: "absolute"*/}
-                {/*}}*/}
-              {/*>*/}
-                {/*{"*验证码错误"}*/}
-              {/*</Text>*/}
-              <CountDownText
-                  style={[styles.countBtnText, {fontSize: 13}]}
-                  countType='seconds' // 计时类型：seconds / date
-                  auto={true} // 自动开始
-                  afterEnd={this._countEnd} // 结束回调
-                  timeLeft={60} // 正向计时 时间起点为0秒
-                  step={-1} // 计时步长，以秒为单位，正数则为正计时，负数为倒计时
-                  startText='获取验证码' // 开始的文本
-                  endText='获取验证码' // 结束的文本
-                  intervalText={(sec) => sec + '秒重新获取'} // 定时的文本回调
-              />
+              {!this.state.isCountEnd ? (
+                <View
+                  style={[
+                    styles.countBtn,
+                    {
+                      backgroundColor: !this.state.isCountEnd
+                        ? styleUtil.disabledColor
+                        : styleUtil.themeColor,
+                      borderColor: !this.state.isCountEnd
+                        ? styleUtil.disabledColor
+                        : styleUtil.themeColor
+                    }
+                  ]}
+                >
+                  <CountDownText
+                    style={[styles.countBtnText, { fontSize: 12 }]}
+                    countType="seconds" // 计时类型：seconds / date
+                    auto={true} // 自动开始
+                    afterEnd={this._onCountEnd} // 结束回调
+                    timeLeft={60} // 正向计时 时间起点为0秒
+                    step={-1} // 计时步长，以秒为单位，正数则为正计时，负数为倒计时
+                    startText="获取验证码" // 开始的文本
+                    endText="获取验证码" // 结束的文本
+                    intervalText={sec => sec + "秒重新获取"} // 定时的文本回调
+                  />
+                </View>
+              ) : (
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  style={styles.countBtn}
+                  onPress={this._netSendVerifyCode}
+                >
+                  <Text style={styles.countBtnText}>获取验证码</Text>
+                </TouchableOpacity>
+              )}
             </View>
+            <Text
+              style={{
+                marginTop: 12,
+                marginLeft: 24,
+                fontSize: 14,
+                height: 15,
+                color: this._checkCodeValid() ? "#B6B6B6" : styleUtil.themeColor
+              }}
+            >
+              {verifyCode.length < 4
+                ? ""
+                : this._checkCodeValid()
+                ? "验证码正确"
+                : "*验证码错误"}
+            </Text>
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                marginTop: 40,
+                marginTop: 20,
                 justifyContent: "flex-end"
               }}
             >
@@ -224,48 +294,46 @@ export default class LoginSetPassword extends NavigatorPage {
               {"6位以上字母或文字"}
             </Text>
             <TouchableOpacity
-              activeOpacity={
-                verifyCode.length == 4 && password.length >= 6 ? 0.5 : 1
-              }
+              activeOpacity={this._checkAllInputValid() ? 0.5 : 1}
               style={[
                 styles.buttonBox,
                 {
-                  backgroundColor: this._btnStyle(
-                    verifyCode.length == 4 && password.length >= 6
-                  ),
-                  borderColor: this._btnStyle(
-                    verifyCode.length == 4 && password.length >= 6
-                  )
+                  backgroundColor: this._btnStyle(this._checkAllInputValid()),
+                  borderColor: this._btnStyle(this._checkAllInputValid())
                 }
               ]}
               onPress={_ => {
-                if (verifyCode.length == 4 && password.length >= 6) {
-                  navigate.pushNotNavBar(LoginEnterInfo);
+                if (this._checkAllInputValid()) {
+                  this._netRegister();
                 }
               }}
             >
-              <Text style={styles.buttonText}>{"注册"}</Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                marginTop: 30
-              }}
-            >
-              <Text style={{ fontSize: 14, color: "#939393" }}>
-                {"注册即同意"}
+              <Text style={styles.buttonText}>
+                {resetPassword ? "重置密码并登录" : "注册"}
               </Text>
-              <TouchableOpacity
-                onPress={_ => {
-                  navigate.pushNotNavBar(LoginAgreement);
+            </TouchableOpacity>
+            {!resetPassword && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  marginTop: 30
                 }}
               >
-                <Text style={{ fontSize: 14, color: styleUtil.themeColor }}>
-                  {"《用户协议》"}
+                <Text style={{ fontSize: 14, color: "#939393" }}>
+                  {"注册即同意"}
                 </Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  onPress={_ => {
+                    navigate.pushNotNavBar(LoginAgreement);
+                  }}
+                >
+                  <Text style={{ fontSize: 14, color: styleUtil.themeColor }}>
+                    {"《用户协议》"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
       </View>
@@ -319,14 +387,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   countBtn: {
-    width: 110,
-    height: 40,
-    padding: 10,
-    marginLeft: 8,
+    width: 100,
+    height: 25,
     borderWidth: 1,
     borderColor: styleUtil.themeColor,
     backgroundColor: styleUtil.themeColor,
-    borderRadius: 4
+    borderRadius: 4,
+    position: "absolute",
+    right: 0,
+    justifyContent: "center"
   },
   countBtnText: {
     textAlign: "center",

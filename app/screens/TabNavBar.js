@@ -29,9 +29,9 @@ export default class TabNavBar extends React.Component {
   }
 
   _onClickPublish = () => {
-    if (config.getUserThenLoginIfNil()) {
+    // if (config.getUserThenLoginIfNil()) {
       this.setState({ modalVisible: true });
-    }
+    // }
   };
 
   _callbackPublishClose = () => {

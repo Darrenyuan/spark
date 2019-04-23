@@ -32,6 +32,10 @@ let config = {
 		sendVerifyCode: 'HICService.y?cmd=sendCodeToPhone',
 		register: 'HICService.y?cmd=regist',
 		login: 'HICService.y?cmd=login',
+		registerInfo1:'HICService.y?cmd=editRegistInfo1',
+        registerInfo2:'HICService.y?cmd=editRegistInfo2',
+		applyLogon:'HICService.y?cmd=applyLogon',
+		logout:'HICService.y?cmd=logout',
 	},
 	pageSize: 15,
 	loadingTime: 350,
@@ -50,6 +54,7 @@ let config = {
 		
 	},
 	timeout: 10000,
+	loginInfo: {}, //登录信息
 	user: {}, //用户信息存储
 	appCache: 'appCache_',
 	get constant() {
@@ -151,7 +156,7 @@ let config = {
 			})
 	},
 	getUserThenLoginIfNil() {
-		if (!config.user._id) {
+		if (!config.loginInfo.loginToken) {
 			navigate.pushNotNavBar(LoginEnterPhone);
 			return;
 		}
@@ -167,6 +172,17 @@ let config = {
 	removeUser() {
 		this.user = {}
 		return storageUtil.removeItem('user')
+	},
+	getLoginInfoFromStorage() {
+		return storageUtil.getItem('loginInfo', this.loginInfo);
+	},
+	setLoginInfoToStorage(data) {
+		this.loginInfo = data
+		return storageUtil.setItem('loginInfo', data)
+	},
+	removeLoginInfo() {
+		this.loginInfo = {}
+		return storageUtil.removeItem('loginInfo')
 	},
 	getFriendList() {
 		return storageUtil.getItem(config.constant.friends, {})
@@ -278,6 +294,12 @@ let config = {
 	},
 	setIsLogined() {
 		return storageUtil.setItem(this.constant.isLogined, {isLogined: true})
+	},
+	getStatusAndMarker() {
+		return storageUtil.getItem('statusAndMarker')
+	},
+	setStatusAndMarker(data) {
+		return storageUtil.setItem('statusAndMarker', data)
 	},
 	version: '1.0',//版本号
 	mediaPickerOptions(options) {

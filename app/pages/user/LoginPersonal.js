@@ -4,9 +4,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
-  ImageBackground,
-  TextInput,
   TouchableOpacity
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
@@ -15,15 +12,6 @@ import { Icon } from "react-native-elements";
 import TabBar from "../../components/tabbar/TabBar";
 import ScrollableTabView from "react-native-scrollable-tab-view";
 import navigate from "../../screens/navigate";
-
-const tabs = [
-  { name: "性格", labels: ["开朗", "抑郁"] },
-  { name: "兴趣", labels: ["篮球", "排球"] },
-  { name: "游戏", labels: ["王者荣耀", "吃鸡"] },
-  { name: "运动", labels: ["跑步", "打球"] },
-  { name: "追星", labels: ["权志龙", "胡一天"] },
-  { name: "工作", labels: ["程序员", "财务", "人事"] }
-];
 
 let pageCallback = null;
 let callbackParam = [];
@@ -61,7 +49,7 @@ export default class LoginPersonal extends NavigatorPage {
 
     pageCallback = props.pageCallback;
 
-    this.state = { labels: props.labels };
+    this.state = { markers: props.markers, markersCategorys: props.markersCategorys };
   }
 
   componentDidUpdate(
@@ -69,7 +57,7 @@ export default class LoginPersonal extends NavigatorPage {
     prevState: Readonly<S>,
     snapshot: SS
   ): void {
-    callbackParam = this.state.labels;
+    callbackParam = this.state.markers;
   }
 
   renderNavBar = props => {
@@ -87,13 +75,13 @@ export default class LoginPersonal extends NavigatorPage {
           borderBottomWidth: 0,
           justifyContent: "space-between"
         }}
-        tabs={tabs}
+        tabs={this.state.markersCategorys}
       />
     );
   };
 
   renderPage() {
-    const { labels } = this.state;
+    const { markers, markersCategorys } = this.state;
 
     return (
       <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -101,7 +89,7 @@ export default class LoginPersonal extends NavigatorPage {
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text>{"已选择"}</Text>
             <Text style={{ marginLeft: 10, color: styleUtil.grayColor }}>
-              {labels.length + "/12"}
+              {markers.length + "/12"}
             </Text>
           </View>
 
@@ -114,15 +102,15 @@ export default class LoginPersonal extends NavigatorPage {
               height: 180
             }}
           >
-            {this.state.labels.map((v, i) => (
+            {markers.map((marker, i) => (
               <TouchableOpacity
                 style={styles.buttonBox}
                 onPress={_ => {
-                  labels.splice(labels.indexOf(v), 1);
-                  this.setState({ labels: labels });
+                  markers.splice(markers.indexOf(marker), 1);
+                  this.setState({ markers: markers });
                 }}
               >
-                <Text style={styles.buttonText}>{v}</Text>
+                <Text style={styles.buttonText}>{marker.typeName}</Text>
                 <View style={{ marginLeft: 8 }}>
                   <Icon
                     name={"md-close"}
@@ -143,32 +131,32 @@ export default class LoginPersonal extends NavigatorPage {
             onChangeTab={this.onChangeTab}
             initialPage={0}
           >
-            {tabs.map((v, i) => (
+            {markersCategorys.map((markersCategory, i) => (
               <View
                 style={{ flex: 1, flexDirection: "row", flexWrap: "wrap" }}
-                key={v.name}
-                tabLabel={v.name}
+                key={markersCategory.typeName}
+                tabLabel={markersCategory.typeName}
               >
-                {v.labels.map((v, i) => (
+                {markersCategory.childs.map((marker, i) => (
                   <TouchableOpacity
                     style={
-                      labels.indexOf(v) > -1
+                      markers.indexOf(marker) > -1
                         ? styles.buttonBox
                         : styles.unselectBox
                     }
                     onPress={_ => {
-                      let index = labels.indexOf(v);
+                      let index = markers.indexOf(marker);
                       if (index > -1) {
-                        labels.splice(index, 1);
+                        markers.splice(index, 1);
                       } else {
-                        if (labels.length < 12) {
-                          labels.push(v);
+                        if (markers.length < 12) {
+                          markers.push(marker);
                         }
                       }
-                      this.setState({ labels: labels });
+                      this.setState({ markers: markers });
                     }}
                   >
-                    <Text style={styles.buttonText}>{v}</Text>
+                    <Text style={styles.buttonText}>{marker.typeName}</Text>
                   </TouchableOpacity>
                 ))}
               </View>

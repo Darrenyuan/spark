@@ -7,7 +7,7 @@ import {
   Image,
   ImageBackground,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity, Keyboard
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
@@ -16,6 +16,7 @@ import navigate from "../../screens/navigate";
 import LoginSetPassword from "./LoginSetPassword";
 import CryptoJS from "react-native-crypto-js";
 import LoginEnterInfo from "./LoginEnterInfo";
+import config from "../../common/config";
 
 export default class LoginEnterPassword extends NavigatorPage {
   static defaultProps = {
@@ -48,6 +49,18 @@ export default class LoginEnterPassword extends NavigatorPage {
     });
   }
 
+  _netApplyLogin = () => {
+    toast.modalLoading();
+    request
+        .post(config.api.applyLogon, {})
+        .then(res => {
+          toast.modalLoadingHide();
+          if (res.code === 1) {
+            config.setUserToStorage(res.data.user);
+          }
+        });
+  };
+
   _netLogin = () => {
     let phone = this.props.phone;
     let encoded = CryptoJS.MD5(this.state.password);
@@ -60,6 +73,8 @@ export default class LoginEnterPassword extends NavigatorPage {
       .then(res => {
         toast.modalLoadingHide();
         if (res.code === 1) {
+          config.setLoginInfoToStorage(res.data);
+          this._netApplyLogin();
           navigate.popN(2);
         }
       });
@@ -69,7 +84,13 @@ export default class LoginEnterPassword extends NavigatorPage {
 
   renderPage() {
     return (
-      <View style={styleUtil.container}>
+        <TouchableOpacity
+            style={styleUtil.container}
+            activeOpacity={1}
+            onPress={_ => {
+              Keyboard.dismiss();
+            }}
+        >
         <View style={{ overflow: "hidden" }}>
           <ImageBackground
             style={{
@@ -155,7 +176,7 @@ export default class LoginEnterPassword extends NavigatorPage {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

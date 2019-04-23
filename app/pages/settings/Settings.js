@@ -19,6 +19,7 @@ import SettingsEditAccount from "./SettingsEditAccount";
 import SettingsEditProfile from "./SettingsEditProfile";
 import ShareWeChat from "../../components/ShareWeChat";
 import { Icon } from "react-native-elements";
+import config from "../../common/config";
 
 export default class Settings extends NavigatorPage {
   static defaultProps = {
@@ -36,6 +37,17 @@ export default class Settings extends NavigatorPage {
   }
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
+
+  _netlogout = () => {
+    toast.modalLoading();
+    request.post(config.api.logout, {}).then(res => {
+      toast.modalLoadingHide();
+      if (res.code === 1) {
+        config.removeUser();
+        config.removeLoginInfo();
+      }
+    });
+  };
 
   _renderSparkAlert = off => {
     let imagePath = off
@@ -84,7 +96,15 @@ export default class Settings extends NavigatorPage {
               />
             </TouchableOpacity>
             <Image style={{ marginTop: 35 }} source={imagePath} />
-            <Text style={{ color: "#616161", fontSize: 14, marginTop: 33, textAlign:"center", flex:1 }}>
+            <Text
+              style={{
+                color: "#616161",
+                fontSize: 14,
+                marginTop: 33,
+                textAlign: "center",
+                flex: 1
+              }}
+            >
               {title}
             </Text>
             <TouchableOpacity
@@ -115,16 +135,19 @@ export default class Settings extends NavigatorPage {
           <ListRow
             title={"邀请好友"}
             onPress={_ => {
-              ShareWeChat.show({
-                type: 'news',
-                title: '于何处，寻找价值观一致的同类人',
-                description: '有些人，只是我们短暂人生的过客，很快便在我们的记忆中被抹掉；还有些人，却在与我们插肩而过之后，让我们的心为之改变。人生若之如初见，那是怎样的美好。在这里，遇见对的人，就是你一生的幸福……',
-                // thumbImage: config.api.imageURI + 'uploads/image/app_icon.png',
-                // imageUrl: config.api.imageURI + 'uploads/image/app_icon.png',
-                webpageUrl: 'http://a.app.qq.com/o/simple.jsp?pkgname=com.whereapp'
-              }, success => {
-
-              })
+              ShareWeChat.show(
+                {
+                  type: "news",
+                  title: "于何处，寻找价值观一致的同类人",
+                  description:
+                    "有些人，只是我们短暂人生的过客，很快便在我们的记忆中被抹掉；还有些人，却在与我们插肩而过之后，让我们的心为之改变。人生若之如初见，那是怎样的美好。在这里，遇见对的人，就是你一生的幸福……",
+                  // thumbImage: config.api.imageURI + 'uploads/image/app_icon.png',
+                  // imageUrl: config.api.imageURI + 'uploads/image/app_icon.png',
+                  webpageUrl:
+                    "http://a.app.qq.com/o/simple.jsp?pkgname=com.whereapp"
+                },
+                success => {}
+              );
               this.setState({ modalVisible: true });
             }}
             icon={require("../../assets/image/settings_invite.png")}
@@ -161,6 +184,9 @@ export default class Settings extends NavigatorPage {
         </View>
         <TouchableOpacity
           style={{ alignItems: "center", justifyContent: "center", height: 80 }}
+          onPress={_ => {
+            this._netlogout();
+          }}
         >
           <Text
             style={{

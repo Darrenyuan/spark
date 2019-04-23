@@ -7,7 +7,8 @@ import {
   Image,
   ImageBackground,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+    Keyboard
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
@@ -51,7 +52,7 @@ export default class LoginSetPassword extends NavigatorPage {
       isSend: false,
       isCountEnd: false
     });
-    this._verifyCode = "1111";
+    this._verifyCode = "";
   }
 
   componentDidMount() {
@@ -72,7 +73,7 @@ export default class LoginSetPassword extends NavigatorPage {
         toast.loadingHide();
         if (res.code === 1) {
           toast.success("短信验证码已发送");
-          // this._verifyCode = res.data.code;
+          this._verifyCode = res.data.code;
           this.setState({
             isSend: true,
             isCountEnd: false
@@ -93,6 +94,7 @@ export default class LoginSetPassword extends NavigatorPage {
       .then(res => {
         toast.modalLoadingHide();
         if (res.code === 1) {
+          config.setLoginInfoToStorage(res.data);
           navigate.pushNotNavBar(LoginEnterInfo);
         }
       });
@@ -131,7 +133,9 @@ export default class LoginSetPassword extends NavigatorPage {
     const { resetPassword } = this.props;
 
     return (
-      <View style={styleUtil.container}>
+      <TouchableOpacity style={styleUtil.container} activeOpacity={1} onPress={_=>{
+        Keyboard.dismiss();
+      }}>
         <View style={{ overflow: "hidden" }}>
           <ImageBackground
             style={{
@@ -148,7 +152,9 @@ export default class LoginSetPassword extends NavigatorPage {
                 flexDirection: "row"
               }}
             >
-              <Image source={require("../../assets/image/login_spark.png")} />
+              <Image
+                source={require("../../assets/image/login_spark.png")}
+              />
               <View style={{ justifyContent: "flex-end", marginLeft: 10 }}>
                 <Text
                   style={{
@@ -160,7 +166,9 @@ export default class LoginSetPassword extends NavigatorPage {
                 >
                   {"火花"}
                 </Text>
-                <Text style={{ fontSize: 14, color: "white", marginBottom: 2 }}>
+                <Text
+                  style={{ fontSize: 14, color: "white", marginBottom: 2 }}
+                >
                   {"重新发现身边的世界"}
                 </Text>
               </View>
@@ -234,7 +242,9 @@ export default class LoginSetPassword extends NavigatorPage {
                 marginLeft: 24,
                 fontSize: 14,
                 height: 15,
-                color: this._checkCodeValid() ? "#B6B6B6" : styleUtil.themeColor
+                color: this._checkCodeValid()
+                  ? "#B6B6B6"
+                  : styleUtil.themeColor
               }}
             >
               {verifyCode.length < 4
@@ -298,7 +308,9 @@ export default class LoginSetPassword extends NavigatorPage {
               style={[
                 styles.buttonBox,
                 {
-                  backgroundColor: this._btnStyle(this._checkAllInputValid()),
+                  backgroundColor: this._btnStyle(
+                    this._checkAllInputValid()
+                  ),
                   borderColor: this._btnStyle(this._checkAllInputValid())
                 }
               ]}
@@ -328,7 +340,9 @@ export default class LoginSetPassword extends NavigatorPage {
                     navigate.pushNotNavBar(LoginAgreement);
                   }}
                 >
-                  <Text style={{ fontSize: 14, color: styleUtil.themeColor }}>
+                  <Text
+                    style={{ fontSize: 14, color: styleUtil.themeColor }}
+                  >
                     {"《用户协议》"}
                   </Text>
                 </TouchableOpacity>
@@ -336,7 +350,7 @@ export default class LoginSetPassword extends NavigatorPage {
             )}
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

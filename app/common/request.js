@@ -22,9 +22,9 @@ let request = {
 	post(url: string, params = {}) {
 		url = config.api.baseURI + url;
 
-		params.auid = config.user._id;
+		params.auid = config.loginInfo.auid;
 		params.M0 = DeviceInfo.getUniqueID();
-		params.M2 = config.user.accessToken;
+		params.M2 = config.loginInfo.loginToken;
 		params.M3 = "120.45435,132.32424";
 		params.M9 = new Date().getTime();
 
@@ -43,14 +43,15 @@ let request = {
 		return _fetchData(url, options)
 	},
 	upload(url: string, params = {}, callback: Function) {
+		url = config.api.baseURI + url;
+
+		params.auid = config.loginInfo.auid;
+		params.M0 = DeviceInfo.getUniqueID();
+		params.M2 = config.loginInfo.loginToken;
+		params.M3 = "120.45435,132.32424";
+		params.M9 = new Date().getTime();
+
 		let formData = new FormData();
-		params.currentUserId = config.user._id;
-		params.accessToken = config.user.accessToken;
-		params.file = {
-			uri: params.uri,
-			type: 'multipart/form-data',
-			name: `file.${params.ext}`
-		};
 		let data = params;
 		for (let key in data) {
 			if (data[key] === undefined || data[key] === null) {
@@ -59,14 +60,14 @@ let request = {
 				formData.append(key, data[key])
 			}
 		}
-		formData.append('file', params.file);
+
 		const options = {
 			method: 'POST',
 			body: formData,
 			requestHeader: 'multipart/form-data'
 		};
 		return _fetchData(url, options, callback)
-	}
+	},
 };
 
 export default request

@@ -7,7 +7,9 @@ import {
   Image,
   ImageBackground,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Keyboard,
+  Platform
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
@@ -22,34 +24,56 @@ import LoginMoreInfo from "./LoginMoreInfo";
 export default class LoginEnterInfo extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
-    navBarHidden: true,
-    navigationBarInsets: false
+    navigationBarInsets: false,
+    style: { backgroundColor: "transparent", borderBottomWidth: 0 },
+    scene: navigate.sceneConfig.PushFromRight,
+    leftView: (
+      <TouchableOpacity
+        style={{ paddingLeft: 10 }}
+        onPress={_ => {
+          navigate.pop();
+        }}
+      >
+        <Icon
+          name={"ios-arrow-back"}
+          type={"ionicon"}
+          color={"white"}
+          size={25}
+        />
+      </TouchableOpacity>
+    )
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      face: "",
+      face: null,
       nickName: "",
       birth: "",
-      sex: true
+      sex: "男"
     };
   }
 
-  _netSubmitUserInfo = () => {
+  _netRegisterInfo1 = () => {
     const { face, nickName, birth, sex } = this.state;
 
     toast.modalLoading();
     request
-      .post(config.api.register, {
-        face,
+      .upload(config.api.registerInfo1, {
         nickName,
         birth,
-        sex
+        sex,
+        face: {
+          uri: face.path,
+          type: "multipart/form-data",
+          name: "file.jpg"
+        }
       })
       .then(res => {
         toast.modalLoadingHide();
         if (res.code === 1) {
+          console.log(res.data);
+          config.setStatusAndMarker(res.data);
           navigate.pushNotNavBar(LoginMoreInfo);
         }
       });
@@ -57,17 +81,16 @@ export default class LoginEnterInfo extends NavigatorPage {
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
 
-  openCamera = type => {
+  _openCamera = type => {
     ImageCropPicker.openCamera({
       cropping: true
       // compressImageQuality: 1
     }).then(image => {
-      // console.log(image.path);
-      // this._upload(image, type)
+      this.setState({ face: image });
     });
   };
 
-  selectLibrary = type => {
+  _selectLibrary = type => {
     ImageCropPicker.openPicker({
       multiple: false,
       // cropping: true,
@@ -77,25 +100,24 @@ export default class LoginEnterInfo extends NavigatorPage {
       maxFiles: 1
     })
       .then(image => {
-        // this._upload(image, type)
+        this.setState({ face: image });
       })
       .catch(err => {
         if (err.code === "E_PICKER_CANCELLED") {
           return;
         }
-        alert("出错啦~");
       });
   };
 
-  showAction = (type = "avatar") => {
+  _onClickAvatar = (type = "avatar") => {
     let items = [
       {
         title: "拍照",
-        onPress: _ => config.loadData(_ => this.openCamera(type))
+        onPress: _ => config.loadData(_ => this._openCamera(type))
       },
       {
         title: "从相册中选取",
-        onPress: _ => config.loadData(_ => this.selectLibrary(type))
+        onPress: _ => config.loadData(_ => this._selectLibrary(type))
       }
     ];
     config.showAction(items);
@@ -103,14 +125,14 @@ export default class LoginEnterInfo extends NavigatorPage {
 
   showDatePicker = () => {
     let birth = this.state.birth;
-    let arr = birth.split("-");
+    let arr = birth.split("/");
     OverlayModal.show(
       <DatePicker
         selectedYear={arr[0]}
         selectedMonth={arr[1]}
         selectedDate={arr[2]}
         onDone={arr => {
-          birth = arr.join("-");
+          birth = arr.join("/");
           this.setState({ birth: birth });
         }}
       />
@@ -118,10 +140,16 @@ export default class LoginEnterInfo extends NavigatorPage {
   };
 
   renderPage() {
-    const { nickName, birth, sex } = this.state;
+    const { face, nickName, birth, sex } = this.state;
 
     return (
-      <View style={styleUtil.container}>
+      <TouchableOpacity
+        style={styleUtil.container}
+        activeOpacity={1}
+        onPress={_ => {
+          Keyboard.dismiss();
+        }}
+      >
         <View style={{ overflow: "hidden" }}>
           <ImageBackground
             style={{
@@ -139,9 +167,16 @@ export default class LoginEnterInfo extends NavigatorPage {
                 alignItems: "center",
                 marginBottom: 20
               }}
-              onPress={_ => this.showAction("avatar")}
+              onPress={_ => {
+                this._onClickAvatar();
+                Keyboard.dismiss();
+              }}
             >
-              <Avatar size={71} rounded source={config.defaultAvatar()} />
+              <Avatar
+                size={71}
+                rounded
+                source={config.defaultAvatar(face ? face.path : "")}
+              />
               <Text style={{ fontSize: 14, color: "white", marginTop: 10 }}>
                 {"修改头像"}
               </Text>
@@ -164,11 +199,9 @@ export default class LoginEnterInfo extends NavigatorPage {
                 placeholderTextColor="#E5E5E5"
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
-                keyboardType={"number-pad"}
                 style={[styles.inputField, { flex: 1 }]}
                 value={nickName}
                 maxLength={11}
-                autoFocus={true}
                 onChangeText={text => {
                   this.setState({ nickName: text });
                 }}
@@ -204,6 +237,7 @@ export default class LoginEnterInfo extends NavigatorPage {
                 }}
                 onPress={_ => {
                   this.showDatePicker();
+                  Keyboard.dismiss();
                 }}
               />
             </View>
@@ -217,10 +251,15 @@ export default class LoginEnterInfo extends NavigatorPage {
             >
               <TouchableOpacity
                 style={{ flexDirection: "row", alignItems: "center" }}
-                onPress={_ => this.setState({ sex: !sex })}
+                onPress={_ => {
+                  this.setState({ sex: "男" });
+                  Keyboard.dismiss();
+                }}
               >
                 <Icon
-                  name={sex ? "ios-radio-button-on" : "ios-radio-button-off"}
+                  name={
+                    sex == "男" ? "ios-radio-button-on" : "ios-radio-button-off"
+                  }
                   type={"ionicon"}
                   color={styleUtil.themeColor}
                   size={25}
@@ -237,10 +276,15 @@ export default class LoginEnterInfo extends NavigatorPage {
                   alignItems: "center",
                   marginLeft: 60
                 }}
-                onPress={_ => this.setState({ sex: !sex })}
+                onPress={_ => {
+                  this.setState({ sex: "女" });
+                  Keyboard.dismiss();
+                }}
               >
                 <Icon
-                  name={sex ? "ios-radio-button-off" : "ios-radio-button-on"}
+                  name={
+                    sex == "女" ? "ios-radio-button-on" : "ios-radio-button-off"
+                  }
                   type={"ionicon"}
                   color={styleUtil.themeColor}
                   size={25}
@@ -267,7 +311,7 @@ export default class LoginEnterInfo extends NavigatorPage {
               ]}
               onPress={_ => {
                 if (nickName.length > 0 && birth.length > 0) {
-                  this._netSubmitUserInfo();
+                  this._netRegisterInfo1();
                 }
               }}
             >
@@ -275,7 +319,7 @@ export default class LoginEnterInfo extends NavigatorPage {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

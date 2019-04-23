@@ -7,7 +7,8 @@ import {
   Image,
   ImageBackground,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Keyboard
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
@@ -22,7 +23,7 @@ export default class LoginEnterPhone extends NavigatorPage {
     ...NavigatorPage.navigatorStyle,
     navBarHidden: true,
     navigationBarInsets: false,
-    scene: navigate.sceneConfig.FloatFromBottom,
+    scene: navigate.sceneConfig.FloatFromBottom
   };
 
   constructor(props) {
@@ -32,29 +33,32 @@ export default class LoginEnterPhone extends NavigatorPage {
     });
   }
 
-
   _netCheckPhone = () => {
     let body = {
-      phone: this.state.phone,
+      phone: this.state.phone
     };
 
     toast.modalLoading();
-    request.post(config.api.checkPhone, body)
-        .then(res => {
-          toast.modalLoadingHide()
-          if (res.code === 1) {
-            if (res.data.registFlag == 0) {
-              navigate.pushNotNavBar(LoginSetPassword, {phone: this.state.phone});
-            }
-            else {
-              navigate.pushNotNavBar(LoginEnterPassword, {phone: this.state.phone});
-            }
+    request
+      .post(config.api.checkPhone, body)
+      .then(res => {
+        toast.modalLoadingHide();
+        if (res.code === 1) {
+          if (res.data.registFlag == 0) {
+            navigate.pushNotNavBar(LoginSetPassword, {
+              phone: this.state.phone
+            });
+          } else {
+            navigate.pushNotNavBar(LoginEnterPassword, {
+              phone: this.state.phone
+            });
           }
-        })
-        .catch(err => {
-          toast.modalLoadingHide()
-        })
-  }
+        }
+      })
+      .catch(err => {
+        toast.modalLoadingHide();
+      });
+  };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
 
@@ -62,7 +66,13 @@ export default class LoginEnterPhone extends NavigatorPage {
     const { phone } = this.state;
 
     return (
-      <View style={styleUtil.container}>
+      <TouchableOpacity
+        style={styleUtil.container}
+        activeOpacity={1}
+        onPress={_ => {
+          Keyboard.dismiss();
+        }}
+      >
         <View style={{ overflow: "hidden" }}>
           <ImageBackground
             style={{
@@ -128,6 +138,7 @@ export default class LoginEnterPhone extends NavigatorPage {
               onPress={_ => {
                 if (phone.length == 11) {
                   this._netCheckPhone();
+                  Keyboard.dismiss();
                 }
               }}
             >
@@ -135,7 +146,7 @@ export default class LoginEnterPhone extends NavigatorPage {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

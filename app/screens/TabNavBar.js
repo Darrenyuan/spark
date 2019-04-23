@@ -28,10 +28,35 @@ export default class TabNavBar extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.init();
+  }
+
+  _netApplyLogin = () => {
+    toast.modalLoading();
+    request.post(config.api.applyLogon, {}).then(res => {
+      toast.modalLoadingHide();
+      if (res.code === 1) {
+        config.setUserToStorage(res.data.user);
+      }
+    });
+  };
+
+  init = () => {
+    config.getLoginInfoFromStorage().then(loginInfo => {
+        config.loginInfo = loginInfo;
+        console.log(loginInfo.auid);
+        console.log(loginInfo.loginToken);
+      if (loginInfo.auid) {
+        this._netApplyLogin();
+      }
+    });
+  };
+
   _onClickPublish = () => {
-    // if (config.getUserThenLoginIfNil()) {
+    if (config.getUserThenLoginIfNil()) {
       this.setState({ modalVisible: true });
-    // }
+    }
   };
 
   _callbackPublishClose = () => {

@@ -30,36 +30,79 @@ export default class LoginMoreInfo extends NavigatorPage {
     super(props);
     Object.assign(this.state, {
       membership: "寻找另一半",
-      labels: []
+      markers: []
     });
   }
+
+  componentDidMount() {
+    super.componentDidMount();
+
+    config.getStatusAndMarker().then(info => {
+      this._status = info.kkStatusTypes;
+      if (this._status.length > 0) {
+        this.setState({membership: this._status[0]});
+      }
+      this.markersCategorys = info.markerTypes;
+    });
+  }
+
+  _netRegisterInfo2 = () => {
+    const { membership, markers } = this.state;
+
+    const markerIDs = markers.map(marker => {return marker.typeID});
+
+    toast.modalLoading();
+    request
+        .post(config.api.registerInfo2, {
+          kkStatus: membership.typeID,
+          markers: markerIDs,
+        })
+        .then(res => {
+          toast.modalLoadingHide();
+          if (res.code === 1) {
+            navigate.popN(4);
+            this._netApplyLogin();
+          }
+        });
+  };
+
+  _netApplyLogin = () => {
+    toast.modalLoading();
+    request
+        .post(config.api.applyLogon, {})
+        .then(res => {
+          toast.modalLoadingHide();
+          if (res.code === 1) {
+            config.setUserToStorage(res.data.user);
+          }
+        });
+  };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
 
   showAction = () => {
-    let items = [
-      {
-        title: "寻找另一半",
-        onPress: _ => this.setState({ membership: "寻找另一半" })
-      },
-      {
-        title: "玩友",
-        onPress: _ => this.setState({ membership: "玩友" })
-      }
-    ];
+    let items = [];
+    for (let item of this._status) {
+      console.log(item);
+      console.log(item.typeName);
+      items.push({
+        title: item.typeName,
+        onPress: _ => this.setState({ membership: item })
+      });
+    }
     config.showAction(items);
   };
 
-  showLabels = labels => {
+  showLabels = markers => {
     let string = "";
-    labels.forEach((v, i, a) => {
-      string = string + v + "；";
+    markers.forEach((v, i, a) => {
+      string = string + v.typeName + "；";
     });
     return string;
   };
 
   renderPage() {
-    const { membership, labels } = this.state;
+    const { membership, markers } = this.state;
 
     return (
       <View style={styleUtil.container}>
@@ -103,7 +146,7 @@ export default class LoginMoreInfo extends NavigatorPage {
                 }}
                 numberOfLines={1}
               >
-                {membership}
+                {membership.typeName}
               </Text>
               <Icon
                 name={"ios-arrow-forward"}
@@ -129,7 +172,7 @@ export default class LoginMoreInfo extends NavigatorPage {
               <Text
                 style={{ marginLeft: 10, color: styleUtil.detailTextColor }}
               >
-                {labels.length + "/12"}
+                {markers.length + "/12"}
               </Text>
             </View>
             <TouchableOpacity
@@ -141,9 +184,10 @@ export default class LoginMoreInfo extends NavigatorPage {
               }}
               onPress={_ => {
                 navigate.pushNotNavBar(LoginPersonal, {
-                  labels,
-                  pageCallback: labels => {
-                    this.setState({ labels });
+                  markers,
+                  markersCategorys: this.markersCategorys,
+                  pageCallback: markers => {
+                    this.setState({ markers });
                   }
                 });
               }}
@@ -158,7 +202,7 @@ export default class LoginMoreInfo extends NavigatorPage {
                 }}
                 numberOfLines={1}
               >
-                {this.showLabels(labels)}
+                {this.showLabels(markers)}
               </Text>
               <Icon
                 name={"ios-arrow-forward"}
@@ -170,21 +214,21 @@ export default class LoginMoreInfo extends NavigatorPage {
           </View>
 
           <TouchableOpacity
-            activeOpacity={membership.length > 0 && labels.length > 0 ? 0.5 : 1}
+            activeOpacity={membership.length > 0 && markers.length > 0 ? 0.5 : 1}
             style={[
               styles.buttonBox,
               {
                 backgroundColor: this._btnStyle(
-                  membership.length > 0 && labels.length > 0
+                  markers.length > 0
                 ),
                 borderColor: this._btnStyle(
-                  membership.length > 0 && labels.length > 0
+                  markers.length > 0
                 )
               }
             ]}
             onPress={_ => {
-              if (membership.length > 0 && labels.length > 0) {
-                navigate.pushNotNavBar(LoginAgreement);
+              if (markers.length > 0) {
+                this._netRegisterInfo2();
               }
             }}
           >
@@ -193,7 +237,8 @@ export default class LoginMoreInfo extends NavigatorPage {
 
           <TouchableOpacity
             onPress={() => {
-              navigate.popN(3);
+              navigate.popN(4);
+              this._netApplyLogin();
             }}
           >
             <Text

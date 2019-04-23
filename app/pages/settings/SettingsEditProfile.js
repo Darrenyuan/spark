@@ -7,20 +7,19 @@ import {
   Image,
   ImageBackground,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
-import LoadingMore from "../../components/load/LoadingMore";
 import navigate from "../../screens/navigate";
 import { ListRow } from "teaset";
-import SettingsAbout from "./SettingsAbout";
-import SettingsEditAccount from "./SettingsEditAccount";
 import SettingsEditProfileName from "./SettingsEditProfileName";
 import config from "../../common/config";
 import OverlayModal from "../../components/OverlayModal";
 import DatePicker from "../../components/DatePicker";
 import LoginPersonal from "../user/LoginPersonal";
+import ImageCropPicker from "react-native-image-crop-picker";
 
 export default class SettingsEditProfile extends NavigatorPage {
   static defaultProps = {
@@ -39,6 +38,40 @@ export default class SettingsEditProfile extends NavigatorPage {
       membership: "",
       nickName:""
     });
+  }
+
+  _openCamera = (type) => {
+    ImageCropPicker.openCamera({
+      cropping: true,
+    }).then(image => {
+      // console.log(image.path);
+      // this._upload(image, type)
+    });
+  }
+
+  _selectLibrary = (type) => {
+    ImageCropPicker.openPicker({
+      multiple: false,
+      mediaType: 'photo',
+      compressImageQuality: Platform.OS === 'ios' ? 0 : 1,
+      minFiles: 1,
+      maxFiles: 1,
+    }).then(image => {
+      // this._upload(image, type)
+    }).catch(err => {
+      if (err.code === 'E_PICKER_CANCELLED') {
+        return
+      }
+      alert('出错啦~')
+    })
+  }
+
+  _onClickEditImage = (type = 'avatar') => {
+    let items = [
+      {title: '拍照', onPress: _ => config.loadData(_ => this._openCamera(type))},
+      {title: '从相册中选取', onPress: _ => config.loadData(_ => this._selectLibrary(type))}
+    ];
+    config.showAction(items)
   }
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
@@ -109,15 +142,13 @@ export default class SettingsEditProfile extends NavigatorPage {
   };
 
   renderPage() {
-    const { phone } = this.state;
-
     return (
       <View style={{ backgroundColor: "white", flex: 1 }}>
         <View style={{ flex: 1 }}>
           <ListRow
             title={this._renderTitle("修改头像")}
             onPress={_ => {
-              navigate.pushNotNavBar(SettingsEditAccount);
+              this._onClickEditImage('avatar');
             }}
             topSeparator={"none"}
             bottomSeparator={"indent"}
@@ -125,7 +156,7 @@ export default class SettingsEditProfile extends NavigatorPage {
           <ListRow
             title={this._renderTitle("更换背景图片")}
             onPress={_ => {
-              navigate.pushNotNavBar(SettingsAbout);
+              this._onClickEditImage('backgroundImage');
             }}
             topSeparator={"none"}
             bottomSeparator={"indent"}

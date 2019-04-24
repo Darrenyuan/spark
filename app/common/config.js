@@ -301,6 +301,12 @@ let config = {
 	setStatusAndMarker(data) {
 		return storageUtil.setItem('statusAndMarker', data)
 	},
+	getLocationInfo() {
+		return storageUtil.getItem('LocationInfo', {})
+	},
+	setLocationInfo(data) {
+		return storageUtil.setItem('LocationInfo', data)
+	},
 	version: '1.0',//版本号
 	mediaPickerOptions(options) {
 		return _.extend({

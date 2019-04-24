@@ -18,6 +18,7 @@ import ChatList from "../pages/message/ChatList";
 import navigate from "./navigate";
 import Search from "../pages/discovery/Search";
 import config from "../common/config";
+import LocationService from "./LocationService";
 
 export default class TabNavBar extends React.Component {
   constructor(props) {
@@ -28,8 +29,19 @@ export default class TabNavBar extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.init();
+  componentWillMount() {
+    config.getLoginInfoFromStorage().then(loginInfo => {
+      config.loginInfo = loginInfo;
+      if (loginInfo.auid) {
+        this._netApplyLogin();
+      }
+    });
+
+    LocationService.init();
+  }
+
+  componentWillUnmount() {
+    LocationService.destroy();
   }
 
   _netApplyLogin = () => {
@@ -38,17 +50,6 @@ export default class TabNavBar extends React.Component {
       toast.modalLoadingHide();
       if (res.code === 1) {
         config.setUserToStorage(res.data.user);
-      }
-    });
-  };
-
-  init = () => {
-    config.getLoginInfoFromStorage().then(loginInfo => {
-        config.loginInfo = loginInfo;
-        console.log(loginInfo.auid);
-        console.log(loginInfo.loginToken);
-      if (loginInfo.auid) {
-        this._netApplyLogin();
       }
     });
   };

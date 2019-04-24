@@ -3,8 +3,8 @@
 import QueryString from 'query-string'
 import _ from 'lodash'
 import toast from "./toast";
-import navigate from "../screens/navigate";
 import DeviceInfo from 'react-native-device-info';
+import LocationService from "../screens/LocationService";
 
 /**
  * http请求
@@ -25,7 +25,7 @@ let request = {
 		params.auid = config.loginInfo.auid;
 		params.M0 = DeviceInfo.getUniqueID();
 		params.M2 = config.loginInfo.loginToken;
-		params.M3 = "120.45435,132.32424";
+		params.M3 = LocationService.getLocationString();
 		params.M9 = new Date().getTime();
 
 		for (let key in params) {
@@ -48,7 +48,7 @@ let request = {
 		params.auid = config.loginInfo.auid;
 		params.M0 = DeviceInfo.getUniqueID();
 		params.M2 = config.loginInfo.loginToken;
-		params.M3 = "120.45435,132.32424";
+		params.M3 = LocationService.getLocationString();
 		params.M9 = new Date().getTime();
 
 		let formData = new FormData();

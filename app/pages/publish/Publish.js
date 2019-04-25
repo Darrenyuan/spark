@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
-import LoadingMore from "../../components/load/LoadingMore";
 import navigate from "../../screens/navigate";
 import LoginPersonal from "../user/LoginPersonal";
 import { Icon } from "react-native-elements";
@@ -53,6 +52,28 @@ export default class Publish extends NavigatorPage {
       timer: "7天"
     });
   }
+
+    // _netPublishSubject = () => {
+    //     const { kkStatus, markers } = this.state;
+    //
+    //     const markerIDs = markers.map(marker => {return marker.typeID});
+    //
+    //     toast.modalLoading();
+    //     request
+    //         .post(config.api.registerInfo2, {
+    //             sjType: kkStatus.typeID,
+    //             content: markerIDs,
+    //             areaR:"",
+    //
+    //         })
+    //         .then(res => {
+    //             toast.modalLoadingHide();
+    //             if (res.code === 1) {
+    //                 navigate.popN(4);
+    //                 this._netApplyLogin();
+    //             }
+    //         });
+    // };
 
   _onClickTimer = () => {
     let items = [

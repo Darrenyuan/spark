@@ -169,6 +169,12 @@ let config = {
 		this.user = user
 		return storageUtil.setItem('user', user)
 	},
+	getApplyLoginData() {
+		return storageUtil.getItem('applyLoginData')
+	},
+	setApplyLoginData(data) {
+		return storageUtil.setItem('applyLoginData', data)
+	},
 	removeUser() {
 		this.user = {}
 		return storageUtil.removeItem('user')

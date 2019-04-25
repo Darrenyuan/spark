@@ -32,11 +32,14 @@ export default class SettingsEditProfile extends NavigatorPage {
   constructor(props) {
     super(props);
     Object.assign(this.state, {
-      gender: "男性",
-      birthday: "",
-      labels: [],
-      membership: "",
-      nickName:""
+      ...config.user
+    });
+  }
+
+  componentDidMount() {
+    config.getStatusAndMarker().then(info => {
+      this._status = info.kkStatusTypes;
+      this.markersCategorys = info.markerTypes;
     });
   }
 
@@ -89,10 +92,10 @@ export default class SettingsEditProfile extends NavigatorPage {
     );
   };
 
-  _formatLabels = () => {
+  _formatMarkers = () => {
     let string = "";
-    this.state.labels.forEach((v, i, a) => {
-      string = string + v + "；";
+    this.state.markers?.forEach((v, i, a) => {
+      string = string + v.typeName + "；";
     });
     return string;
   };
@@ -100,44 +103,41 @@ export default class SettingsEditProfile extends NavigatorPage {
   _renderGenderMenu = () => {
     let items = [
       {
-        title: "男性",
-        onPress: _ => this.setState({ gender: "男性" })
+        title: "男",
+        onPress: _ => this.setState({ sex: "男" })
       },
       {
-        title: "女性",
-        onPress: _ => this.setState({ gender: "女性" })
+        title: "女",
+        onPress: _ => this.setState({ sex: "女" })
       }
     ];
     config.showAction(items);
   };
 
   _renderDatePicker = () => {
-    let birthday = this.state.birthday;
-    let arr = birthday.split("-");
+    let birth = this.state.birth;
+    let arr = birth ? birth.split("-") : [];
     OverlayModal.show(
       <DatePicker
         selectedYear={arr[0]}
         selectedMonth={arr[1]}
         selectedDate={arr[2]}
         onDone={arr => {
-          birthday = arr.join("-");
-          this.setState({ birthday: birthday });
+          birth = arr.join("-");
+          this.setState({ birth: birth });
         }}
       />
     );
   };
 
   _renderRelationshipMenu = () => {
-    let items = [
-      {
-        title: "寻找另一半",
-        onPress: _ => this.setState({ membership: "寻找另一半" })
-      },
-      {
-        title: "玩友",
-        onPress: _ => this.setState({ membership: "玩友" })
-      }
-    ];
+    let items = [];
+    for (let item of this._status) {
+      items.push({
+        title: item.typeName,
+        onPress: _ => this.setState({ kkStatus: item })
+      });
+    }
     config.showAction(items);
   };
 
@@ -177,7 +177,7 @@ export default class SettingsEditProfile extends NavigatorPage {
           />
           <ListRow
             title={this._renderTitle("性别", "只能变更1次")}
-            detail={this.state.gender}
+            detail={this.state.sex}
             onPress={_ => {
               this._renderGenderMenu();
             }}
@@ -186,7 +186,7 @@ export default class SettingsEditProfile extends NavigatorPage {
           />
           <ListRow
             title={this._renderTitle("生日", "不能变更")}
-            detail={this.state.birthday}
+            detail={this.state.birth}
             onPress={_ => {
               this._renderDatePicker();
             }}
@@ -195,7 +195,7 @@ export default class SettingsEditProfile extends NavigatorPage {
           />
           <ListRow
             title={this._renderTitle("交友状态")}
-            detail={this.state.membership}
+            detail={this.state.kkStatus?.typeName}
             onPress={_ => {
               this._renderRelationshipMenu();
             }}
@@ -205,14 +205,15 @@ export default class SettingsEditProfile extends NavigatorPage {
           <ListRow
             title={this._renderTitle(
               "个性标签",
-              this.state.labels.length + "/20"
+              this.state.markers?.length + "/20"
             )}
-            detail={this._formatLabels()}
+            detail={this._formatMarkers()}
             onPress={_ => {
               navigate.pushNotNavBar(LoginPersonal, {
-                labels: this.state.labels,
-                pageCallback: labels => {
-                  this.setState({ labels });
+                markers: this.state.markers ? this.state.markers : [],
+                markersCategorys: this.markersCategorys,
+                pageCallback: markers => {
+                  this.setState({ markers });
                 }
               });
             }}

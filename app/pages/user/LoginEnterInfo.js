@@ -72,7 +72,6 @@ export default class LoginEnterInfo extends NavigatorPage {
       .then(res => {
         toast.modalLoadingHide();
         if (res.code === 1) {
-          console.log(res.data);
           config.setStatusAndMarker(res.data);
           navigate.pushNotNavBar(LoginMoreInfo);
         }
@@ -267,7 +266,7 @@ export default class LoginEnterInfo extends NavigatorPage {
                 <Text
                   style={{ fontSize: 16, color: "#454545", marginLeft: 15 }}
                 >
-                  {"男性"}
+                  {"男"}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity

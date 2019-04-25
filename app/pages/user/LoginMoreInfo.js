@@ -29,7 +29,7 @@ export default class LoginMoreInfo extends NavigatorPage {
   constructor(props) {
     super(props);
     Object.assign(this.state, {
-      membership: "寻找另一半",
+      kkStatus: {},
       markers: []
     });
   }
@@ -40,21 +40,21 @@ export default class LoginMoreInfo extends NavigatorPage {
     config.getStatusAndMarker().then(info => {
       this._status = info.kkStatusTypes;
       if (this._status.length > 0) {
-        this.setState({membership: this._status[0]});
+        this.setState({kkStatus: this._status[0]});
       }
       this.markersCategorys = info.markerTypes;
     });
   }
 
   _netRegisterInfo2 = () => {
-    const { membership, markers } = this.state;
+    const { kkStatus, markers } = this.state;
 
     const markerIDs = markers.map(marker => {return marker.typeID});
 
     toast.modalLoading();
     request
         .post(config.api.registerInfo2, {
-          kkStatus: membership.typeID,
+          kkStatus: kkStatus.typeID,
           markers: markerIDs,
         })
         .then(res => {
@@ -83,11 +83,9 @@ export default class LoginMoreInfo extends NavigatorPage {
   showAction = () => {
     let items = [];
     for (let item of this._status) {
-      console.log(item);
-      console.log(item.typeName);
       items.push({
         title: item.typeName,
-        onPress: _ => this.setState({ membership: item })
+        onPress: _ => this.setState({ kkStatus: item })
       });
     }
     config.showAction(items);
@@ -102,7 +100,7 @@ export default class LoginMoreInfo extends NavigatorPage {
   };
 
   renderPage() {
-    const { membership, markers } = this.state;
+    const { kkStatus, markers } = this.state;
 
     return (
       <View style={styleUtil.container}>
@@ -146,7 +144,7 @@ export default class LoginMoreInfo extends NavigatorPage {
                 }}
                 numberOfLines={1}
               >
-                {membership.typeName}
+                {kkStatus.typeName}
               </Text>
               <Icon
                 name={"ios-arrow-forward"}
@@ -214,7 +212,7 @@ export default class LoginMoreInfo extends NavigatorPage {
           </View>
 
           <TouchableOpacity
-            activeOpacity={membership.length > 0 && markers.length > 0 ? 0.5 : 1}
+            activeOpacity={markers.length > 0 ? 0.5 : 1}
             style={[
               styles.buttonBox,
               {

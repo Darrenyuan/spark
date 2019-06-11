@@ -102,7 +102,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.demo"
+        applicationId "com.refiner.spark"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -138,14 +138,16 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-image-crop-picker')
-    implementation project(':react-native-device-info')
-    implementation project(':react-native-camera')
-    implementation project(':react-native-wechat')
     implementation project(':rn-fetch-blob')
+    implementation project(':react-native-wechat')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-spinkit')
+    implementation project(':react-native-image-picker')
+    implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-fetch-blob')
+    implementation project(':react-native-device-info')
+    implementation project(':react-native-camera')
+    implementation project(':react-native-blur')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules

@@ -14,7 +14,7 @@ import { Theme } from "teaset";
 import styleUtil from "./app/common/styleUtil";
 import navigate from "./app/screens/navigate";
 import IMessage from "./app/common/IMessage";
-import Request from './app/common/request'
+import Request from "./app/common/request";
 import config from "./app/common/config";
 import toast from "./app/common/toast";
 
@@ -50,18 +50,18 @@ Theme.set({
   rowAccessoryWidth: 10,
   rowAccessoryHeight: 10,
   rowAccessoryPaddingLeft: 8,
-  rowAccessoryCheckColor: '#007aff',
-  rowAccessoryIndicatorColor: '#bebebe',
-  rowSeparatorColor: '#EBEBEB',
+  rowAccessoryCheckColor: "#007aff",
+  rowAccessoryIndicatorColor: "#bebebe",
+  rowSeparatorColor: "#EBEBEB",
   rowSeparatorLineWidth: 0.5,
   rowPaddingTitleDetail: 4,
   rowDetailLineHeight: 18,
-  rowActionButtonColor: '#c8c7cd',
-  rowActionButtonDangerColor: '#d9534f',
-  rowActionButtonTitleColor: '#fff',
-  rowActionButtonDangerTitleColor: '#fff',
+  rowActionButtonColor: "#c8c7cd",
+  rowActionButtonDangerColor: "#d9534f",
+  rowActionButtonTitleColor: "#fff",
+  rowActionButtonDangerTitleColor: "#fff",
   rowActionButtonTitleFontSize: 15,
-  rowActionButtonPaddingHorizontal: 12,
+  rowActionButtonPaddingHorizontal: 12
 });
 
 global.request = Request;

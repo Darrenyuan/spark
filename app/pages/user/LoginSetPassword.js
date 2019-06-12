@@ -18,6 +18,7 @@ import LoginEnterInfo from "./LoginEnterInfo";
 import LoginAgreement from "./LoginAgreement";
 import CountDownText from "../../components/countdown/countDownText";
 import CryptoJS from "react-native-crypto-js";
+import config from "../../common/config";
 
 export default class LoginSetPassword extends NavigatorPage {
   static defaultProps = {
@@ -100,6 +101,15 @@ export default class LoginSetPassword extends NavigatorPage {
       });
   };
 
+  _netEnterPasswordPage = () => {
+    console.log(1111111111111111);
+    let phone = this.props.phone;
+    console.log(phone);
+    
+  };
+
+  
+
   _checkCodeValid = () => {
     const { verifyCode } = this.state;
     if (verifyCode.length == 4 && verifyCode == this._verifyCode) {
@@ -120,6 +130,8 @@ export default class LoginSetPassword extends NavigatorPage {
     return false;
   };
 
+
+
   _onCountEnd = () => {
     this.setState({
       isCountEnd: true
@@ -137,6 +149,7 @@ export default class LoginSetPassword extends NavigatorPage {
         Keyboard.dismiss();
       }}>
         <View style={{ overflow: "hidden" }}>
+
           <ImageBackground
             style={{
               width: styleUtil.window.width,
@@ -238,10 +251,10 @@ export default class LoginSetPassword extends NavigatorPage {
             </View>
             <Text
               style={{
-                marginTop: 12,
+                marginTop: 10,
                 marginLeft: 24,
                 fontSize: 14,
-                height: 15,
+                height: 16,
                 color: this._checkCodeValid()
                   ? "#B6B6B6"
                   : styleUtil.themeColor
@@ -253,6 +266,7 @@ export default class LoginSetPassword extends NavigatorPage {
                 ? "验证码正确"
                 : "*验证码错误"}
             </Text>
+
             <View
               style={{
                 flexDirection: "row",
@@ -270,7 +284,7 @@ export default class LoginSetPassword extends NavigatorPage {
                 placeholderTextColor="#E5E5E5"
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
-                keyboardType={"number-pad"}
+                //keyboardType={"number-pad"}
                 style={[styles.inputField, { flex: 1 }]}
                 value={password}
                 maxLength={30}
@@ -293,6 +307,7 @@ export default class LoginSetPassword extends NavigatorPage {
                 />
               </TouchableOpacity>
             </View>
+
             <Text
               style={{
                 marginTop: 12,
@@ -308,16 +323,19 @@ export default class LoginSetPassword extends NavigatorPage {
               style={[
                 styles.buttonBox,
                 {
-                  backgroundColor: this._btnStyle(
-                    this._checkAllInputValid()
-                  ),
+                  backgroundColor: this._btnStyle(this._checkAllInputValid()),
                   borderColor: this._btnStyle(this._checkAllInputValid())
                 }
               ]}
               onPress={_ => {
+                console.log('onpress11111111111');
+                
                 if (this._checkAllInputValid()) {
-                  this._netRegister();
+                  //this._netRegister();
+                  this._netEnterPasswordPage();
                 }
+
+                
               }}
             >
               <Text style={styles.buttonText}>
@@ -372,7 +390,7 @@ const styles = StyleSheet.create({
   },
   inputField: {
     marginLeft: 8,
-    height: 35,
+    height: 40,
     paddingLeft: 8,
     color: "#454545",
     fontSize: 16,

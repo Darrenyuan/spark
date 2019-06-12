@@ -1,0 +1,1 @@
+//export {checkPhone} from './checkPhone';

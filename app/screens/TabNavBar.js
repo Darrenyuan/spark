@@ -19,6 +19,7 @@ import navigate from "./navigate";
 import Search from "../pages/discovery/Search";
 import config from "../common/config";
 import LocationService from "./LocationService";
+import {apiOnStart} from "../services/axios/api";
 
 export default class TabNavBar extends React.Component {
   constructor(props) {
@@ -28,6 +29,18 @@ export default class TabNavBar extends React.Component {
       modalVisible: false
     };
   }
+
+  componentDidMount = () => {
+    apiOnStart({
+    "auid":"", 
+    "M0":"H5", 
+    "M2":"",  
+    "M3":"120.45435,132.32424",  
+    "M8":"3204u0we8w0fs0f8s8r23r32jo", 
+    "M9":"15080803783" , 
+    })
+  };
+  
 
   componentWillMount() {
     config.getLoginInfoFromStorage().then(loginInfo => {

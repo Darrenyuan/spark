@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   inputField: {
     marginLeft: 8,
-    height: 35,
+    height: 40,
     paddingLeft: 8,
     color: "#454545",
     fontSize: 16,

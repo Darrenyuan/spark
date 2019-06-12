@@ -62,6 +62,7 @@ export default class LoginEnterPassword extends NavigatorPage {
   };
 
   _netLogin = () => {
+    console.log(222222222);
     let phone = this.props.phone;
     let encoded = CryptoJS.MD5(this.state.password);
     toast.modalLoading();
@@ -148,8 +149,8 @@ export default class LoginEnterPassword extends NavigatorPage {
               style={[
                 styles.buttonBox,
                 {
-                  backgroundColor: this._btnStyle(false),
-                  borderColor: this._btnStyle(false)
+                  backgroundColor: this._btnStyle(true),
+                  borderColor: this._btnStyle(true)
                 }
               ]}
               onPress={() => {
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
   },
   inputField: {
     marginLeft: 8,
-    height: 35,
+    height: 40,
     paddingLeft: 8,
     color: "#454545",
     fontSize: 16,

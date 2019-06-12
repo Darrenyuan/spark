@@ -41,13 +41,14 @@ class TabNavBar extends React.Component {
   componentDidMount() {
     let auid = '';
     let M9 = new Date().getTime();
+    let strM9 = '' + M9;
     this.props.actions.fetchConfigInfo({
       auid: auid,
-      M0: DeviceInfo.getUniqueID(),
+      M0: 'MMC',
       M2: '',
-      M3: LocationService.getLocationString(),
-      M8: md5.str_md5(auid + M9),
-      M9: M9,
+      M3: '120.45435,132.32424',
+      M8: md5.hex_md5(auid + strM9),
+      M9: strM9,
     });
   }
   componentWillUnmount() {

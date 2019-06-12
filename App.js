@@ -1,10 +1,6 @@
 /**
  * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+ * https://github.com/facebook/react-native *  * @format * @flow */
 
 import React, { Component } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -17,11 +13,11 @@ import IMessage from './app/common/IMessage';
 import Request from './app/common/request';
 import config from './app/common/config';
 import toast from './app/common/toast';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
-});
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import rootReducer from './app/services/redux/reducer';
+import initialState from './app/services/redux/initialState';
+import thunk from 'redux-thunk';
 
 Theme.set({
   fitIPhoneX: true,
@@ -67,10 +63,16 @@ global.config = config;
 global.toast = toast;
 global.imessage = new IMessage();
 
-type Props = {};
-export default class App extends Component<Props> {
+const middlewares = [thunk];
+const store = createStore(rootReducer, initialState, compose(applyMiddleware(...middlewares)));
+
+export default class App extends Component {
   render() {
-    return <TeaNavigator ref={v => navigate.setContainer(v)} rootView={<TabNavBar />} />;
+    return (
+      <Provider store={store}>
+        <TeaNavigator ref={v => navigate.setContainer(v)} rootView={<TabNavBar />} />
+      </Provider>
+    );
     // return <View style={{ flex: 1, backgroundColor: "red" }} />;
   }
 }

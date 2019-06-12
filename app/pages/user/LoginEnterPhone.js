@@ -158,7 +158,6 @@ const styles = StyleSheet.create({
   },
   signUpBox: {
     marginTop: 10
-    // padding: 10
   },
   title: {
     marginBottom: 20,
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
   },
   inputField: {
     marginLeft: 8,
-    height: 35,
+    height: 44,
     paddingLeft: 8,
     color: "#454545",
     fontSize: 16,

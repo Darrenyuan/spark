@@ -8,7 +8,7 @@ import {
   ImageBackground,
   TextInput,
   TouchableOpacity,
-    Keyboard
+  Keyboard
 } from "react-native";
 import styleUtil from "../../common/styleUtil";
 import NavigatorPage from "../../components/NavigatorPage";
@@ -133,9 +133,13 @@ export default class LoginSetPassword extends NavigatorPage {
     const { resetPassword } = this.props;
 
     return (
-      <TouchableOpacity style={styleUtil.container} activeOpacity={1} onPress={_=>{
-        Keyboard.dismiss();
-      }}>
+      <TouchableOpacity
+        style={styleUtil.container}
+        activeOpacity={1}
+        onPress={_ => {
+          Keyboard.dismiss();
+        }}
+      >
         <View style={{ overflow: "hidden" }}>
           <ImageBackground
             style={{
@@ -152,9 +156,7 @@ export default class LoginSetPassword extends NavigatorPage {
                 flexDirection: "row"
               }}
             >
-              <Image
-                source={require("../../assets/image/login_spark.png")}
-              />
+              <Image source={require("../../assets/image/login_spark.png")} />
               <View style={{ justifyContent: "flex-end", marginLeft: 10 }}>
                 <Text
                   style={{
@@ -166,9 +168,7 @@ export default class LoginSetPassword extends NavigatorPage {
                 >
                   {"火花"}
                 </Text>
-                <Text
-                  style={{ fontSize: 14, color: "white", marginBottom: 2 }}
-                >
+                <Text style={{ fontSize: 14, color: "white", marginBottom: 2 }}>
                   {"重新发现身边的世界"}
                 </Text>
               </View>
@@ -241,10 +241,8 @@ export default class LoginSetPassword extends NavigatorPage {
                 marginTop: 12,
                 marginLeft: 24,
                 fontSize: 14,
-                height: 15,
-                color: this._checkCodeValid()
-                  ? "#B6B6B6"
-                  : styleUtil.themeColor
+                height: 18,
+                color: this._checkCodeValid() ? "#B6B6B6" : styleUtil.themeColor
               }}
             >
               {verifyCode.length < 4
@@ -270,7 +268,7 @@ export default class LoginSetPassword extends NavigatorPage {
                 placeholderTextColor="#E5E5E5"
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
-                keyboardType={"number-pad"}
+                keyboardType={"default"}
                 style={[styles.inputField, { flex: 1 }]}
                 value={password}
                 maxLength={30}
@@ -308,9 +306,7 @@ export default class LoginSetPassword extends NavigatorPage {
               style={[
                 styles.buttonBox,
                 {
-                  backgroundColor: this._btnStyle(
-                    this._checkAllInputValid()
-                  ),
+                  backgroundColor: this._btnStyle(this._checkAllInputValid()),
                   borderColor: this._btnStyle(this._checkAllInputValid())
                 }
               ]}
@@ -340,9 +336,7 @@ export default class LoginSetPassword extends NavigatorPage {
                     navigate.pushNotNavBar(LoginAgreement);
                   }}
                 >
-                  <Text
-                    style={{ fontSize: 14, color: styleUtil.themeColor }}
-                  >
+                  <Text style={{ fontSize: 14, color: styleUtil.themeColor }}>
                     {"《用户协议》"}
                   </Text>
                 </TouchableOpacity>
@@ -372,7 +366,7 @@ const styles = StyleSheet.create({
   },
   inputField: {
     marginLeft: 8,
-    height: 35,
+    height: 44,
     paddingLeft: 8,
     color: "#454545",
     fontSize: 16,

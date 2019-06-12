@@ -17,6 +17,7 @@ import { NavigationBar } from "teaset";
 import navigate from "../../screens/navigate";
 import LoginPersonal from "./LoginPersonal";
 import config from "../../common/config";
+import { ActionSheet } from "teaset";
 import LoginAgreement from "./LoginAgreement";
 
 export default class LoginMoreInfo extends NavigatorPage {
@@ -30,7 +31,8 @@ export default class LoginMoreInfo extends NavigatorPage {
     super(props);
     Object.assign(this.state, {
       kkStatus: {},
-      markers: []
+      markers: [],
+      isVisible: true
     });
   }
 
@@ -40,7 +42,7 @@ export default class LoginMoreInfo extends NavigatorPage {
     config.getStatusAndMarker().then(info => {
       this._status = info.kkStatusTypes;
       if (this._status.length > 0) {
-        this.setState({kkStatus: this._status[0]});
+        this.setState({ kkStatus: this._status[0] });
       }
       this.markersCategorys = info.markerTypes;
     });
@@ -48,34 +50,35 @@ export default class LoginMoreInfo extends NavigatorPage {
 
   _netRegisterInfo2 = () => {
     const { kkStatus, markers } = this.state;
-
-    const markerIDs = markers.map(marker => {return marker.typeID});
-
+    if (markers.length > 0) {
+      const markerIDs = markers.map(marker => {
+        return marker.typeID;
+      });
+    }
+    console.log(kkStatus, markers);
     toast.modalLoading();
     request
-        .post(config.api.registerInfo2, {
-          kkStatus: kkStatus.typeID,
-          markers: markerIDs,
-        })
-        .then(res => {
-          toast.modalLoadingHide();
-          if (res.code === 1) {
-            navigate.popN(4);
-            this._netApplyLogin();
-          }
-        });
+      .post(config.api.registerInfo2, {
+        kkStatus: kkStatus.typeID,
+        markers: markerIDs
+      })
+      .then(res => {
+        toast.modalLoadingHide();
+        if (res.code === 1) {
+          navigate.popN(4);
+          this._netApplyLogin();
+        }
+      });
   };
 
   _netApplyLogin = () => {
     toast.modalLoading();
-    request
-        .post(config.api.applyLogon, {})
-        .then(res => {
-          toast.modalLoadingHide();
-          if (res.code === 1) {
-            config.setUserToStorage(res.data.user);
-          }
-        });
+    request.post(config.api.applyLogon, {}).then(res => {
+      toast.modalLoadingHide();
+      if (res.code === 1) {
+        config.setUserToStorage(res.data.user);
+      }
+    });
   };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
@@ -101,7 +104,13 @@ export default class LoginMoreInfo extends NavigatorPage {
 
   renderPage() {
     const { kkStatus, markers } = this.state;
-
+    const datingStatus = [
+      "寻找另一半",
+      "想谈个恋爱",
+      "友不在多，知心就好",
+      "远亲不如近邻",
+      "广交天下友"
+    ];
     return (
       <View style={styleUtil.container}>
         <View
@@ -154,7 +163,13 @@ export default class LoginMoreInfo extends NavigatorPage {
               />
             </TouchableOpacity>
           </View>
-
+          {this.state.isVisible && (
+            <View>
+              {datingStatus.map(item => {
+                return <Text>{item}</Text>;
+              })}
+            </View>
+          )}
           <View
             style={{
               flexDirection: "row",
@@ -216,12 +231,8 @@ export default class LoginMoreInfo extends NavigatorPage {
             style={[
               styles.buttonBox,
               {
-                backgroundColor: this._btnStyle(
-                  markers.length > 0
-                ),
-                borderColor: this._btnStyle(
-                  markers.length > 0
-                )
+                backgroundColor: this._btnStyle(markers.length > 0),
+                borderColor: this._btnStyle(markers.length > 0)
               }
             ]}
             onPress={_ => {

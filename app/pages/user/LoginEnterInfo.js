@@ -56,26 +56,30 @@ export default class LoginEnterInfo extends NavigatorPage {
 
   _netRegisterInfo1 = () => {
     const { face, nickName, birth, sex } = this.state;
-
+    console.log(face);
+    const option = {
+      nickName,
+      birth,
+      sex,
+      face: {
+        type: "multipart/form-data",
+        name: "file.jpg"
+      }
+    };
+    if (face !== null) {
+      option.face.uri = face.path;
+    } else {
+      option.face.uri = "";
+    }
     toast.modalLoading();
-    request
-      .upload(config.api.registerInfo1, {
-        nickName,
-        birth,
-        sex,
-        face: {
-          uri: face.path,
-          type: "multipart/form-data",
-          name: "file.jpg"
-        }
-      })
-      .then(res => {
-        toast.modalLoadingHide();
-        if (res.code === 1) {
-          config.setStatusAndMarker(res.data);
-          navigate.pushNotNavBar(LoginMoreInfo);
-        }
-      });
+    console.log(option);
+    request.upload(config.api.registerInfo1, option).then(res => {
+      toast.modalLoadingHide();
+      if (res.code === 1) {
+        config.setStatusAndMarker(res.data);
+        navigate.pushNotNavBar(LoginMoreInfo);
+      }
+    });
   };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
@@ -266,7 +270,7 @@ export default class LoginEnterInfo extends NavigatorPage {
                 <Text
                   style={{ fontSize: 16, color: "#454545", marginLeft: 15 }}
                 >
-                  {"男"}
+                  {"男性"}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -340,7 +344,7 @@ const styles = StyleSheet.create({
   },
   inputField: {
     marginLeft: 8,
-    height: 35,
+    height: 44,
     paddingLeft: 8,
     color: "#454545",
     fontSize: 16,

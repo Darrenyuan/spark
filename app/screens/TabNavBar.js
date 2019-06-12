@@ -18,9 +18,15 @@ import ChatList from "../pages/message/ChatList";
 import navigate from "./navigate";
 import Search from "../pages/discovery/Search";
 import config from "../common/config";
-import LocationService from "./LocationService";
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as actions from '../services/redux/actions';
+import DeviceInfo from "react-native-device-info"; 
+import LocationService from "./LocationService"; 
 
-export default class TabNavBar extends React.Component {
+// import MoreInfo from "../pages/discovery/Search";
+
+ class TabNavBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,7 +45,19 @@ export default class TabNavBar extends React.Component {
 
     LocationService.init();
   }
+  componentDidMount(){
+    let auid='';
+    let M9 = new Date().getTime();
+    this.props.actions.fetchConfigInfo({
+     'auid' : auid,
+    'M0' : DeviceInfo.getUniqueID(),
+    'M2' :"",
+    'M3' : LocationService.getLocationString(),
+    'M8':DES.MD5(auid+M9),
+    'M9' :M9
+    });
 
+  }
   componentWillUnmount() {
     LocationService.destroy();
   }
@@ -111,7 +129,8 @@ export default class TabNavBar extends React.Component {
             borderTopColor: "#e8e8e8",
             backgroundColor: "white"
           };
-
+          console.log("11111111111111111111111111")
+    console.log(JSON.stringify(this.props.spark.configInfo));
     return (
       <TabView
         style={{ flex: 1, backgroundColor: "white" }}
@@ -203,3 +222,21 @@ export default class TabNavBar extends React.Component {
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    spark: state,
+  };
+}
+
+/* istanbul ignore next */
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...actions }, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TabNavBar);
+

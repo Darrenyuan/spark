@@ -1,16 +1,3 @@
-import React from 'react';
-import { Platform, StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native';
-import { TabView, NavigationBar } from 'teaset';
-import Nearby from '../pages/nearby/Nearby';
-import { Icon } from 'react-native-elements';
-import styleUtil from '../common/styleUtil';
-import PublishEntrance from '../pages/publish/PublishEntrance';
-import Profile from '../pages/profile/Profile';
-import ChatList from '../pages/message/ChatList';
-import navigate from './navigate';
-import Search from '../pages/discovery/Search';
-import config from '../common/config';
-import LocationService from './LocationService';
 import { apiOnStart } from '../services/axios/api';
 import React from 'react';
 import { Platform, StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native';

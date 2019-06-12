@@ -20,6 +20,7 @@ import ImageCropPicker from "react-native-image-crop-picker";
 import navigate from "../../screens/navigate";
 import DatePicker from "../../components/DatePicker";
 import LoginMoreInfo from "./LoginMoreInfo";
+import RNFetchBlob from "rn-fetch-blob";
 
 export default class LoginEnterInfo extends NavigatorPage {
   static defaultProps = {
@@ -58,24 +59,39 @@ export default class LoginEnterInfo extends NavigatorPage {
     const { face, nickName, birth, sex } = this.state;
 
     toast.modalLoading();
-    request
-      .upload(config.api.registerInfo1, {
-        nickName,
-        birth,
-        sex,
-        face: {
-          uri: face.path,
-          type: "multipart/form-data",
-          name: "file.jpg"
-        }
-      })
-      .then(res => {
-        toast.modalLoadingHide();
-        if (res.code === 1) {
-          config.setStatusAndMarker(res.data);
-          navigate.pushNotNavBar(LoginMoreInfo);
-        }
-      });
+    if (
+      face == null ||
+      face === undefined ||
+      face.path === null ||
+      face.path === "" ||
+      face.path === undefined
+    ) {
+      RNFetchBlob.fs
+        .stat("../assets/image/login_default_avatar.png")
+        .then(stats => {
+          console.log(JSON.stringify(stats));
+        })
+        .catch(err => {});
+    } else {
+      request
+        .upload(config.api.registerInfo1, {
+          nickName,
+          birth,
+          sex,
+          face: {
+            uri: face.path,
+            type: "multipart/form-data",
+            name: "file.jpg"
+          }
+        })
+        .then(res => {
+          toast.modalLoadingHide();
+          if (res.code === 1) {
+            config.setStatusAndMarker(res.data);
+            navigate.pushNotNavBar(LoginMoreInfo);
+          }
+        });
+    }
   };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);

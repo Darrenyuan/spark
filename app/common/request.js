@@ -74,7 +74,8 @@ export default request;
 
 const _fetchData = (url, options, callback) => {
   const { method = 'POST', body, requestHeader } = options;
-  console.log(url);
+  console.log(options);
+  console.log(999999999);
   return new Promise((resolve, reject) => {
     const handler = function() {
       try {

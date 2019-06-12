@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import {
   StyleSheet,
@@ -7,24 +7,24 @@ import {
   Image,
   ImageBackground,
   TextInput,
-  TouchableOpacity
-} from "react-native";
-import styleUtil from "../../common/styleUtil";
-import NavigatorPage from "../../components/NavigatorPage";
-import LoadingMore from "../../components/load/LoadingMore";
-import { Icon } from "react-native-elements";
-import { NavigationBar } from "teaset";
-import navigate from "../../screens/navigate";
-import LoginPersonal from "./LoginPersonal";
-import config from "../../common/config";
-import { ActionSheet } from "teaset";
-import LoginAgreement from "./LoginAgreement";
+  TouchableOpacity,
+} from 'react-native';
+import styleUtil from '../../common/styleUtil';
+import NavigatorPage from '../../components/NavigatorPage';
+import LoadingMore from '../../components/load/LoadingMore';
+import { Icon } from 'react-native-elements';
+import { NavigationBar } from 'teaset';
+import navigate from '../../screens/navigate';
+import LoginPersonal from './LoginPersonal';
+import config from '../../common/config';
+import { ActionSheet } from 'teaset';
+import LoginAgreement from './LoginAgreement';
 
 export default class LoginMoreInfo extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navBarHidden: false,
-    title: "让我更了解你"
+    title: '让我更了解你',
   };
 
   constructor(props) {
@@ -32,7 +32,7 @@ export default class LoginMoreInfo extends NavigatorPage {
     Object.assign(this.state, {
       kkStatus: {},
       markers: [],
-      isVisible: true
+      isVisible: true,
     });
   }
 
@@ -60,7 +60,7 @@ export default class LoginMoreInfo extends NavigatorPage {
     request
       .post(config.api.registerInfo2, {
         kkStatus: kkStatus.typeID,
-        markers: markerIDs
+        markers: markerIDs,
       })
       .then(res => {
         toast.modalLoadingHide();
@@ -88,16 +88,16 @@ export default class LoginMoreInfo extends NavigatorPage {
     for (let item of this._status) {
       items.push({
         title: item.typeName,
-        onPress: _ => this.setState({ kkStatus: item })
+        onPress: _ => this.setState({ kkStatus: item }),
       });
     }
     config.showAction(items);
   };
 
   showLabels = markers => {
-    let string = "";
+    let string = '';
     markers.forEach((v, i, a) => {
-      string = string + v.typeName + "；";
+      string = string + v.typeName + '；';
     });
     return string;
   };
@@ -105,39 +105,39 @@ export default class LoginMoreInfo extends NavigatorPage {
   renderPage() {
     const { kkStatus, markers } = this.state;
     const datingStatus = [
-      "寻找另一半",
-      "想谈个恋爱",
-      "友不在多，知心就好",
-      "远亲不如近邻",
-      "广交天下友"
+      '寻找另一半',
+      '想谈个恋爱',
+      '友不在多，知心就好',
+      '远亲不如近邻',
+      '广交天下友',
     ];
     return (
       <View style={styleUtil.container}>
         <View
           style={{
             marginHorizontal: 10,
-            alignItems: "center"
+            alignItems: 'center',
           }}
         >
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: 'row',
               paddingVertical: 15,
               borderBottomWidth: styleUtil.borderSeparator,
               borderBottomColor: styleUtil.borderColor,
-              justifyContent: "space-between",
-              alignItems: "center"
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}
           >
-            <View style={{ flexDirection: "row" }}>
-              <Text>{"交友状态"}</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Text>{'交友状态'}</Text>
             </View>
             <TouchableOpacity
               style={{
-                flexDirection: "row",
-                alignItems: "center",
+                flexDirection: 'row',
+                alignItems: 'center',
                 flex: 1,
-                justifyContent: "flex-end"
+                justifyContent: 'flex-end',
               }}
               onPress={_ => {
                 this.showAction();
@@ -149,15 +149,15 @@ export default class LoginMoreInfo extends NavigatorPage {
                   marginLeft: 40,
                   color: styleUtil.detailTextColor,
                   minWidth: 100,
-                  textAlign: "right"
+                  textAlign: 'right',
                 }}
                 numberOfLines={1}
               >
                 {kkStatus.typeName}
               </Text>
               <Icon
-                name={"ios-arrow-forward"}
-                type={"ionicon"}
+                name={'ios-arrow-forward'}
+                type={'ionicon'}
                 size={25}
                 color={styleUtil.grayColor}
               />
@@ -166,34 +166,32 @@ export default class LoginMoreInfo extends NavigatorPage {
           {this.state.isVisible && (
             <View>
               {datingStatus.map(item => {
-                return <Text>{item}</Text>;
+                return <Text style={styles.datingStatusItem}>{item}</Text>;
               })}
             </View>
           )}
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: 'row',
               paddingVertical: 15,
               borderBottomWidth: styleUtil.borderSeparator,
               borderBottomColor: styleUtil.borderColor,
-              justifyContent: "space-between",
-              alignItems: "center"
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text>{"个性标签"}</Text>
-              <Text
-                style={{ marginLeft: 10, color: styleUtil.detailTextColor }}
-              >
-                {markers.length + "/12"}
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text>{'个性标签'}</Text>
+              <Text style={{ marginLeft: 10, color: styleUtil.detailTextColor }}>
+                {markers.length + '/12'}
               </Text>
             </View>
             <TouchableOpacity
               style={{
-                flexDirection: "row",
-                alignItems: "center",
+                flexDirection: 'row',
+                alignItems: 'center',
                 flex: 1,
-                justifyContent: "flex-end"
+                justifyContent: 'flex-end',
               }}
               onPress={_ => {
                 navigate.pushNotNavBar(LoginPersonal, {
@@ -201,7 +199,7 @@ export default class LoginMoreInfo extends NavigatorPage {
                   markersCategorys: this.markersCategorys,
                   pageCallback: markers => {
                     this.setState({ markers });
-                  }
+                  },
                 });
               }}
             >
@@ -211,15 +209,15 @@ export default class LoginMoreInfo extends NavigatorPage {
                   marginLeft: 40,
                   color: styleUtil.detailTextColor,
                   minWidth: 100,
-                  textAlign: "right"
+                  textAlign: 'right',
                 }}
                 numberOfLines={1}
               >
                 {this.showLabels(markers)}
               </Text>
               <Icon
-                name={"ios-arrow-forward"}
-                type={"ionicon"}
+                name={'ios-arrow-forward'}
+                type={'ionicon'}
                 size={25}
                 color={styleUtil.grayColor}
               />
@@ -232,8 +230,8 @@ export default class LoginMoreInfo extends NavigatorPage {
               styles.buttonBox,
               {
                 backgroundColor: this._btnStyle(markers.length > 0),
-                borderColor: this._btnStyle(markers.length > 0)
-              }
+                borderColor: this._btnStyle(markers.length > 0),
+              },
             ]}
             onPress={_ => {
               if (markers.length > 0) {
@@ -241,7 +239,7 @@ export default class LoginMoreInfo extends NavigatorPage {
               }
             }}
           >
-            <Text style={styles.buttonText}>{"完成"}</Text>
+            <Text style={styles.buttonText}>{'完成'}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -254,10 +252,10 @@ export default class LoginMoreInfo extends NavigatorPage {
               style={{
                 fontSize: 14,
                 color: styleUtil.themeColor,
-                marginTop: 40
+                marginTop: 40,
               }}
             >
-              {"跳过，稍后完善"}
+              {'跳过，稍后完善'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -269,28 +267,36 @@ export default class LoginMoreInfo extends NavigatorPage {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: styleUtil.backgroundColor
+    backgroundColor: styleUtil.backgroundColor,
   },
   signUpBox: {
-    marginTop: 10
+    marginTop: 10,
     // padding: 10
+  },
+  datingStatusItem: {
+    flexDirection: 'row',
+    paddingVertical: 15,
+    borderBottomWidth: styleUtil.borderSeparator,
+    borderBottomColor: styleUtil.borderColor,
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   title: {
     marginBottom: 20,
-    color: "#333",
+    color: '#333',
     fontSize: 20,
-    textAlign: "center"
+    textAlign: 'center',
   },
   inputField: {
     marginLeft: 8,
     height: 35,
     paddingLeft: 8,
-    color: "#454545",
+    color: '#454545',
     fontSize: 16,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderBottomWidth: styleUtil.borderSeparator,
     // borderWidth: styleUtil.borderSeparator,
-    borderColor: styleUtil.borderColor
+    borderColor: styleUtil.borderColor,
   },
   buttonBox: {
     marginTop: 40,
@@ -299,18 +305,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: styleUtil.themeColor,
     borderRadius: 24,
-    width: "80%"
+    width: '80%',
   },
   buttonText: {
     fontSize: 20,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 12
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 12,
   },
   verifyCodeBox: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 10,
-    justifyContent: "space-between"
+    justifyContent: 'space-between',
   },
   countBtn: {
     width: 110,
@@ -320,16 +326,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: styleUtil.themeColor,
     backgroundColor: styleUtil.themeColor,
-    borderRadius: 4
+    borderRadius: 4,
   },
   countBtnText: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 16
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 16,
   },
   closeModal: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
-    alignSelf: "center"
-  }
+    alignSelf: 'center',
+  },
 });

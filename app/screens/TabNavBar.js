@@ -6,6 +6,7 @@ import { Icon } from 'react-native-elements';
 import styleUtil from '../common/styleUtil';
 import PublishEntrance from '../pages/publish/PublishEntrance';
 import Profile from '../pages/profile/Profile';
+import LoginNoreInfo from '../pages/user/LoginMoreInfo';
 import ChatList from '../pages/message/ChatList';
 import navigate from './navigate';
 import Search from '../pages/discovery/Search';
@@ -184,7 +185,8 @@ class TabNavBar extends React.Component {
           icon={<Image source={require('../assets/image/tabbar_chat.png')} />}
           activeIcon={<Image source={require('../assets/image/tabbar_chat_highlight.png')} />}
         >
-          <ChatList />
+          {/* <ChatList /> */}
+          <LoginNoreInfo />
         </TabView.Sheet>
         <TabView.Sheet
           title="我的"

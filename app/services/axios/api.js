@@ -35,6 +35,7 @@ function jsonToQueryString(json) {
       .join('&')
   );
 }
+
 export function apiFetchConfigInfo(args = {}) {
   return instance.post(
     baseUrl + 'HICService.y?cmd=onStart',
@@ -48,4 +49,45 @@ export function apiFetchConfigInfo(args = {}) {
     }),
     config,
   );
+}
+//检查手机号码是否已注册
+export function apiCheckPhone(args = {}) {
+  return instance.post(baseUrl + 'HICService.y?cmd=checkPhone', {
+    phone: args.phone,
+    ...configParameter,
+  });
+}
+
+//发送手机验证码
+export function apiSendCodeToPhone(args = {}) {
+  return instance.post(baseUrl + 'HICService.y?cmd=sendCodeToPhone', {
+    phone: args.phone,
+    seq: '138012',
+  });
+}
+
+//注册
+export function apiRegist(args = {}) {
+  return instance.post(baseUrl + 'HICService.y?cmd=regist', {
+    phone: args.phone,
+    password: args.password,
+  });
+}
+
+//注册信息完善1
+export function apiEditRegistInfo1(args = {}) {
+  return instance.post(baseUrl + 'HICService.y?cmd=editRegistInfo1', {
+    nickName: args.nickName,
+    face: args.face,
+    sex: args.sex,
+    birth: args.birth,
+  });
+}
+
+//注册信息完善2
+export function apiEditRegistInfo2(args = {}) {
+  return instance.post(baseUrl + 'HICService.y?cmd=editRegistInfo2', {
+    kkStatus: args.kkStatus,
+    markers: args.markers,
+  });
 }

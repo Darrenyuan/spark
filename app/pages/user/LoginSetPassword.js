@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import {
   StyleSheet,
@@ -8,24 +8,24 @@ import {
   ImageBackground,
   TextInput,
   TouchableOpacity,
-    Keyboard
-} from "react-native";
-import styleUtil from "../../common/styleUtil";
-import NavigatorPage from "../../components/NavigatorPage";
-import { Icon } from "react-native-elements";
-import navigate from "../../screens/navigate";
-import LoginEnterInfo from "./LoginEnterInfo";
-import LoginAgreement from "./LoginAgreement";
-import CountDownText from "../../components/countdown/countDownText";
-import CryptoJS from "react-native-crypto-js";
-import config from "../../common/config";
+  Keyboard,
+} from 'react-native';
+import styleUtil from '../../common/styleUtil';
+import NavigatorPage from '../../components/NavigatorPage';
+import { Icon } from 'react-native-elements';
+import navigate from '../../screens/navigate';
+import LoginEnterInfo from './LoginEnterInfo';
+import LoginAgreement from './LoginAgreement';
+import CountDownText from '../../components/countdown/countDownText';
+import CryptoJS from 'react-native-crypto-js';
+import config from '../../common/config';
 
 export default class LoginSetPassword extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     // navBarHidden: true,
     navigationBarInsets: false,
-    style: { backgroundColor: "transparent", borderBottomWidth: 0 },
+    style: { backgroundColor: 'transparent', borderBottomWidth: 0 },
     scene: navigate.sceneConfig.PushFromRight,
     leftView: (
       <TouchableOpacity
@@ -34,26 +34,21 @@ export default class LoginSetPassword extends NavigatorPage {
           navigate.pop();
         }}
       >
-        <Icon
-          name={"ios-arrow-back"}
-          type={"ionicon"}
-          color={"white"}
-          size={25}
-        />
+        <Icon name={'ios-arrow-back'} type={'ionicon'} color={'white'} size={25} />
       </TouchableOpacity>
-    )
+    ),
   };
 
   constructor(props) {
     super(props);
     Object.assign(this.state, {
-      verifyCode: "",
-      password: "",
+      verifyCode: '',
+      password: '',
       showPassword: false,
       isSend: false,
-      isCountEnd: false
+      isCountEnd: false,
     });
-    this._verifyCode = "";
+    this._verifyCode = '';
   }
 
   componentDidMount() {
@@ -65,19 +60,19 @@ export default class LoginSetPassword extends NavigatorPage {
   _netSendVerifyCode = () => {
     let phone = this.props.phone;
 
-    toast.loadingShow("获取短信验证码...");
+    toast.loadingShow('获取短信验证码...');
     request
       .post(config.api.sendVerifyCode, {
-        phone
+        phone,
       })
       .then(res => {
         toast.loadingHide();
         if (res.code === 1) {
-          toast.success("短信验证码已发送");
+          toast.success('短信验证码已发送');
           this._verifyCode = res.data.code;
           this.setState({
             isSend: true,
-            isCountEnd: false
+            isCountEnd: false,
           });
         }
       });
@@ -90,7 +85,7 @@ export default class LoginSetPassword extends NavigatorPage {
     request
       .post(config.api.register, {
         phone,
-        password: encoded
+        password: encoded,
       })
       .then(res => {
         toast.modalLoadingHide();
@@ -105,10 +100,7 @@ export default class LoginSetPassword extends NavigatorPage {
     console.log(1111111111111111);
     let phone = this.props.phone;
     console.log(phone);
-    
   };
-
-  
 
   _checkCodeValid = () => {
     const { verifyCode } = this.state;
@@ -120,21 +112,15 @@ export default class LoginSetPassword extends NavigatorPage {
 
   _checkAllInputValid = () => {
     const { verifyCode, password } = this.state;
-    if (
-      verifyCode.length == 4 &&
-      verifyCode == this._verifyCode &&
-      password.length >= 6
-    ) {
+    if (verifyCode.length == 4 && verifyCode == this._verifyCode && password.length >= 6) {
       return true;
     }
     return false;
   };
 
-
-
   _onCountEnd = () => {
     this.setState({
-      isCountEnd: true
+      isCountEnd: true,
     });
   };
 
@@ -145,44 +131,43 @@ export default class LoginSetPassword extends NavigatorPage {
     const { resetPassword } = this.props;
 
     return (
-      <TouchableOpacity style={styleUtil.container} activeOpacity={1} onPress={_=>{
-        Keyboard.dismiss();
-      }}>
-        <View style={{ overflow: "hidden" }}>
-
+      <TouchableOpacity
+        style={styleUtil.container}
+        activeOpacity={1}
+        onPress={_ => {
+          Keyboard.dismiss();
+        }}
+      >
+        <View style={{ overflow: 'hidden' }}>
           <ImageBackground
             style={{
               width: styleUtil.window.width,
               height: styleUtil.window.width * (222.0 / 375.0),
-              resizeMode: "contain",
-              justifyContent: "center",
-              alignItems: "center"
+              resizeMode: 'contain',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
-            source={require("../../assets/image/login_head_background.png")}
+            source={require('../../assets/image/login_head_background.png')}
           >
             <View
               style={{
-                flexDirection: "row"
+                flexDirection: 'row',
               }}
             >
-              <Image
-                source={require("../../assets/image/login_spark.png")}
-              />
-              <View style={{ justifyContent: "flex-end", marginLeft: 10 }}>
+              <Image source={require('../../assets/image/login_spark.png')} />
+              <View style={{ justifyContent: 'flex-end', marginLeft: 10 }}>
                 <Text
                   style={{
                     fontSize: 30,
-                    color: "white",
-                    fontWeight: "500",
-                    marginBottom: 8
+                    color: 'white',
+                    fontWeight: '500',
+                    marginBottom: 8,
                   }}
                 >
-                  {"火花"}
+                  {'火花'}
                 </Text>
-                <Text
-                  style={{ fontSize: 14, color: "white", marginBottom: 2 }}
-                >
-                  {"重新发现身边的世界"}
+                <Text style={{ fontSize: 14, color: 'white', marginBottom: 2 }}>
+                  {'重新发现身边的世界'}
                 </Text>
               </View>
             </View>
@@ -191,20 +176,18 @@ export default class LoginSetPassword extends NavigatorPage {
           <View style={{ marginTop: 80, marginHorizontal: 40 }}>
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-end"
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
               }}
             >
-              <Image
-                source={require("../../assets/image/login_verify_code.png")}
-              />
+              <Image source={require('../../assets/image/login_verify_code.png')} />
               <TextInput
                 placeholder="请输入验证码"
                 placeholderTextColor="#E5E5E5"
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
-                keyboardType={"number-pad"}
+                keyboardType={'number-pad'}
                 style={[styles.inputField, { flex: 1 }]}
                 value={verifyCode}
                 maxLength={4}
@@ -223,8 +206,8 @@ export default class LoginSetPassword extends NavigatorPage {
                         : styleUtil.themeColor,
                       borderColor: !this.state.isCountEnd
                         ? styleUtil.disabledColor
-                        : styleUtil.themeColor
-                    }
+                        : styleUtil.themeColor,
+                    },
                   ]}
                 >
                   <CountDownText
@@ -236,7 +219,7 @@ export default class LoginSetPassword extends NavigatorPage {
                     step={-1} // 计时步长，以秒为单位，正数则为正计时，负数为倒计时
                     startText="获取验证码" // 开始的文本
                     endText="获取验证码" // 结束的文本
-                    intervalText={sec => sec + "秒重新获取"} // 定时的文本回调
+                    intervalText={sec => sec + '秒重新获取'} // 定时的文本回调
                   />
                 </View>
               ) : (
@@ -255,29 +238,21 @@ export default class LoginSetPassword extends NavigatorPage {
                 marginLeft: 24,
                 fontSize: 14,
                 height: 16,
-                color: this._checkCodeValid()
-                  ? "#B6B6B6"
-                  : styleUtil.themeColor
+                color: this._checkCodeValid() ? '#B6B6B6' : styleUtil.themeColor,
               }}
             >
-              {verifyCode.length < 4
-                ? ""
-                : this._checkCodeValid()
-                ? "验证码正确"
-                : "*验证码错误"}
+              {verifyCode.length < 4 ? '' : this._checkCodeValid() ? '验证码正确' : '*验证码错误'}
             </Text>
 
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
+                flexDirection: 'row',
+                alignItems: 'center',
                 marginTop: 20,
-                justifyContent: "flex-end"
+                justifyContent: 'flex-end',
               }}
             >
-              <Image
-                source={require("../../assets/image/login_password.png")}
-              />
+              <Image source={require('../../assets/image/login_password.png')} />
               <TextInput
                 placeholder="请输入密码"
                 secureTextEntry={!showPassword}
@@ -293,7 +268,7 @@ export default class LoginSetPassword extends NavigatorPage {
                 }}
               />
               <TouchableOpacity
-                style={{ position: "absolute" }}
+                style={{ position: 'absolute' }}
                 onPress={_ => {
                   this.setState({ showPassword: !showPassword });
                 }}
@@ -301,8 +276,8 @@ export default class LoginSetPassword extends NavigatorPage {
                 <Image
                   source={
                     showPassword
-                      ? require("../../assets/image/login_close_eye.png")
-                      : require("../../assets/image/login_open_eye.png")
+                      ? require('../../assets/image/login_close_eye.png')
+                      : require('../../assets/image/login_open_eye.png')
                   }
                 />
               </TouchableOpacity>
@@ -313,10 +288,10 @@ export default class LoginSetPassword extends NavigatorPage {
                 marginTop: 12,
                 marginLeft: 24,
                 fontSize: 14,
-                color: "#B6B6B6"
+                color: '#B6B6B6',
               }}
             >
-              {"6位以上字母或文字"}
+              {'6位以上字母或文字'}
             </Text>
             <TouchableOpacity
               activeOpacity={this._checkAllInputValid() ? 0.5 : 1}
@@ -324,44 +299,36 @@ export default class LoginSetPassword extends NavigatorPage {
                 styles.buttonBox,
                 {
                   backgroundColor: this._btnStyle(this._checkAllInputValid()),
-                  borderColor: this._btnStyle(this._checkAllInputValid())
-                }
+                  borderColor: this._btnStyle(this._checkAllInputValid()),
+                },
               ]}
               onPress={_ => {
                 console.log('onpress11111111111');
-                
+
                 if (this._checkAllInputValid()) {
                   //this._netRegister();
                   this._netEnterPasswordPage();
                 }
-
-                
               }}
             >
-              <Text style={styles.buttonText}>
-                {resetPassword ? "重置密码并登录" : "注册"}
-              </Text>
+              <Text style={styles.buttonText}>{resetPassword ? '重置密码并登录' : '注册'}</Text>
             </TouchableOpacity>
             {!resetPassword && (
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  marginTop: 30
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  marginTop: 30,
                 }}
               >
-                <Text style={{ fontSize: 14, color: "#939393" }}>
-                  {"注册即同意"}
-                </Text>
+                <Text style={{ fontSize: 14, color: '#939393' }}>{'注册即同意'}</Text>
                 <TouchableOpacity
                   onPress={_ => {
                     navigate.pushNotNavBar(LoginAgreement);
                   }}
                 >
-                  <Text
-                    style={{ fontSize: 14, color: styleUtil.themeColor }}
-                  >
-                    {"《用户协议》"}
+                  <Text style={{ fontSize: 14, color: styleUtil.themeColor }}>
+                    {'《用户协议》'}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -376,28 +343,28 @@ export default class LoginSetPassword extends NavigatorPage {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: styleUtil.backgroundColor
+    backgroundColor: styleUtil.backgroundColor,
   },
   signUpBox: {
-    marginTop: 10
+    marginTop: 10,
     // padding: 10
   },
   title: {
     marginBottom: 20,
-    color: "#333",
+    color: '#333',
     fontSize: 20,
-    textAlign: "center"
+    textAlign: 'center',
   },
   inputField: {
     marginLeft: 8,
-    height: 40,
+    height: 44,
     paddingLeft: 8,
-    color: "#454545",
+    color: '#454545',
     fontSize: 16,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderBottomWidth: styleUtil.borderSeparator,
     // borderWidth: styleUtil.borderSeparator,
-    borderColor: styleUtil.borderColor
+    borderColor: styleUtil.borderColor,
   },
   buttonBox: {
     marginTop: 80,
@@ -405,18 +372,18 @@ const styles = StyleSheet.create({
     height: 48,
     borderWidth: 1,
     borderColor: styleUtil.themeColor,
-    borderRadius: 24
+    borderRadius: 24,
   },
   buttonText: {
     fontSize: 20,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 12
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 12,
   },
   verifyCodeBox: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 10,
-    justifyContent: "space-between"
+    justifyContent: 'space-between',
   },
   countBtn: {
     width: 100,
@@ -425,18 +392,18 @@ const styles = StyleSheet.create({
     borderColor: styleUtil.themeColor,
     backgroundColor: styleUtil.themeColor,
     borderRadius: 4,
-    position: "absolute",
+    position: 'absolute',
     right: 0,
-    justifyContent: "center"
+    justifyContent: 'center',
   },
   countBtnText: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 16
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 16,
   },
   closeModal: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
-    alignSelf: "center"
-  }
+    alignSelf: 'center',
+  },
 });

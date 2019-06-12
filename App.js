@@ -1,42 +1,36 @@
 /**
  * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+ * https://github.com/facebook/react-native *  * @format * @flow */
 
-import React, { Component } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
-import { TeaNavigator } from "teaset";
-import TabNavBar from "./app/screens/TabNavBar";
-import { Theme } from "teaset";
-import styleUtil from "./app/common/styleUtil";
-import navigate from "./app/screens/navigate";
-import IMessage from "./app/common/IMessage";
-import Request from "./app/common/request";
-import config from "./app/common/config";
-import toast from "./app/common/toast";
-
-const instructions = Platform.select({
-  ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
-  android:
-    "Double tap R on your keyboard to reload,\n" +
-    "Shake or press menu button for dev menu"
-});
+import React, { Component } from 'react';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import { TeaNavigator } from 'teaset';
+import TabNavBar from './app/screens/TabNavBar';
+import { Theme } from 'teaset';
+import styleUtil from './app/common/styleUtil';
+import navigate from './app/screens/navigate';
+import IMessage from './app/common/IMessage';
+import Request from './app/common/request';
+import config from './app/common/config';
+import toast from './app/common/toast';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import rootReducer from './app/services/redux/reducer';
+import initialState from './app/services/redux/initialState';
+import thunk from 'redux-thunk';
 
 Theme.set({
   fitIPhoneX: true,
   tvBarBtnIconActiveTintColor: styleUtil.themeColor,
   tvBarBtnActiveTitleColor: styleUtil.themeColor,
-  navColor: "white",
-  backgroundColor: "white",
-  navTintColor: "black",
-  navTitleColor: "black",
+  navColor: 'white',
+  backgroundColor: 'white',
+  navTintColor: 'black',
+  navTitleColor: 'black',
   navSeparatorLineWidth: styleUtil.borderSeparator,
   navSeparatorColor: styleUtil.borderColor,
-  navType: "auto", //'auto', 'ios', 'android'
-  navStatusBarStyle: "dark-content", //'default', 'light-content', 'dark-content'
+  navType: 'auto', //'auto', 'ios', 'android'
+  navStatusBarStyle: 'dark-content', //'default', 'light-content', 'dark-content'
 
   //ListRow
   rowMinHeight: 60,
@@ -50,18 +44,18 @@ Theme.set({
   rowAccessoryWidth: 10,
   rowAccessoryHeight: 10,
   rowAccessoryPaddingLeft: 8,
-  rowAccessoryCheckColor: "#007aff",
-  rowAccessoryIndicatorColor: "#bebebe",
-  rowSeparatorColor: "#EBEBEB",
+  rowAccessoryCheckColor: '#007aff',
+  rowAccessoryIndicatorColor: '#bebebe',
+  rowSeparatorColor: '#EBEBEB',
   rowSeparatorLineWidth: 0.5,
   rowPaddingTitleDetail: 4,
   rowDetailLineHeight: 18,
-  rowActionButtonColor: "#c8c7cd",
-  rowActionButtonDangerColor: "#d9534f",
-  rowActionButtonTitleColor: "#fff",
-  rowActionButtonDangerTitleColor: "#fff",
+  rowActionButtonColor: '#c8c7cd',
+  rowActionButtonDangerColor: '#d9534f',
+  rowActionButtonTitleColor: '#fff',
+  rowActionButtonDangerTitleColor: '#fff',
   rowActionButtonTitleFontSize: 15,
-  rowActionButtonPaddingHorizontal: 12
+  rowActionButtonPaddingHorizontal: 12,
 });
 
 global.request = Request;
@@ -69,14 +63,15 @@ global.config = config;
 global.toast = toast;
 global.imessage = new IMessage();
 
-type Props = {};
-export default class App extends Component<Props> {
+const middlewares = [thunk];
+const store = createStore(rootReducer, initialState, compose(applyMiddleware(...middlewares)));
+
+export default class App extends Component {
   render() {
     return (
-      <TeaNavigator
-        ref={v => navigate.setContainer(v)}
-        rootView={<TabNavBar />}
-      />
+      <Provider store={store}>
+        <TeaNavigator ref={v => navigate.setContainer(v)} rootView={<TabNavBar />} />
+      </Provider>
     );
     // return <View style={{ flex: 1, backgroundColor: "red" }} />;
   }
@@ -85,18 +80,18 @@ export default class App extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF"
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
   },
   welcome: {
     fontSize: 20,
-    textAlign: "center",
-    margin: 10
+    textAlign: 'center',
+    margin: 10,
   },
   instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5
-  }
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
 });

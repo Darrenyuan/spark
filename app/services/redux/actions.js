@@ -1,1 +1,1 @@
-//export {checkPhone} from './checkPhone';
+export { fetchConfigInfo, dismissFetchConfigInfoError } from './fetchConfigInfo';

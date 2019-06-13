@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import {
   StyleSheet,
@@ -7,22 +7,23 @@ import {
   Image,
   ImageBackground,
   TextInput,
-  TouchableOpacity, Keyboard
-} from "react-native";
-import styleUtil from "../../common/styleUtil";
-import NavigatorPage from "../../components/NavigatorPage";
-import { Icon } from "react-native-elements";
-import navigate from "../../screens/navigate";
-import LoginSetPassword from "./LoginSetPassword";
-import CryptoJS from "react-native-crypto-js";
-import LoginEnterInfo from "./LoginEnterInfo";
-import config from "../../common/config";
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native';
+import styleUtil from '../../common/styleUtil';
+import NavigatorPage from '../../components/NavigatorPage';
+import { Icon } from 'react-native-elements';
+import navigate from '../../screens/navigate';
+import LoginSetPassword from './LoginSetPassword';
+import CryptoJS from 'react-native-crypto-js';
+import LoginEnterInfo from './LoginEnterInfo';
+import config from '../../common/config';
 
 export default class LoginEnterPassword extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navigationBarInsets: false,
-    style: { backgroundColor: "transparent", borderBottomWidth: 0 },
+    style: { backgroundColor: 'transparent', borderBottomWidth: 0 },
     scene: navigate.sceneConfig.PushFromRight,
     leftView: (
       <TouchableOpacity
@@ -31,34 +32,27 @@ export default class LoginEnterPassword extends NavigatorPage {
           navigate.pop();
         }}
       >
-        <Icon
-          name={"ios-arrow-back"}
-          type={"ionicon"}
-          color={"white"}
-          size={25}
-        />
+        <Icon name={'ios-arrow-back'} type={'ionicon'} color={'white'} size={25} />
       </TouchableOpacity>
-    )
+    ),
   };
 
   constructor(props) {
-    console.log("LoginEnterPassword");
+    console.log('LoginEnterPassword');
     super(props);
     Object.assign(this.state, {
-      password: ""
+      password: '',
     });
   }
 
   _netApplyLogin = () => {
     toast.modalLoading();
-    request
-        .post(config.api.applyLogon, {})
-        .then(res => {
-          toast.modalLoadingHide();
-          if (res.code === 1) {
-            config.setUserToStorage(res.data.user);
-          }
-        });
+    request.post(config.api.applyLogon, {}).then(res => {
+      toast.modalLoadingHide();
+      if (res.code === 1) {
+        config.setUserToStorage(res.data.user);
+      }
+    });
   };
 
   _netLogin = () => {
@@ -69,7 +63,7 @@ export default class LoginEnterPassword extends NavigatorPage {
     request
       .post(config.api.login, {
         phone,
-        password: encoded
+        password: encoded,
       })
       .then(res => {
         toast.modalLoadingHide();
@@ -85,53 +79,51 @@ export default class LoginEnterPassword extends NavigatorPage {
 
   renderPage() {
     return (
-        <TouchableOpacity
-            style={styleUtil.container}
-            activeOpacity={1}
-            onPress={_ => {
-              Keyboard.dismiss();
-            }}
-        >
-        <View style={{ overflow: "hidden" }}>
+      <TouchableOpacity
+        style={styleUtil.container}
+        activeOpacity={1}
+        onPress={_ => {
+          Keyboard.dismiss();
+        }}
+      >
+        <View style={{ overflow: 'hidden' }}>
           <ImageBackground
             style={{
               width: styleUtil.window.width,
               height: styleUtil.window.width * (222.0 / 375.0),
-              resizeMode: "contain",
-              justifyContent: "center",
-              alignItems: "center"
+              resizeMode: 'contain',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
-            source={require("../../assets/image/login_head_background.png")}
+            source={require('../../assets/image/login_head_background.png')}
           >
             <View
               style={{
-                flexDirection: "row"
+                flexDirection: 'row',
               }}
             >
-              <Image source={require("../../assets/image/login_spark.png")} />
-              <View style={{ justifyContent: "flex-end", marginLeft: 10 }}>
+              <Image source={require('../../assets/image/login_spark.png')} />
+              <View style={{ justifyContent: 'flex-end', marginLeft: 10 }}>
                 <Text
                   style={{
                     fontSize: 30,
-                    color: "white",
-                    fontWeight: "500",
-                    marginBottom: 8
+                    color: 'white',
+                    fontWeight: '500',
+                    marginBottom: 8,
                   }}
                 >
-                  {"火花"}
+                  {'火花'}
                 </Text>
-                <Text style={{ fontSize: 14, color: "white", marginBottom: 2 }}>
-                  {"重新发现身边的世界"}
+                <Text style={{ fontSize: 14, color: 'white', marginBottom: 2 }}>
+                  {'重新发现身边的世界'}
                 </Text>
               </View>
             </View>
           </ImageBackground>
 
           <View style={{ marginTop: 80, marginHorizontal: 40 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                source={require("../../assets/image/login_password.png")}
-              />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image source={require('../../assets/image/login_password.png')} />
               <TextInput
                 placeholder="请输入密码"
                 placeholderTextColor="#E5E5E5"
@@ -150,30 +142,28 @@ export default class LoginEnterPassword extends NavigatorPage {
                 styles.buttonBox,
                 {
                   backgroundColor: this._btnStyle(true),
-                  borderColor: this._btnStyle(true)
-                }
+                  borderColor: this._btnStyle(true),
+                },
               ]}
               onPress={() => {
                 this._netLogin();
               }}
             >
-              <Text style={styles.buttonText}>{"登录"}</Text>
+              <Text style={styles.buttonText}>{'登录'}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 marginTop: 30,
-                alignItems: "center"
+                alignItems: 'center',
               }}
               onPress={() => {
                 navigate.pushNotNavBar(LoginSetPassword, {
                   phone: this.props.phone,
-                  resetPassword: true
+                  resetPassword: true,
                 });
               }}
             >
-              <Text style={{ color: styleUtil.themeColor, fontSize: 14 }}>
-                {"找回密码"}
-              </Text>
+              <Text style={{ color: styleUtil.themeColor, fontSize: 14 }}>{'找回密码'}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -185,28 +175,28 @@ export default class LoginEnterPassword extends NavigatorPage {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: styleUtil.backgroundColor
+    backgroundColor: styleUtil.backgroundColor,
   },
   signUpBox: {
-    marginTop: 10
+    marginTop: 10,
     // padding: 10
   },
   title: {
     marginBottom: 20,
-    color: "#333",
+    color: '#333',
     fontSize: 20,
-    textAlign: "center"
+    textAlign: 'center',
   },
   inputField: {
     marginLeft: 8,
     height: 40,
     paddingLeft: 8,
-    color: "#454545",
+    color: '#454545',
     fontSize: 16,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderBottomWidth: styleUtil.borderSeparator,
     // borderWidth: styleUtil.borderSeparator,
-    borderColor: styleUtil.borderColor
+    borderColor: styleUtil.borderColor,
   },
   buttonBox: {
     marginTop: 80,
@@ -214,18 +204,18 @@ const styles = StyleSheet.create({
     height: 48,
     borderWidth: 1,
     borderColor: styleUtil.themeColor,
-    borderRadius: 24
+    borderRadius: 24,
   },
   buttonText: {
     fontSize: 20,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 12
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 12,
   },
   verifyCodeBox: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 10,
-    justifyContent: "space-between"
+    justifyContent: 'space-between',
   },
   countBtn: {
     width: 110,
@@ -235,16 +225,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: styleUtil.themeColor,
     backgroundColor: styleUtil.themeColor,
-    borderRadius: 4
+    borderRadius: 4,
   },
   countBtnText: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 16
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 16,
   },
   closeModal: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
-    alignSelf: "center"
-  }
+    alignSelf: 'center',
+  },
 });

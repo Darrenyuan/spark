@@ -66,7 +66,10 @@ global.imessage = new IMessage();
 const middlewares = [thunk];
 const store = createStore(rootReducer, initialState, compose(applyMiddleware(...middlewares)));
 
-export default class App extends Component {
+type Props = {};
+type State = {};
+
+export default class App extends Component<Props, State> {
   render() {
     return (
       <Provider store={store}>

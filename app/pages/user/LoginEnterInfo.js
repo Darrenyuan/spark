@@ -20,7 +20,6 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import navigate from '../../screens/navigate';
 import DatePicker from '../../components/DatePicker';
 import LoginMoreInfo from './LoginMoreInfo';
-import RNFetchBlob from 'rn-fetch-blob';
 
 export default class LoginEnterInfo extends NavigatorPage {
   static defaultProps = {

@@ -18,6 +18,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from './app/services/redux/reducer';
 import initialState from './app/services/redux/initialState';
 import thunk from 'redux-thunk';
+import configureStore from './app/services/common/configStore';
 
 Theme.set({
   fitIPhoneX: true,
@@ -64,7 +65,7 @@ global.toast = toast;
 global.imessage = new IMessage();
 
 const middlewares = [thunk];
-const store = createStore(rootReducer, initialState, compose(applyMiddleware(...middlewares)));
+const store = configureStore();
 
 export default class App extends Component {
   render() {

@@ -1,17 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity
-} from "react-native";
-import styleUtil from "../../common/styleUtil";
-import NavigatorPage from "../../components/NavigatorPage";
-import { Icon } from "react-native-elements";
-import TabBar from "../../components/tabbar/TabBar";
-import ScrollableTabView from "react-native-scrollable-tab-view";
-import navigate from "../../screens/navigate";
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import styleUtil from '../../common/styleUtil';
+import NavigatorPage from '../../components/NavigatorPage';
+import { Icon } from 'react-native-elements';
+import TabBar from '../../components/tabbar/TabBar';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import navigate from '../../screens/navigate';
 
 let pageCallback = null;
 let callbackParam = [];
@@ -20,7 +15,7 @@ export default class LoginPersonal extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navBarHidden: false,
-    title: "你的个性标签",
+    title: '你的个性标签',
     rightView: (
       <TouchableOpacity
         style={{
@@ -28,20 +23,18 @@ export default class LoginPersonal extends NavigatorPage {
           paddingHorizontal: 15,
           height: 30,
           borderRadius: 15,
-          flexDirection: "row",
-          alignItems: "center",
-          marginRight: 10
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginRight: 10,
         }}
         onPress={_ => {
           pageCallback(callbackParam);
           navigate.pop();
         }}
       >
-        <Text style={{ fontSize: 16, color: "#fff", textAlign: "center" }}>
-          {"保存"}
-        </Text>
+        <Text style={{ fontSize: 16, color: '#fff', textAlign: 'center' }}>{'保存'}</Text>
       </TouchableOpacity>
-    )
+    ),
   };
 
   constructor(props) {
@@ -52,28 +45,24 @@ export default class LoginPersonal extends NavigatorPage {
     this.state = { markers: props.markers, markersCategorys: props.markersCategorys };
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<P>,
-    prevState: Readonly<S>,
-    snapshot: SS
-  ): void {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     callbackParam = this.state.markers;
   }
 
   renderNavBar = props => {
     return (
       <TabBar
-        backgroundColor={"white"}
+        backgroundColor={'white'}
         activeTextColor={styleUtil.activeTextColor}
         fromIndex={0}
         inactiveTextColor={styleUtil.inactiveTextColor}
         underlineStyle={styleUtil.underlineStyle}
         // tabContainerWidth={"100%"}
         style={{
-          width: "100%",
+          width: '100%',
           paddingTop: 10,
           borderBottomWidth: 0,
-          justifyContent: "space-between"
+          justifyContent: 'space-between',
         }}
         tabs={this.state.markersCategorys}
       />
@@ -84,22 +73,22 @@ export default class LoginPersonal extends NavigatorPage {
     const { markers, markersCategorys } = this.state;
 
     return (
-      <View style={{ flex: 1, backgroundColor: "white" }}>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={{ marginHorizontal: 10, marginTop: 10, flex: 1 }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text>{"已选择"}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text>{'已选择'}</Text>
             <Text style={{ marginLeft: 10, color: styleUtil.grayColor }}>
-              {markers.length + "/12"}
+              {markers.length + '/12'}
             </Text>
           </View>
 
           <View
             style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              alignItems: "flex-start",
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              alignItems: 'flex-start',
               marginTop: 10,
-              height: 180
+              height: 180,
             }}
           >
             {markers.map((marker, i) => (
@@ -112,12 +101,7 @@ export default class LoginPersonal extends NavigatorPage {
               >
                 <Text style={styles.buttonText}>{marker.typeName}</Text>
                 <View style={{ marginLeft: 8 }}>
-                  <Icon
-                    name={"md-close"}
-                    type={"ionicon"}
-                    size={16}
-                    color={"white"}
-                  />
+                  <Icon name={'md-close'} type={'ionicon'} size={16} color={'white'} />
                 </View>
               </TouchableOpacity>
             ))}
@@ -126,24 +110,20 @@ export default class LoginPersonal extends NavigatorPage {
           <ScrollableTabView
             style={{ marginTop: 10 }}
             scrollWithoutAnimation={true}
-            tabBarPosition={"top"}
+            tabBarPosition={'top'}
             renderTabBar={this.renderNavBar}
             onChangeTab={this.onChangeTab}
             initialPage={0}
           >
             {markersCategorys.map((markersCategory, i) => (
               <View
-                style={{ flex: 1, flexDirection: "row", flexWrap: "wrap" }}
+                style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}
                 key={markersCategory.typeName}
                 tabLabel={markersCategory.typeName}
               >
                 {markersCategory.childs.map((marker, i) => (
                   <TouchableOpacity
-                    style={
-                      markers.indexOf(marker) > -1
-                        ? styles.buttonBox
-                        : styles.unselectBox
-                    }
+                    style={markers.indexOf(marker) > -1 ? styles.buttonBox : styles.unselectBox}
                     onPress={_ => {
                       let index = markers.indexOf(marker);
                       if (index > -1) {
@@ -176,15 +156,15 @@ const styles = StyleSheet.create({
     borderColor: styleUtil.themeColor,
     borderRadius: 17,
     paddingHorizontal: 17,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginRight: 10,
-    marginBottom: 10
+    marginBottom: 10,
   },
   buttonText: {
     fontSize: 16,
-    color: "#fff",
-    textAlign: "center"
+    color: '#fff',
+    textAlign: 'center',
   },
   unselectBox: {
     backgroundColor: styleUtil.grayColor,
@@ -193,9 +173,9 @@ const styles = StyleSheet.create({
     borderColor: styleUtil.grayColor,
     borderRadius: 17,
     paddingHorizontal: 17,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginRight: 10,
-    marginBottom: 10
-  }
+    marginBottom: 10,
+  },
 });

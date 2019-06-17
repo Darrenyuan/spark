@@ -21,6 +21,8 @@ import navigate from '../../screens/navigate';
 import DatePicker from '../../components/DatePicker';
 import LoginMoreInfo from './LoginMoreInfo';
 import RNFetchBlob from 'rn-fetch-blob';
+import { apiEditRegistInfo1 } from '../../services/axios/api';
+import md5 from 'react-native-md5';
 
 export default class LoginEnterInfo extends NavigatorPage {
   static defaultProps = {
@@ -49,31 +51,67 @@ export default class LoginEnterInfo extends NavigatorPage {
       sex: '男',
     };
   }
+  // getAbsoluteUrl = url => {
+  // var img = new Image();
+  // img.src = url; // 设置相对路径给Image, 此时会发送出请求
+  // url = img.src; // 此时相对路径已经变成绝对路径
+  // img.src = null; // 取消请求
+  // return url;
+  // };
 
+  //TODO
   _netRegisterInfo1 = () => {
     const { face, nickName, birth, sex } = this.state;
     console.log(face);
+    let auid = '';
+    let M9 = new Date().getTime();
+    let strM9 = '' + M9;
     const option = {
       nickName,
       birth,
       sex,
-      face: {
-        type: 'multipart/form-data',
-        name: 'file.jpg',
-      },
+      face: {},
+      auid: auid,
+      M0: 'MMC',
+      M2: '',
+      M3: '120.45435,132.32424',
+      M8: md5.hex_md5(auid + strM9),
+      M9: strM9,
     };
     if (face !== null) {
       option.face.uri = face.path;
     } else {
-      option.face.uri = '';
+      // let path = RNFetchBlob.fs.asset('../../assets/image/login_default_avatar.png');
+      // option.face.uri = path;
+      // console.log('aaaaaaaaa');
+      // console.log(path);
+      option.face.uri = '../../assets/image/login_default_avatar.png';
+      // option.face.uri = this.getAbsoluteUrl('../../assets/image/login_default_avatar.png');
     }
     toast.modalLoading();
     console.log(option);
-    request.upload(config.api.registerInfo1, option).then(res => {
+    // request.upload(config.api.registerInfo1, option).then(res => {
+    //   toast.modalLoadingHide();
+    //   if (res.code === 1) {
+    //     console.log(res.data);
+    //     console.log('qqqqqqqqqqq');
+    //     config.setStatusAndMarker(res.data);
+    //     navigate.pushNotNavBar(LoginMoreInfo, {
+    //       phone: this.props.phone,
+    //     });
+    //   }
+    // });
+
+    apiEditRegistInfo1(option).then(res => {
       toast.modalLoadingHide();
-      if (res.code === 1) {
-        config.setStatusAndMarker(res.data);
-        navigate.pushNotNavBar(LoginMoreInfo);
+      console.log(res.data);
+      console.log('qqqqqqqqqqq');
+      if (res.data.code === 1) {
+        //TODO  同步redux
+        // config.setStatusAndMarker(res.data);
+        navigate.pushNotNavBar(LoginMoreInfo, {
+          phone: this.props.phone,
+        });
       }
     });
   };

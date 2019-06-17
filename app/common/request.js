@@ -96,7 +96,6 @@ const _fetchData = (url, options, callback) => {
     callback && callback(xhr);
     xhr.send(body);
   }).then(response => {
-    // console.log(response)
     if (response.readyState === 4 && response.status === 200) {
       let res = JSON.parse(response.responseText);
       console.log(res);

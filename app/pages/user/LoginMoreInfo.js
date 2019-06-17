@@ -16,11 +16,17 @@ import { Icon } from 'react-native-elements';
 import { NavigationBar } from 'teaset';
 import navigate from '../../screens/navigate';
 import LoginPersonal from './LoginPersonal';
+import LoginEnterPassword from './LoginEnterPassword';
 import config from '../../common/config';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as actions from '../../services/redux/actions';
 import { ActionSheet } from 'teaset';
 import LoginAgreement from './LoginAgreement';
+import { apiEditRegistInfo2 } from '../../services/axios/api';
+import md5 from 'react-native-md5';
 
-export default class LoginMoreInfo extends NavigatorPage {
+class LoginMoreInfo extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navBarHidden: false,
@@ -29,23 +35,20 @@ export default class LoginMoreInfo extends NavigatorPage {
 
   constructor(props) {
     super(props);
-    Object.assign(this.state, {
-      kkStatus: {},
+    this.state = {
+      kkStatus: {}, //交友状态[0]
       markers: [],
       isVisible: true,
-    });
+    };
   }
 
   componentDidMount() {
     super.componentDidMount();
-
-    config.getStatusAndMarker().then(info => {
-      this._status = info.kkStatusTypes;
-      if (this._status.length > 0) {
-        this.setState({ kkStatus: this._status[0] });
-      }
-      this.markersCategorys = info.markerTypes;
-    });
+    if (this.props.spark.configInfo.data) {
+      const { data } = this.props.spark.configInfo;
+      this._status = data.kkStatusTypes; //交友状态类型
+      this.markersCategorys = data.markerTypes; //自我标签类型
+    }
   }
 
   _netRegisterInfo2 = () => {
@@ -54,31 +57,43 @@ export default class LoginMoreInfo extends NavigatorPage {
       const markerIDs = markers.map(marker => {
         return marker.typeID;
       });
-    }
-    console.log(kkStatus, markers);
-    toast.modalLoading();
-    request
-      .post(config.api.registerInfo2, {
+      let auid = '';
+      let M9 = new Date().getTime();
+      let strM9 = '' + M9;
+      toast.modalLoading();
+      apiEditRegistInfo2({
         kkStatus: kkStatus.typeID,
         markers: markerIDs,
-      })
-      .then(res => {
+        auid: auid,
+        M0: 'MMC',
+        M2: '',
+        M3: '120.45435,132.32424',
+        M8: md5.hex_md5(auid + strM9),
+        M9: strM9,
+      }).then(res => {
         toast.modalLoadingHide();
-        if (res.code === 1) {
-          navigate.popN(4);
-          this._netApplyLogin();
+        console.log(res);
+        if (res.data.code === 1) {
+          this._toLogin();
+          // navigate.popN(4);
+          // this._netApplyLogin();
         }
       });
+    }
   };
 
+  _toLogin() {
+    navigate.pushNotNavBar(LoginEnterPassword, { phone: this.props.phone });
+  }
   _netApplyLogin = () => {
-    toast.modalLoading();
-    request.post(config.api.applyLogon, {}).then(res => {
-      toast.modalLoadingHide();
-      if (res.code === 1) {
-        config.setUserToStorage(res.data.user);
-      }
-    });
+    // toast.modalLoading();
+    // request.post(config.api.applyLogon, {}).then(res => {
+    //   toast.modalLoadingHide();
+    //   if (res.code === 1) {
+    //     config.setUserToStorage(res.data.user);
+    //   }
+    // });
+    this._toLogin();
   };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
@@ -104,13 +119,6 @@ export default class LoginMoreInfo extends NavigatorPage {
 
   renderPage() {
     const { kkStatus, markers } = this.state;
-    const datingStatus = [
-      '寻找另一半',
-      '想谈个恋爱',
-      '友不在多，知心就好',
-      '远亲不如近邻',
-      '广交天下友',
-    ];
     return (
       <View style={styleUtil.container}>
         <View
@@ -163,13 +171,6 @@ export default class LoginMoreInfo extends NavigatorPage {
               />
             </TouchableOpacity>
           </View>
-          {this.state.isVisible && (
-            <View>
-              {datingStatus.map(item => {
-                return <Text style={styles.datingStatusItem}>{item}</Text>;
-              })}
-            </View>
-          )}
           <View
             style={{
               flexDirection: 'row',
@@ -244,8 +245,9 @@ export default class LoginMoreInfo extends NavigatorPage {
 
           <TouchableOpacity
             onPress={() => {
-              navigate.popN(4);
-              this._netApplyLogin();
+              // navigate.popN(4);
+              // this._netApplyLogin();
+              navigate.pushNotNavBar(LoginEnterPassword, { phone: this.props.phone });
             }}
           >
             <Text
@@ -263,6 +265,23 @@ export default class LoginMoreInfo extends NavigatorPage {
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    spark: state,
+  };
+}
+
+/* istanbul ignore next */
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...actions }, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LoginMoreInfo);
 
 const styles = StyleSheet.create({
   container: {

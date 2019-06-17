@@ -6,7 +6,7 @@ import { Icon } from 'react-native-elements';
 import styleUtil from '../common/styleUtil';
 import PublishEntrance from '../pages/publish/PublishEntrance';
 import Profile from '../pages/profile/Profile';
-import LoginNoreInfo from '../pages/user/LoginMoreInfo';
+
 import ChatList from '../pages/message/ChatList';
 import navigate from './navigate';
 import Search from '../pages/discovery/Search';
@@ -25,7 +25,7 @@ class TabNavBar extends React.Component {
     super(props);
     this.state = {
       activeIndex: 0,
-      modalVisible: false,
+      visible: false,
     };
   }
 
@@ -36,7 +36,6 @@ class TabNavBar extends React.Component {
         this._netApplyLogin();
       }
     });
-
     LocationService.init();
   }
   componentDidMount() {
@@ -68,12 +67,13 @@ class TabNavBar extends React.Component {
 
   _onClickPublish = () => {
     if (config.getUserThenLoginIfNil()) {
-      this.setState({ modalVisible: true });
+      console.log('youyouyouyouyou');
+      this.setState({ visible: true });
     }
   };
 
   _callbackPublishClose = () => {
-    this.setState({ modalVisible: false });
+    this.setState({ visible: false });
   };
 
   onchangeTab = index => {
@@ -96,7 +96,7 @@ class TabNavBar extends React.Component {
         }}
       >
         <PublishEntrance
-          modalVisible={this.state.modalVisible}
+          modalVisible={this.state.visible}
           callbackPublishClose={this._callbackPublishClose}
         />
         <Image source={require('../assets/image/tarbar_add.png')} />
@@ -124,7 +124,7 @@ class TabNavBar extends React.Component {
             backgroundColor: 'white',
           };
     console.log('11111111111111111111111111');
-    console.log(JSON.stringify(this.props.spark.configInfo));
+    console.log(this.props.spark.configInfo);
     return (
       <TabView
         style={{ flex: 1, backgroundColor: 'white' }}
@@ -185,8 +185,7 @@ class TabNavBar extends React.Component {
           icon={<Image source={require('../assets/image/tabbar_chat.png')} />}
           activeIcon={<Image source={require('../assets/image/tabbar_chat_highlight.png')} />}
         >
-          {/* <ChatList /> */}
-          <LoginNoreInfo />
+          <ChatList />
         </TabView.Sheet>
         <TabView.Sheet
           title="我的"

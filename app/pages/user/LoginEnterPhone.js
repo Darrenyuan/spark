@@ -17,7 +17,8 @@ import LoginSetPassword from './LoginSetPassword';
 import request from '../../common/request';
 import toast from '../../common/toast';
 import LoginEnterPassword from './LoginEnterPassword';
-import { apiVerifyPhone } from '../../services/axios/api';
+import { apiCheckPhone } from '../../services/axios/api';
+import md5 from 'react-native-md5';
 
 export default class LoginEnterPhone extends NavigatorPage {
   static defaultProps = {
@@ -29,38 +30,43 @@ export default class LoginEnterPhone extends NavigatorPage {
 
   constructor(props) {
     super(props);
-    Object.assign(this.state, {
+    this.state = {
       phone: '',
-    });
+    };
   }
 
   _netCheckPhone = () => {
-    // let body = {
-    //   phone: this.state.phone,
-    // };
-    // toast.modalLoading();
-    // request
-    //   .post(config.api.checkPhone, body)
-    //   .then(res => {
-    //     toast.modalLoadingHide();
-    //     if (res.code === 1) {
-    //       if (res.data.registFlag == 0) {
-    //         navigate.pushNotNavBar(LoginSetPassword, {
-    //           phone: this.state.phone,
-    //         });
-    //       } else {
-    //         navigate.pushNotNavBar(LoginEnterPassword, {
-    //           phone: this.state.phone,
-    //         });
-    //       }
-    //     }
-    //   })
-    //   .catch(err => {
-    //     toast.modalLoadingHide();
-    //   });
-    // apiCheckPhone({ phone: this.state.phone }).then(res => {
-    //   console.log(res);
-    // });
+    toast.modalLoading();
+    let auid = '';
+    let M9 = new Date().getTime();
+    let strM9 = '' + M9;
+    apiCheckPhone({
+      phone: this.state.phone,
+      auid: auid,
+      M0: 'MMC',
+      M2: '',
+      M3: '120.45435,132.32424',
+      M8: md5.hex_md5(auid + strM9),
+      M9: strM9,
+    })
+      .then(res => {
+        toast.modalLoadingHide();
+        console.log(res);
+        if (res.data.code === 1) {
+          if (res.data.data.registFlag == 0) {
+            navigate.pushNotNavBar(LoginSetPassword, {
+              phone: this.state.phone,
+            });
+          } else {
+            navigate.pushNotNavBar(LoginEnterPassword, {
+              phone: this.state.phone,
+            });
+          }
+        }
+      })
+      .catch(err => {
+        toast.modalLoadingHide();
+      });
   };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);

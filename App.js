@@ -19,6 +19,8 @@ import rootReducer from './app/services/redux/reducer';
 import initialState from './app/services/redux/initialState';
 import thunk from 'redux-thunk';
 import configureStore from './app/services/common/configStore';
+import { loadState, saveState } from './app/services/common/storage';
+import throttle from 'lodash/throttle';
 
 Theme.set({
   fitIPhoneX: true,
@@ -64,19 +66,55 @@ global.config = config;
 global.toast = toast;
 global.imessage = new IMessage();
 
-const middlewares = [thunk];
-const store = configureStore();
-
 type Props = {};
 type State = {};
 
 export default class App extends Component<Props, State> {
-  render() {
-    return (
-      <Provider store={store}>
-        <TeaNavigator ref={v => navigate.setContainer(v)} rootView={<TabNavBar />} />
-      </Provider>
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loadingData: true,
+    };
+  }
+
+  componentDidMount() {
+    loadState().then(
+      data => {
+        console.log(JSON.stringify(data));
+        store = configureStore(data);
+        store.subscribe(
+          throttle(() => {
+            saveState(store.getState());
+          }, 1000),
+        );
+        this.setState({ loadingData: false, store: store });
+      },
+      error => {
+        store = configureStore();
+        store.subscribe(
+          throttle(() => {
+            saveState(store.getState());
+          }, 1000),
+        );
+        this.setState({ loadingData: false, store: store });
+      },
     );
+  }
+
+  render() {
+    if (this.state.loadingData) {
+      return (
+        <View>
+          <Text>loading</Text>
+        </View>
+      );
+    } else
+      return (
+        <Provider store={this.state.store}>
+          <TeaNavigator ref={v => navigate.setContainer(v)} rootView={<TabNavBar />} />
+        </Provider>
+      );
     // return <View style={{ flex: 1, backgroundColor: "red" }} />;
   }
 }

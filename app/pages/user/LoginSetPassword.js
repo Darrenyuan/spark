@@ -18,9 +18,19 @@ import LoginEnterInfo from './LoginEnterInfo';
 import LoginAgreement from './LoginAgreement';
 import CountDownText from '../../components/countdown/countDownText';
 import CryptoJS from 'react-native-crypto-js';
+<<<<<<< 78f55a9d5c71e05cc9666c963a6c3b42174cc637
 import config from '../../common/config';
+=======
+import LoginEnterPassword from './LoginEnterPassword';
+import { apiResetPassword } from '../../services/axios/api';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../services/redux/actions';
+import { connect } from 'react-redux';
+import LocationService from '../../screens/LocationService';
+import md5 from 'react-native-md5';
+>>>>>>> fix bug
 
-export default class LoginSetPassword extends NavigatorPage {
+class LoginSetPassword extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     // navBarHidden: true,
@@ -41,13 +51,21 @@ export default class LoginSetPassword extends NavigatorPage {
 
   constructor(props) {
     super(props);
+<<<<<<< 78f55a9d5c71e05cc9666c963a6c3b42174cc637
     Object.assign(this.state, {
+=======
+    this.state = {
+>>>>>>> fix bug
       verifyCode: '',
       password: '',
       showPassword: false,
       isSend: false,
       isCountEnd: false,
+<<<<<<< 78f55a9d5c71e05cc9666c963a6c3b42174cc637
     });
+=======
+    };
+>>>>>>> fix bug
     this._verifyCode = '';
   }
 
@@ -56,6 +74,33 @@ export default class LoginSetPassword extends NavigatorPage {
 
     this._netSendVerifyCode();
   }
+
+  _netSetPassword = () => {
+    const { loginInfo } = this.props.spark;
+    let auid = loginInfo.auid;
+    let M2 = loginInfo.loginToken;
+    let M3 = LocationService.getLocationString();
+    let M8 = md5.str_md5(auid + new Date().getTime());
+    let phone = this.props.phone;
+    let encoded = CryptoJS.MD5(this.state.password);
+    toast.modalLoading();
+
+    apiResetPassword({
+      auid: auid,
+      M2: M2,
+      M3: M3,
+      M8: M8,
+      phone: phone,
+      password: encoded,
+    }).then(res => {
+      toast.loadingHide();
+      if (res.data.code === 1) {
+        navigate.pushNotNavBar(LoginEnterPassword, {
+          phone: phone,
+        });
+      }
+    });
+  };
 
   _netSendVerifyCode = () => {
     let phone = this.props.phone;
@@ -237,7 +282,11 @@ export default class LoginSetPassword extends NavigatorPage {
                 marginTop: 10,
                 marginLeft: 24,
                 fontSize: 14,
+<<<<<<< 78f55a9d5c71e05cc9666c963a6c3b42174cc637
                 height: 16,
+=======
+                height: 18,
+>>>>>>> fix bug
                 color: this._checkCodeValid() ? '#B6B6B6' : styleUtil.themeColor,
               }}
             >
@@ -259,7 +308,11 @@ export default class LoginSetPassword extends NavigatorPage {
                 placeholderTextColor="#E5E5E5"
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
+<<<<<<< 78f55a9d5c71e05cc9666c963a6c3b42174cc637
                 //keyboardType={"number-pad"}
+=======
+                keyboardType={'default'}
+>>>>>>> fix bug
                 style={[styles.inputField, { flex: 1 }]}
                 value={password}
                 maxLength={30}
@@ -307,7 +360,11 @@ export default class LoginSetPassword extends NavigatorPage {
 
                 if (this._checkAllInputValid()) {
                   //this._netRegister();
+<<<<<<< 78f55a9d5c71e05cc9666c963a6c3b42174cc637
                   this._netEnterPasswordPage();
+=======
+                  this._netSetPassword();
+>>>>>>> fix bug
                 }
               }}
             >
@@ -339,6 +396,23 @@ export default class LoginSetPassword extends NavigatorPage {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    spark: state,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...actions }, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LoginSetPassword);
 
 const styles = StyleSheet.create({
   container: {

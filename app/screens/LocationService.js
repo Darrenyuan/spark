@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 let permissionDenied = false;
 let latitude = null;
@@ -8,15 +8,13 @@ function _saveLocationInfo() {
   config.setLocationInfo({
     permissionDenied,
     latitude,
-    longitude
+    longitude,
   });
 }
 
 function init() {
   config.getLocationInfo().then(locationInfo => {
-    permissionDenied = locationInfo.permissionDenied
-      ? locationInfo.permissionDenied
-      : false;
+    permissionDenied = locationInfo.permissionDenied ? locationInfo.permissionDenied : false;
     latitude = locationInfo.latitude ? locationInfo.latitude : null;
     longitude = locationInfo.longitude ? locationInfo.longitude : null;
 
@@ -26,11 +24,7 @@ function init() {
 
 function destroy() {}
 
-function getCurrentPosition(
-  successCallback: Function,
-  errorCallback: Function,
-  options: Object
-) {
+function getCurrentPosition(successCallback, errorCallback, options) {
   navigator.geolocation.getCurrentPosition(
     position => {
       latitude = Math.abs(position.coords.latitude);
@@ -53,7 +47,7 @@ function getCurrentPosition(
         errorCallback(error);
       }
     },
-    options ? options : { timeout: 20000, maximumAge: 1000 }
+    options ? options : { timeout: 20000, maximumAge: 1000 },
   );
 }
 
@@ -71,5 +65,5 @@ export default {
   getLocationString,
   permissionDenied,
   latitude,
-  longitude
+  longitude,
 };

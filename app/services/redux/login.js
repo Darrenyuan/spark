@@ -4,7 +4,7 @@ import {
   SPARK_LOGIN_FAILURE,
   SPARK_LOGIN_DISMISS_ERROR,
 } from './constants';
-import { apiLongin } from '../axios/api';
+import { apiLogin } from '../axios/api';
 
 export function login(args = {}) {
   return dispatch => {
@@ -18,17 +18,21 @@ export function login(args = {}) {
     // It's hard to use state to manage it, but returning a promise allows you to easily achieve it.
     // e.g.: handleSubmit() { this.props.actions.submitForm(data).then(()=> {}).catch(() => {}); }
     const promise = new Promise((resolve, reject) => {
-      const doRequest = apiLongin(args);
+      const doRequest = apiLogin(args);
       doRequest.then(
         res => {
+          console.log(res);
+          console.log('teyrtyetrwetryw');
           dispatch({
             type: SPARK_LOGIN_SUCCESS,
-            data: res.data,
+            data: res.data.data,
           });
           resolve(res);
         },
         // Use rejectHandler as the second argument so that render errors won't be caught.
         err => {
+          console.log('err err err');
+          console.log('teyrtyetrwetryw');
           dispatch({
             type: SPARK_LOGIN_FAILURE,
             data: { error: err },

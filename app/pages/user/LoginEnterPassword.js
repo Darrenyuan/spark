@@ -18,8 +18,16 @@ import LoginSetPassword from './LoginSetPassword';
 import CryptoJS from 'react-native-crypto-js';
 import LoginEnterInfo from './LoginEnterInfo';
 import config from '../../common/config';
+import { apiLogin } from '../../services/axios/api';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../services/redux/actions';
+import { connect } from 'react-redux';
+import DeviceInfo from 'react-native-device-info';
+import LocationService from '../../screens/LocationService';
+import md5 from 'react-native-md5';
+import Profile from '../profile/Profile';
 
-export default class LoginEnterPassword extends NavigatorPage {
+class LoginEnterPassword extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navigationBarInsets: false,
@@ -45,34 +53,57 @@ export default class LoginEnterPassword extends NavigatorPage {
     });
   }
 
-  _netApplyLogin = () => {
+  _netApplyLogon = () => {
+    const { loginInfo } = this.props.spark;
+    let auid = loginInfo.auid;
+    let M2 = loginInfo.loginToken;
+    let M3 = LocationService.getLocationString();
+    let M8 = md5.str_md5(auid + new Date().getTime());
     toast.modalLoading();
-    request.post(config.api.applyLogon, {}).then(res => {
-      toast.modalLoadingHide();
-      if (res.code === 1) {
-        config.setUserToStorage(res.data.user);
-      }
+    this.props.actions.applyLogon({
+      auid: auid,
+      M2: M2,
+      M3: M3,
+      M8: M8,
     });
+    // request.post(config.api.applyLogon, {}).then(res => {
+    //   toast.modalLoadingHide();
+    //   if (res.code === 1) {
+    //     config.setUserToStorage(res.data.user);
+    //   }
+    // });
   };
 
   _netLogin = () => {
-    console.log(222222222);
+    let auid = '';
+    let M2 = '';
+    let M3 = LocationService.getLocationString();
+    let M8 = md5.str_md5(auid + new Date().getTime());
     let phone = this.props.phone;
     let encoded = CryptoJS.MD5(this.state.password);
     toast.modalLoading();
-    request
-      .post(config.api.login, {
-        phone,
-        password: encoded,
-      })
-      .then(res => {
-        toast.modalLoadingHide();
-        if (res.code === 1) {
-          config.setLoginInfoToStorage(res.data);
-          this._netApplyLogin();
-          navigate.popN(2);
-        }
-      });
+
+    this.props.actions.login({ phone, auid, M2, M3, M8, password: encoded }).then(res => {
+      toast.modalLoadingHide();
+      if (res.data.code === 1) {
+        this._netApplyLogon();
+        navigate.pushNotNavBar(Profile);
+      }
+    });
+
+    // request
+    //   .post(config.api.login, {
+    //     phone,
+    //     password: encoded,
+    //   })
+    //   .then(res => {
+    //     toast.modalLoadingHide();
+    //     if (res.code === 1) {
+    //       config.setLoginInfoToStorage(res.data);
+    //       this._netApplyLogin();
+    //       navigate.popN(2);
+    //     }
+    //   });
   };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
@@ -136,6 +167,7 @@ export default class LoginEnterPassword extends NavigatorPage {
                 }}
               />
             </View>
+
             <TouchableOpacity
               activeOpacity={0.5}
               style={[
@@ -145,11 +177,11 @@ export default class LoginEnterPassword extends NavigatorPage {
                   borderColor: this._btnStyle(true),
                 },
               ]}
-              onPress={() => {
-                this._netLogin();
-              }}
+              onPress={this._netLogin}
             >
-              <Text style={styles.buttonText}>{'登录'}</Text>
+              <View>
+                <Text style={styles.buttonText}>{'登录'}</Text>
+              </View>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -171,6 +203,23 @@ export default class LoginEnterPassword extends NavigatorPage {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    spark: state,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...actions }, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LoginEnterPassword);
 
 const styles = StyleSheet.create({
   container: {

@@ -36,7 +36,7 @@ export default class NearbyList extends NavigatorPage {
     super(props);
     this.page = 1;
     this.total = 1;
-    Object.assign(this.state, {
+    this.state = {
       user: props.user,
       list: [
         { name: "haha" },
@@ -48,7 +48,7 @@ export default class NearbyList extends NavigatorPage {
       isLoading: false, //上拉加载
       isRefreshing: false, //下拉刷新
       type: 0
-    });
+    };
     this._isMounted = false;
   }
 
@@ -134,6 +134,7 @@ export default class NearbyList extends NavigatorPage {
             }}
           >
             {"《流浪地球》值得一看么"}
+            
           </Text>
           {false ? (
             <Text

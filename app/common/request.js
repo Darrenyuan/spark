@@ -42,7 +42,7 @@ let request = {
     };
     return _fetchData(url, options);
   },
-  upload(url: string, params = {}, callback: Function) {
+  upload(url, params = {}, callback) {
     url = config.api.baseURI + url;
 
     params.auid = config.loginInfo.auid;

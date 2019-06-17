@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import {
   StyleSheet,
@@ -8,49 +8,58 @@ import {
   ImageBackground,
   TextInput,
   TouchableOpacity,
-  Keyboard
-} from "react-native";
-import styleUtil from "../../common/styleUtil";
-import NavigatorPage from "../../components/NavigatorPage";
-import navigate from "../../screens/navigate";
-import LoginSetPassword from "./LoginSetPassword";
-import request from "../../common/request";
-import toast from "../../common/toast";
-import LoginEnterPassword from "./LoginEnterPassword";
+  Keyboard,
+} from 'react-native';
+import styleUtil from '../../common/styleUtil';
+import NavigatorPage from '../../components/NavigatorPage';
+import navigate from '../../screens/navigate';
+import LoginSetPassword from './LoginSetPassword';
+import request from '../../common/request';
+import toast from '../../common/toast';
+import LoginEnterPassword from './LoginEnterPassword';
+import { apiCheckPhone } from '../../services/axios/api';
+import md5 from 'react-native-md5';
 
 export default class LoginEnterPhone extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navBarHidden: true,
     navigationBarInsets: false,
-    scene: navigate.sceneConfig.FloatFromBottom
+    scene: navigate.sceneConfig.FloatFromBottom,
   };
 
   constructor(props) {
     super(props);
-    Object.assign(this.state, {
-      phone: ""
-    });
+    this.state = {
+      phone: '',
+    };
   }
 
   _netCheckPhone = () => {
-    let body = {
-      phone: this.state.phone
-    };
-
     toast.modalLoading();
-    request
-      .post(config.api.checkPhone, body)
+    let auid = '';
+    let M9 = new Date().getTime();
+    let strM9 = '' + M9;
+    apiCheckPhone({
+      phone: this.state.phone,
+      auid: auid,
+      M0: 'MMC',
+      M2: '',
+      M3: '120.45435,132.32424',
+      M8: md5.hex_md5(auid + strM9),
+      M9: strM9,
+    })
       .then(res => {
         toast.modalLoadingHide();
-        if (res.code === 1) {
-          if (res.data.registFlag == 0) {
+        console.log(res);
+        if (res.data.code === 1) {
+          if (res.data.data.registFlag == 0) {
             navigate.pushNotNavBar(LoginSetPassword, {
-              phone: this.state.phone
+              phone: this.state.phone,
             });
           } else {
             navigate.pushNotNavBar(LoginEnterPassword, {
-              phone: this.state.phone
+              phone: this.state.phone,
             });
           }
         }
@@ -73,50 +82,50 @@ export default class LoginEnterPhone extends NavigatorPage {
           Keyboard.dismiss();
         }}
       >
-        <View style={{ overflow: "hidden" }}>
+        <View style={{ overflow: 'hidden' }}>
           <ImageBackground
             style={{
               width: styleUtil.window.width,
               height: styleUtil.window.width * (222.0 / 375.0),
-              resizeMode: "contain",
-              justifyContent: "center",
-              alignItems: "center"
+              resizeMode: 'contain',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
-            source={require("../../assets/image/login_head_background.png")}
+            source={require('../../assets/image/login_head_background.png')}
           >
             <View
               style={{
-                flexDirection: "row"
+                flexDirection: 'row',
               }}
             >
-              <Image source={require("../../assets/image/login_spark.png")} />
-              <View style={{ justifyContent: "flex-end", marginLeft: 10 }}>
+              <Image source={require('../../assets/image/login_spark.png')} />
+              <View style={{ justifyContent: 'flex-end', marginLeft: 10 }}>
                 <Text
                   style={{
                     fontSize: 30,
-                    color: "white",
-                    fontWeight: "500",
-                    marginBottom: 8
+                    color: 'white',
+                    fontWeight: '500',
+                    marginBottom: 8,
                   }}
                 >
-                  {"火花"}
+                  {'火花'}
                 </Text>
-                <Text style={{ fontSize: 14, color: "white", marginBottom: 2 }}>
-                  {"重新发现身边的世界"}
+                <Text style={{ fontSize: 14, color: 'white', marginBottom: 2 }}>
+                  {'重新发现身边的世界'}
                 </Text>
               </View>
             </View>
           </ImageBackground>
 
           <View style={{ marginTop: 80, marginHorizontal: 40 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image source={require("../../assets/image/login_phone.png")} />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image source={require('../../assets/image/login_phone.png')} />
               <TextInput
                 placeholder="请输入手机号码"
                 placeholderTextColor="#E5E5E5"
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
-                keyboardType={"number-pad"}
+                keyboardType={'number-pad'}
                 style={[styles.inputField, { flex: 1 }]}
                 value={phone}
                 maxLength={11}
@@ -132,8 +141,8 @@ export default class LoginEnterPhone extends NavigatorPage {
                 styles.buttonBox,
                 {
                   backgroundColor: this._btnStyle(phone.length == 11),
-                  borderColor: this._btnStyle(phone.length == 11)
-                }
+                  borderColor: this._btnStyle(phone.length == 11),
+                },
               ]}
               onPress={_ => {
                 if (phone.length == 11) {
@@ -154,27 +163,27 @@ export default class LoginEnterPhone extends NavigatorPage {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: styleUtil.backgroundColor
+    backgroundColor: styleUtil.backgroundColor,
   },
   signUpBox: {
-    marginTop: 10
+    marginTop: 10,
   },
   title: {
     marginBottom: 20,
-    color: "#333",
+    color: '#333',
     fontSize: 20,
-    textAlign: "center"
+    textAlign: 'center',
   },
   inputField: {
     marginLeft: 8,
     height: 44,
     paddingLeft: 8,
-    color: "#454545",
+    color: '#454545',
     fontSize: 16,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderBottomWidth: styleUtil.borderSeparator,
     // borderWidth: styleUtil.borderSeparator,
-    borderColor: styleUtil.borderColor
+    borderColor: styleUtil.borderColor,
   },
   buttonBox: {
     marginTop: 80,
@@ -182,18 +191,18 @@ const styles = StyleSheet.create({
     height: 48,
     borderWidth: 1,
     borderColor: styleUtil.themeColor,
-    borderRadius: 24
+    borderRadius: 24,
   },
   buttonText: {
     fontSize: 20,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 12
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 12,
   },
   verifyCodeBox: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 10,
-    justifyContent: "space-between"
+    justifyContent: 'space-between',
   },
   countBtn: {
     width: 110,
@@ -203,16 +212,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: styleUtil.themeColor,
     backgroundColor: styleUtil.themeColor,
-    borderRadius: 4
+    borderRadius: 4,
   },
   countBtnText: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 16
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 16,
   },
   closeModal: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
-    alignSelf: "center"
-  }
+    alignSelf: 'center',
+  },
 });

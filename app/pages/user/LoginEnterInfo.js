@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import {
   StyleSheet,
@@ -9,23 +9,25 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard,
-  Platform,
-} from 'react-native';
-import styleUtil from '../../common/styleUtil';
-import NavigatorPage from '../../components/NavigatorPage';
-import OverlayModal from '../../components/OverlayModal';
-import { Avatar, Icon } from 'react-native-elements';
-import config from '../../common/config';
-import ImageCropPicker from 'react-native-image-crop-picker';
-import navigate from '../../screens/navigate';
-import DatePicker from '../../components/DatePicker';
-import LoginMoreInfo from './LoginMoreInfo';
+  Platform
+} from "react-native";
+import styleUtil from "../../common/styleUtil";
+import NavigatorPage from "../../components/NavigatorPage";
+import OverlayModal from "../../components/OverlayModal";
+import { Avatar, Icon } from "react-native-elements";
+import config from "../../common/config";
+import ImageCropPicker from "react-native-image-crop-picker";
+import navigate from "../../screens/navigate";
+import DatePicker from "../../components/DatePicker";
+import LoginMoreInfo from "./LoginMoreInfo";
+import { apiEditRegistInfo1 } from "../../services/axios/api";
+import md5 from "react-native-md5";
 
 export default class LoginEnterInfo extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navigationBarInsets: false,
-    style: { backgroundColor: 'transparent', borderBottomWidth: 0 },
+    style: { backgroundColor: "transparent", borderBottomWidth: 0 },
     scene: navigate.sceneConfig.PushFromRight,
     leftView: (
       <TouchableOpacity
@@ -34,45 +36,63 @@ export default class LoginEnterInfo extends NavigatorPage {
           navigate.pop();
         }}
       >
-        <Icon name={'ios-arrow-back'} type={'ionicon'} color={'white'} size={25} />
+        <Icon
+          name={"ios-arrow-back"}
+          type={"ionicon"}
+          color={"white"}
+          size={25}
+        />
       </TouchableOpacity>
-    ),
+    )
   };
 
   constructor(props) {
     super(props);
     this.state = {
       face: null,
-      nickName: '',
-      birth: '',
-      sex: '男',
+      nickName: "",
+      birth: "",
+      sex: "男"
     };
   }
 
+  //TODO
   _netRegisterInfo1 = () => {
     const { face, nickName, birth, sex } = this.state;
     console.log(face);
+    let auid = "";
+    let M9 = new Date().getTime();
+    let strM9 = "" + M9;
     const option = {
       nickName,
       birth,
       sex,
-      face: {
-        type: 'multipart/form-data',
-        name: 'file.jpg',
-      },
+      face: {},
+      auid: auid,
+      M0: "MMC",
+      M2: "",
+      M3: "120.45435,132.32424",
+      M8: md5.hex_md5(auid + strM9),
+      M9: strM9
     };
     if (face !== null) {
       option.face.uri = face.path;
     } else {
-      option.face.uri = '';
+      option.face.uri = "../../assets/image/login_default_avatar.png";
     }
     toast.modalLoading();
     console.log(option);
-    request.upload(config.api.registerInfo1, option).then(res => {
+
+    apiEditRegistInfo1(option).then(res => {
       toast.modalLoadingHide();
-      if (res.code === 1) {
-        config.setStatusAndMarker(res.data);
-        navigate.pushNotNavBar(LoginMoreInfo);
+      console.log(res.data);
+      console.log("qqqqqqqqqqq");
+      if (res.data.code === 1) {
+        //TODO  同步redux
+        // config.setStatusAndMarker(res.data);
+        navigate.pushNotNavBar(LoginMoreInfo, {
+          phone: this.props.phone
+        });
       }
     });
   };
@@ -81,7 +101,7 @@ export default class LoginEnterInfo extends NavigatorPage {
 
   _openCamera = type => {
     ImageCropPicker.openCamera({
-      cropping: true,
+      cropping: true
       // compressImageQuality: 1
     }).then(image => {
       this.setState({ face: image });
@@ -92,48 +112,48 @@ export default class LoginEnterInfo extends NavigatorPage {
     ImageCropPicker.openPicker({
       multiple: false,
       // cropping: true,
-      mediaType: 'photo',
-      compressImageQuality: Platform.OS === 'ios' ? 0 : 1,
+      mediaType: "photo",
+      compressImageQuality: Platform.OS === "ios" ? 0 : 1,
       minFiles: 1,
-      maxFiles: 1,
+      maxFiles: 1
     })
       .then(image => {
         this.setState({ face: image });
       })
       .catch(err => {
-        if (err.code === 'E_PICKER_CANCELLED') {
+        if (err.code === "E_PICKER_CANCELLED") {
           return;
         }
       });
   };
 
-  _onClickAvatar = (type = 'avatar') => {
+  _onClickAvatar = (type = "avatar") => {
     let items = [
       {
-        title: '拍照',
-        onPress: _ => config.loadData(_ => this._openCamera(type)),
+        title: "拍照",
+        onPress: _ => config.loadData(_ => this._openCamera(type))
       },
       {
-        title: '从相册中选取',
-        onPress: _ => config.loadData(_ => this._selectLibrary(type)),
-      },
+        title: "从相册中选取",
+        onPress: _ => config.loadData(_ => this._selectLibrary(type))
+      }
     ];
     config.showAction(items);
   };
 
   showDatePicker = () => {
     let birth = this.state.birth;
-    let arr = birth.split('/');
+    let arr = birth.split("/");
     OverlayModal.show(
       <DatePicker
         selectedYear={arr[0]}
         selectedMonth={arr[1]}
         selectedDate={arr[2]}
         onDone={arr => {
-          birth = arr.join('/');
+          birth = arr.join("/");
           this.setState({ birth: birth });
         }}
-      />,
+      />
     );
   };
 
@@ -148,42 +168,50 @@ export default class LoginEnterInfo extends NavigatorPage {
           Keyboard.dismiss();
         }}
       >
-        <View style={{ overflow: 'hidden' }}>
+        <View style={{ overflow: "hidden" }}>
           <ImageBackground
             style={{
               width: styleUtil.window.width,
               height: styleUtil.window.width * (222.0 / 375.0),
-              resizeMode: 'contain',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
+              resizeMode: "contain",
+              justifyContent: "flex-end",
+              alignItems: "center"
             }}
-            source={require('../../assets/image/login_head_background.png')}
+            source={require("../../assets/image/login_head_background.png")}
           >
             <TouchableOpacity
               style={{
-                flexDirection: 'column',
-                alignItems: 'center',
-                marginBottom: 20,
+                flexDirection: "column",
+                alignItems: "center",
+                marginBottom: 20
               }}
               onPress={_ => {
                 this._onClickAvatar();
                 Keyboard.dismiss();
               }}
             >
-              <Avatar size={71} rounded source={config.defaultAvatar(face ? face.path : '')} />
-              <Text style={{ fontSize: 14, color: 'white', marginTop: 10 }}>{'修改头像'}</Text>
+              <Avatar
+                size={71}
+                rounded
+                source={config.defaultAvatar(face ? face.path : "")}
+              />
+              <Text style={{ fontSize: 14, color: "white", marginTop: 10 }}>
+                {"修改头像"}
+              </Text>
             </TouchableOpacity>
           </ImageBackground>
 
           <View style={{ marginTop: 80, marginHorizontal: 40 }}>
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-end"
               }}
             >
-              <Image source={require('../../assets/image/login_nick_name.png')} />
+              <Image
+                source={require("../../assets/image/login_nick_name.png")}
+              />
               <TextInput
                 placeholder="请输入你的昵称"
                 placeholderTextColor="#E5E5E5"
@@ -199,13 +227,15 @@ export default class LoginEnterInfo extends NavigatorPage {
             </View>
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
+                flexDirection: "row",
+                alignItems: "center",
                 marginTop: 40,
-                justifyContent: 'flex-end',
+                justifyContent: "flex-end"
               }}
             >
-              <Image source={require('../../assets/image/login_birthday.png')} />
+              <Image
+                source={require("../../assets/image/login_birthday.png")}
+              />
 
               <TextInput
                 editable={false}
@@ -219,9 +249,9 @@ export default class LoginEnterInfo extends NavigatorPage {
               />
               <TouchableOpacity
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  position: 'absolute',
+                  width: "100%",
+                  height: "100%",
+                  position: "absolute"
                 }}
                 onPress={_ => {
                   this.showDatePicker();
@@ -231,45 +261,57 @@ export default class LoginEnterInfo extends NavigatorPage {
             </View>
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: "row",
                 marginTop: 30,
-                justifyContent: 'center',
-                alignItems: 'center',
+                justifyContent: "center",
+                alignItems: "center"
               }}
             >
               <TouchableOpacity
-                style={{ flexDirection: 'row', alignItems: 'center' }}
+                style={{ flexDirection: "row", alignItems: "center" }}
                 onPress={_ => {
-                  this.setState({ sex: '男' });
+                  this.setState({ sex: "男" });
                   Keyboard.dismiss();
                 }}
               >
                 <Icon
-                  name={sex == '男' ? 'ios-radio-button-on' : 'ios-radio-button-off'}
-                  type={'ionicon'}
+                  name={
+                    sex == "男" ? "ios-radio-button-on" : "ios-radio-button-off"
+                  }
+                  type={"ionicon"}
                   color={styleUtil.themeColor}
                   size={25}
                 />
-                <Text style={{ fontSize: 16, color: '#454545', marginLeft: 15 }}>{'男性'}</Text>
+                <Text
+                  style={{ fontSize: 16, color: "#454545", marginLeft: 15 }}
+                >
+                  {"男性"}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 60,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 60
                 }}
                 onPress={_ => {
-                  this.setState({ sex: '女' });
+                  this.setState({ sex: "女" });
                   Keyboard.dismiss();
                 }}
               >
                 <Icon
-                  name={sex == '女' ? 'ios-radio-button-on' : 'ios-radio-button-off'}
-                  type={'ionicon'}
+                  name={
+                    sex == "女" ? "ios-radio-button-on" : "ios-radio-button-off"
+                  }
+                  type={"ionicon"}
                   color={styleUtil.themeColor}
                   size={25}
                 />
-                <Text style={{ fontSize: 16, color: '#454545', marginLeft: 15 }}>{'女性'}</Text>
+                <Text
+                  style={{ fontSize: 16, color: "#454545", marginLeft: 15 }}
+                >
+                  {"女性"}
+                </Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
@@ -277,9 +319,13 @@ export default class LoginEnterInfo extends NavigatorPage {
               style={[
                 styles.buttonBox,
                 {
-                  backgroundColor: this._btnStyle(nickName.length > 0 && birth.length > 0),
-                  borderColor: this._btnStyle(nickName.length > 0 && birth.length > 0),
-                },
+                  backgroundColor: this._btnStyle(
+                    nickName.length > 0 && birth.length > 0
+                  ),
+                  borderColor: this._btnStyle(
+                    nickName.length > 0 && birth.length > 0
+                  )
+                }
               ]}
               onPress={_ => {
                 if (nickName.length > 0 && birth.length > 0) {
@@ -287,7 +333,7 @@ export default class LoginEnterInfo extends NavigatorPage {
                 }
               }}
             >
-              <Text style={styles.buttonText}>{'下一步'}</Text>
+              <Text style={styles.buttonText}>{"下一步"}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -299,28 +345,28 @@ export default class LoginEnterInfo extends NavigatorPage {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: styleUtil.backgroundColor,
+    backgroundColor: styleUtil.backgroundColor
   },
   signUpBox: {
-    marginTop: 10,
+    marginTop: 10
     // padding: 10
   },
   title: {
     marginBottom: 20,
-    color: '#333',
+    color: "#333",
     fontSize: 20,
-    textAlign: 'center',
+    textAlign: "center"
   },
   inputField: {
     marginLeft: 8,
     height: 44,
     paddingLeft: 8,
-    color: '#454545',
+    color: "#454545",
     fontSize: 16,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderBottomWidth: styleUtil.borderSeparator,
     // borderWidth: styleUtil.borderSeparator,
-    borderColor: styleUtil.borderColor,
+    borderColor: styleUtil.borderColor
   },
   buttonBox: {
     marginTop: 80,
@@ -328,18 +374,18 @@ const styles = StyleSheet.create({
     height: 48,
     borderWidth: 1,
     borderColor: styleUtil.themeColor,
-    borderRadius: 24,
+    borderRadius: 24
   },
   buttonText: {
     fontSize: 20,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 12,
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 12
   },
   verifyCodeBox: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 10,
-    justifyContent: 'space-between',
+    justifyContent: "space-between"
   },
   countBtn: {
     width: 110,
@@ -349,16 +395,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: styleUtil.themeColor,
     backgroundColor: styleUtil.themeColor,
-    borderRadius: 4,
+    borderRadius: 4
   },
   countBtnText: {
-    textAlign: 'center',
-    color: '#fff',
-    fontSize: 16,
+    textAlign: "center",
+    color: "#fff",
+    fontSize: 16
   },
   closeModal: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
-    alignSelf: 'center',
-  },
+    alignSelf: "center"
+  }
 });

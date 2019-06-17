@@ -42,7 +42,7 @@ let request = {
     };
     return _fetchData(url, options);
   },
-  upload(url: string, params = {}, callback: Function) {
+  upload(url, params = {}, callback) {
     url = config.api.baseURI + url;
 
     params.auid = config.loginInfo.auid;
@@ -74,7 +74,8 @@ export default request;
 
 const _fetchData = (url, options, callback) => {
   const { method = 'POST', body, requestHeader } = options;
-  console.log(url);
+  console.log(options);
+  console.log(999999999);
   return new Promise((resolve, reject) => {
     const handler = function() {
       try {
@@ -95,7 +96,6 @@ const _fetchData = (url, options, callback) => {
     callback && callback(xhr);
     xhr.send(body);
   }).then(response => {
-    // console.log(response)
     if (response.readyState === 4 && response.status === 200) {
       let res = JSON.parse(response.responseText);
       console.log(res);

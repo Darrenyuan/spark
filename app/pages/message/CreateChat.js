@@ -8,7 +8,9 @@ import {
 } from 'react-native';
 import IndexedListView from '../../components/IndexedListView'
 import styleUtil from "../../common/styleUtil";
+
 import {Avatar} from 'react-native-elements'
+
 import SearchFriend from "./SearchFriend";
 import {fromJS} from 'immutable'
 import SearchView from "./SearchView";
@@ -20,6 +22,7 @@ import TabNavBar, {MessageBadge} from "../../screens/TabNavBar";
 import Chat from "./Chat";
 import config from "../../common/config";
 import NavBar from "../../components/NavBar";
+
 import request from "../../common/request";
 import utils from "../../common/utils";
 import ImageCached from "../../components/ImageCached";

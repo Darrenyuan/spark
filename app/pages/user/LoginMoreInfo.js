@@ -44,7 +44,12 @@ class LoginMoreInfo extends NavigatorPage {
 
   componentDidMount() {
     super.componentDidMount();
+    console.log(this.props.spark.configInfo);
+    console.log(this.props.spark.configInfo.data);
+    console.log('yuyuyuyuyuy');
     if (this.props.spark.configInfo.data) {
+      // console.log(this.props.spark.configInfo.data);
+      // console.log('yuyuyuyuyuy');
       const { data } = this.props.spark.configInfo;
       this._status = data.kkStatusTypes; //交友状态类型
       this.markersCategorys = data.markerTypes; //自我标签类型

@@ -67,10 +67,9 @@ export default class LoginPersonal extends NavigatorPage {
       />
     );
   };
-
   renderPage() {
     const { markers, markersCategorys } = this.state;
-    console.log('yuyuyuu');
+    console.log('mimimii');
     console.log(markersCategorys);
     console.log(markers);
 

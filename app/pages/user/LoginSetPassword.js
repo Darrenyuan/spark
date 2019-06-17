@@ -18,10 +18,20 @@ import LoginEnterInfo from './LoginEnterInfo';
 import LoginAgreement from './LoginAgreement';
 import CountDownText from '../../components/countdown/countDownText';
 import CryptoJS from 'react-native-crypto-js';
+
 import { apiSendCodeToPhone, apiRegist } from '../../services/axios/api';
 import md5 from 'react-native-md5';
 
-export default class LoginSetPassword extends NavigatorPage {
+import config from '../../common/config';
+import LoginEnterPassword from './LoginEnterPassword';
+import { apiResetPassword } from '../../services/axios/api';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../services/redux/actions';
+import { connect } from 'react-redux';
+import LocationService from '../../screens/LocationService';
+import md5 from 'react-native-md5';
+
+class LoginSetPassword extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     // navBarHidden: true,
@@ -57,6 +67,33 @@ export default class LoginSetPassword extends NavigatorPage {
 
     this._netSendVerifyCode();
   }
+
+  _netSetPassword = () => {
+    const { loginInfo } = this.props.spark;
+    let auid = loginInfo.auid;
+    let M2 = loginInfo.loginToken;
+    let M3 = LocationService.getLocationString();
+    let M8 = md5.str_md5(auid + new Date().getTime());
+    let phone = this.props.phone;
+    let encoded = CryptoJS.MD5(this.state.password);
+    toast.modalLoading();
+
+    apiResetPassword({
+      auid: auid,
+      M2: M2,
+      M3: M3,
+      M8: M8,
+      phone: phone,
+      password: encoded,
+    }).then(res => {
+      toast.loadingHide();
+      if (res.data.code === 1) {
+        navigate.pushNotNavBar(LoginEnterPassword, {
+          phone: phone,
+        });
+      }
+    });
+  };
 
   _netSendVerifyCode = () => {
     // toast.loadingShow('获取短信验证码...');
@@ -111,6 +148,12 @@ export default class LoginSetPassword extends NavigatorPage {
       }
     });
   };
+
+  // _netEnterPasswordPage = () => {
+  //   console.log(1111111111111111);
+  //   let phone = this.props.phone;
+  //   console.log(phone);
+  // };
 
   _checkCodeValid = () => {
     const { verifyCode } = this.state;
@@ -244,7 +287,7 @@ export default class LoginSetPassword extends NavigatorPage {
             </View>
             <Text
               style={{
-                marginTop: 12,
+                marginTop: 10,
                 marginLeft: 24,
                 fontSize: 14,
                 height: 18,
@@ -253,6 +296,7 @@ export default class LoginSetPassword extends NavigatorPage {
             >
               {verifyCode.length < 4 ? '' : this._checkCodeValid() ? '验证码正确' : '*验证码错误'}
             </Text>
+
             <View
               style={{
                 flexDirection: 'row',
@@ -269,6 +313,7 @@ export default class LoginSetPassword extends NavigatorPage {
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
                 keyboardType={'default'}
+                //keyboardType={"number-pad"}
                 style={[styles.inputField, { flex: 1 }]}
                 value={password}
                 maxLength={30}
@@ -291,6 +336,7 @@ export default class LoginSetPassword extends NavigatorPage {
                 />
               </TouchableOpacity>
             </View>
+
             <Text
               style={{
                 marginTop: 12,
@@ -311,8 +357,13 @@ export default class LoginSetPassword extends NavigatorPage {
                 },
               ]}
               onPress={_ => {
+                console.log('onpress11111111111');
+
                 if (this._checkAllInputValid()) {
-                  this._netRegister();
+                  //this._netRegister();
+                  resetPassword ? this._netSetPassword() : this._netRegister();
+                  // this._netEnterPasswordPage();
+                  // this._netSetPassword();
                 }
               }}
             >
@@ -344,6 +395,23 @@ export default class LoginSetPassword extends NavigatorPage {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    spark: state,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...actions }, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LoginSetPassword);
 
 const styles = StyleSheet.create({
   container: {

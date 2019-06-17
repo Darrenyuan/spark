@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import {
   StyleSheet,
@@ -6,20 +6,20 @@ import {
   View,
   FlatList,
   DeviceEventEmitter,
-  TouchableOpacity
-} from "react-native";
-import styleUtil from "../../common/styleUtil";
+  TouchableOpacity,
+} from 'react-native';
+import styleUtil from '../../common/styleUtil';
 // import LoadingMore from "../components/load/LoadingMore";
-import NavigatorPage from "../../components/NavigatorPage";
-import NearbyItem from "./NearbyItem";
-import config from "../../common/config";
-import LoadingMore from "../../components/load/LoadingMore";
+import NavigatorPage from '../../components/NavigatorPage';
+import NearbyItem from './NearbyItem';
+import config from '../../common/config';
+import LoadingMore from '../../components/load/LoadingMore';
 
 export default class NearbyList extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navBarHidden: true,
-    navigationBarInsets: false
+    navigationBarInsets: false,
   };
   //
   // static fetchNewTopicWithRefreshing = () => {
@@ -34,18 +34,13 @@ export default class NearbyList extends NavigatorPage {
     super(props);
     this.page = 1;
     this.total = 1;
-    Object.assign(this.state, {
+    this.state = {
       user: props.user,
-      list: [
-        { name: "haha" },
-        { name: "haha" },
-        { name: "haha" },
-        { name: "haha" }
-      ],
+      list: [{ name: 'haha' }, { name: 'haha' }, { name: 'haha' }, { name: 'haha' }],
       another: false,
       isLoading: false, //上拉加载
-      isRefreshing: false //下拉刷新
-    });
+      isRefreshing: false, //下拉刷新
+    };
     this._isMounted = false;
   }
 

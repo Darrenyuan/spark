@@ -1,3 +1,4 @@
+import { apiOnStart } from '../services/axios/api';
 import React from 'react';
 import { Platform, StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native';
 import { TabView, NavigationBar } from 'teaset';
@@ -28,6 +29,17 @@ class TabNavBar extends React.Component {
       visible: false,
     };
   }
+
+  componentDidMount = () => {
+    apiOnStart({
+      auid: '',
+      M0: 'H5',
+      M2: '',
+      M3: '120.45435,132.32424',
+      M8: '3204u0we8w0fs0f8s8r23r32jo',
+      M9: '15080803783',
+    });
+  };
 
   componentWillMount() {
     config.getLoginInfoFromStorage().then(loginInfo => {

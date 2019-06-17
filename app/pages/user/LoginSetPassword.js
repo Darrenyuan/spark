@@ -29,7 +29,6 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../services/redux/actions';
 import { connect } from 'react-redux';
 import LocationService from '../../screens/LocationService';
-import md5 from 'react-native-md5';
 
 class LoginSetPassword extends NavigatorPage {
   static defaultProps = {

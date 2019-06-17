@@ -7,7 +7,6 @@ import { Icon } from 'react-native-elements';
 import TabBar from '../../components/tabbar/TabBar';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import navigate from '../../screens/navigate';
-
 let pageCallback = null;
 let callbackParam = [];
 
@@ -71,6 +70,9 @@ export default class LoginPersonal extends NavigatorPage {
 
   renderPage() {
     const { markers, markersCategorys } = this.state;
+    console.log('yuyuyuu');
+    console.log(markersCategorys);
+    console.log(markers);
 
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>

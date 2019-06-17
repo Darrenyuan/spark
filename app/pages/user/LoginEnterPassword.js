@@ -26,6 +26,8 @@ import DeviceInfo from 'react-native-device-info';
 import LocationService from '../../screens/LocationService';
 import md5 from 'react-native-md5';
 import Profile from '../profile/Profile';
+import Nearby from '../nearby/Nearby';
+import TabNavBar from '../../screens/TabNavBar';
 
 class LoginEnterPassword extends NavigatorPage {
   static defaultProps = {
@@ -87,7 +89,7 @@ class LoginEnterPassword extends NavigatorPage {
       toast.modalLoadingHide();
       if (res.data.code === 1) {
         this._netApplyLogon();
-        navigate.pushNotNavBar(Profile);
+        navigate.pushNotNavBar(TabNavBar);
       }
     });
 

@@ -65,7 +65,7 @@ export function apiFetchConfigInfo(args = {}) {
       M8: args.M8 /*固有参数：DES.MD5(auid+M9)*/,
       M9: args.M9 /*固有参数：时间戳（毫秒）*/,
     }),
-  )
+  );
 }
 export function apiOnStart(args = {}) {
   let defaultArgs = getDefaultArgs(args);
@@ -88,8 +88,8 @@ export function apiCheckPhone(args = {}) {
       M3: args.M3,
       M8: args.M8,
       M9: args.M9,
-    })
-  )
+    }),
+  );
 }
 
 // export function apiCheckPhone(args = {}) {
@@ -118,8 +118,8 @@ export function apiSendCodeToPhone(args = {}) {
       M3: args.M3,
       M8: args.M8,
       M9: args.M9,
-    })
-  )
+    }),
+  );
 }
 
 export function apiLogin(args = {}) {
@@ -152,20 +152,20 @@ export function apiResetPassword(args = {}) {
   );
 }
 
-export function apiSendCodeToPhone(args = {}) {
-  let defaultArgs = getDefaultArgs(args);
-  return instance.post(
-    baseUrl + 'HICService.y?cmd=sendCodeToPhone',
-    jsonToQueryString({
-      ...defaultArgs,
-      M0: DeviceInfo.getUniqueID(),
-      M9: new Date().getTime(),
-      phone: args.phone,
-      seq: args.seq,
-    }),
-    config,
-  );
-}
+// export function apiSendCodeToPhone(args = {}) {
+//   let defaultArgs = getDefaultArgs(args);
+//   return instance.post(
+//     baseUrl + 'HICService.y?cmd=sendCodeToPhone',
+//     jsonToQueryString({
+//       ...defaultArgs,
+//       M0: DeviceInfo.getUniqueID(),
+//       M9: new Date().getTime(),
+//       phone: args.phone,
+//       seq: args.seq,
+//     }),
+//     config,
+//   );
+// }
 
 //注册
 export function apiRegist(args = {}) {
@@ -180,8 +180,8 @@ export function apiRegist(args = {}) {
       M3: args.M3,
       M8: args.M8,
       M9: args.M9,
-    })
-  )
+    }),
+  );
 }
 // export function apiRegist(args = {}) {
 //   let defaultArgs = getDefaultArgs(args);
@@ -238,8 +238,8 @@ export function apiEditRegistInfo2(args = {}) {
       M3: args.M3,
       M8: args.M8,
       M9: args.M9,
-    })
-  )
+    }),
+  );
 }
 // export function apiEditRegistInfo1(args = {}) {
 //   let defaultArgs = getDefaultArgs(args);

@@ -81,6 +81,9 @@ export default class App extends Component<Props, State> {
   componentDidMount() {
     loadState().then(
       data => {
+        if (data == null) {
+          data = initialState;
+        }
         console.log(JSON.stringify(data));
         store = configureStore(data);
         store.subscribe(

@@ -92,20 +92,6 @@ export function apiCheckPhone(args = {}) {
   );
 }
 
-// export function apiCheckPhone(args = {}) {
-//   let defaultArgs = getDefaultArgs(args);
-//   return instance.post(
-//     baseUrl + 'HICService.y?cmd=checkPhone',
-//     jsonToQueryString({
-//       ...defaultArgs,
-//       M0: DeviceInfo.getUniqueID(),
-//       M9: new Date().getTime(),
-//       phone: args.phone,
-//     }),
-//     config,
-//   );
-// }
-
 //发送手机验证码
 export function apiSendCodeToPhone(args = {}) {
   return instance.post(
@@ -152,21 +138,6 @@ export function apiResetPassword(args = {}) {
   );
 }
 
-// export function apiSendCodeToPhone(args = {}) {
-//   let defaultArgs = getDefaultArgs(args);
-//   return instance.post(
-//     baseUrl + 'HICService.y?cmd=sendCodeToPhone',
-//     jsonToQueryString({
-//       ...defaultArgs,
-//       M0: DeviceInfo.getUniqueID(),
-//       M9: new Date().getTime(),
-//       phone: args.phone,
-//       seq: args.seq,
-//     }),
-//     config,
-//   );
-// }
-
 //注册
 export function apiRegist(args = {}) {
   return instance.post(
@@ -183,20 +154,6 @@ export function apiRegist(args = {}) {
     }),
   );
 }
-// export function apiRegist(args = {}) {
-//   let defaultArgs = getDefaultArgs(args);
-//   return instance.post(
-//     baseUrl + 'HICService.y?cmd=regist',
-//     jsonToQueryString({
-//       ...defaultArgs,
-//       M0: DeviceInfo.getUniqueID(),
-//       M9: new Date().getTime(),
-//       phone: args.phone,
-//       password: args.password,
-//     }),
-//     config,
-//   );
-// }
 
 //注册信息完善1
 export function apiEditRegistInfo1(args = {}) {
@@ -241,38 +198,52 @@ export function apiEditRegistInfo2(args = {}) {
     }),
   );
 }
-// export function apiEditRegistInfo1(args = {}) {
-//   let defaultArgs = getDefaultArgs(args);
-//   return instance.post(
-//     baseUrl + 'HICService.y?cmd=editRegistInfo1',
-//     jsonToQueryString({
-//       ...defaultArgs,
-//       M0: DeviceInfo.getUniqueID(),
-//       M9: new Date().getTime(),
-//       nickName: args.nickName /*昵称*/,
-//       face: args.face /*头像：待上传文件*/,
-//       sex: args.sex /*性别：男，女*/,
-//       birth: args.birth /*生日*/,
-//     }),
-//     config,
-//   );
-// }
-
-// export function apiEditRegistInfo2(args = {}) {
-//   let defaultArgs = getDefaultArgs(args);
-//   return instance.post(
-//     baseUrl + 'HICService.y?cmd=editRegistInfo2',
-//     jsonToQueryString({
-//       ...defaultArgs,
-//       M0: DeviceInfo.getUniqueID(),
-//       M9: new Date().getTime(),
-//       kkStatus: args.kkStatus,
-//       markers: args.markers,
-//     }),
-//     config,
-//   );
-// }
-
+//主题分类属性信息
+export function apiSjTypeInfo(args = {}) {
+  return instance.post(
+    baseUrl + 'SubjectCService.y?cmd=sjTypeInfo',
+    jsonToQueryString({
+      sjType: args.sjType,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
+    }),
+  );
+}
+//发表主题
+export function apiAdd(args = {}) {
+  let formData = new FormData();
+  formData.append('sjType', args.sjType);
+  formData.append('title', args.title);
+  formData.append('content', args.content);
+  formData.append('areaR', args.areaR);
+  formData.append('startTime', args.startTime);
+  formData.append('price', args.price);
+  formData.append('auid', args.auid);
+  formData.append('M0', args.M0);
+  formData.append('M2', args.M2);
+  formData.append('M3', args.M3);
+  formData.append('M8', args.M8);
+  formData.append('M9', args.M9);
+  args.imgs.map(item => {
+    formData.append('face', {
+      uri: item.path,
+      name: 'file.jpg',
+      type: 'multipart/form-data',
+    });
+  });
+  let options = {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  return axios.post(`${baseUrl}SubjectCService.y?cmd=add`, formData, options);
+}
 export function apiLogout(args = {}) {
   let defaultArgs = getDefaultArgs(args);
   return instance.post(
@@ -311,39 +282,6 @@ export function apiList(args = {}) {
       sjType: args.sjType /*主题分类*/,
       collectFlag: args.collectFlag /*收藏标记：1-查询我收藏的主题，其他为空*/,
       keyword: args.keyword /*搜索关键字*/,
-    }),
-    config,
-  );
-}
-
-export function apiSjTypeInfo(args = {}) {
-  return instance.post(
-    baseUrl + 'HICService.y?cmd=sjTypeInfo',
-    jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
-      sjType: args.sjType /*主题分类*/,
-    }),
-    config,
-  );
-}
-
-export function apiAdd(args = {}) {
-  return instance.post(
-    baseUrl + 'HICService.y?cmd=add',
-    jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
-      sjType: args.sjType /*主题分类*/,
-      content: args.content /*主题内容*/,
-      areaR: args.areaR /*辐射半径*/,
-      startTime: args.startTime /*开始时间*/,
-      endTime: args.endTime /*结束时间*/,
-      duration: args.duration /*有效时间*/,
-      showPower: args.showPower /*可见权限*/,
-      picfile: args.picfile /*上传图片1~9*/,
     }),
     config,
   );

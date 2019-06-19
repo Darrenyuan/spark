@@ -25,6 +25,8 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../services/redux/actions';
 import { connect } from 'react-redux';
 import toast from '../../common/toast';
+import TabNavBar from '../../screens/TabNavBar';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 let gType;
 let _netPublishSubject;
@@ -78,7 +80,7 @@ class Publish extends NavigatorPage {
 
 		// 获取主题配置信息
 		apiSjTypeInfo({
-			sjType: sjType[this.props.type - 1],
+			sjType: sjType[this.props.type],
 			auid: auid,
 			M0: 'MMC',
 			M2: loginToken,
@@ -98,6 +100,7 @@ class Publish extends NavigatorPage {
 		// 发布主题，全局作用域
 		_netPublishSubject = () => {
 			const { pageInfo, title, content, price, imgs, areaR, startTime } = this.state;
+			toast.modalLoading();
 			apiAdd({
 				sjType: pageInfo.sjType,
 				title: title,
@@ -112,10 +115,23 @@ class Publish extends NavigatorPage {
 				M3: '120.45435,132.32424',
 				M8: md5.hex_md5(auid + strM9),
 				M9: strM9
-			}).then((res) => {
-				console.log(res);
-				console.log('add add add');
-			});
+			}).then(
+				(res) => {
+					console.log(res);
+					console.log('add add add');
+					toast.modalLoadingHide();
+					if (res.data.code === 1) {
+						toast.success('发布成功！');
+						navigate.pushNotNavBar(TabNavBar);
+					}
+				},
+				(err) => {
+					console.log(err);
+					console.log('add add add');
+					toast.modalLoadingHide();
+					// toast.fail('发布失败！');
+				}
+			);
 		};
 	}
 	// 图片添加
@@ -135,7 +151,7 @@ class Publish extends NavigatorPage {
 		});
 	};
 	// 图片删除
-	_onImagedelete = (flag) => {
+	_onImageDelete = (flag) => {
 		let newImgs = [];
 		this.state.imgs.map((item, index) => {
 			flag !== index && newImgs.push(item);
@@ -143,6 +159,30 @@ class Publish extends NavigatorPage {
 		this.setState({
 			imgs: newImgs
 		});
+	};
+	// Modal消失
+	_handleModelHidden = () => {
+		this.setState({ visible: false });
+	};
+	_handleModelVisible = () => {
+		this.setState({ visible: true });
+	};
+	// 弹出Modal大图轮换
+	_onImagesRotation = (index) => {
+		const { visible, imgs } = this.state;
+		const imagePath = imgs.map((item) => {
+			return item.path;
+		});
+		return (
+			<Modal
+				transparent={true}
+				animationType="fade"
+				style={styles.imagesRotation}
+				onRequestClose={this._handleModelHidden}
+			>
+				<ImageViewer imageUrls={imagePath} enableSwipeDown onClick={this._handleModelHidden} index={0} />
+			</Modal>
+		);
 	};
 	// 弹出时间Action
 	_onClickTimer = () => {
@@ -243,10 +283,16 @@ class Publish extends NavigatorPage {
 						if (index < 9) {
 							return (
 								<View style={styles.imgsItem} key={index}>
-									<Image source={{ uri: item.path }} style={styles.imgsItem_img} />
+									<TouchableOpacity
+									// onPress={(_) => {
+									// 	this._handleModelVisible();
+									// }}
+									>
+										<Image source={{ uri: item.path }} style={styles.imgsItem_img} />
+									</TouchableOpacity>
 									<TouchableOpacity
 										onPress={(_) => {
-											this._onImagedelete(index);
+											this._onImageDelete(index);
 										}}
 										style={{
 											position: 'absolute',
@@ -354,12 +400,12 @@ class Publish extends NavigatorPage {
 								justifyContent: 'flex-end'
 							}}
 							onPress={(_) => {
-								navigate.pushNotNavBar(LoginPersonal, {
-									labels,
-									pageCallback: (labels) => {
-										this.setState({ labels });
-									}
-								});
+								// navigate.pushNotNavBar(LoginPersonal, {
+								// 	labels,
+								// 	pageCallback: (labels) => {
+								// 		this.setState({ labels });
+								// 	}
+								// });
 							}}
 						>
 							<Icon name={'ios-arrow-forward'} type={'ionicon'} size={25} color={styleUtil.grayColor} />
@@ -382,7 +428,7 @@ class Publish extends NavigatorPage {
 
 	renderPage() {
 		const { type } = this.props;
-		const { pageInfo } = this.state;
+		const { pageInfo, visible } = this.state;
 
 		let placeholder1;
 		let placeholder2;
@@ -422,6 +468,7 @@ class Publish extends NavigatorPage {
 				{this._renderTimer(tip)}
 				<View style={{ height: 10 }} />
 				{this._renderAddress()}
+				{visible && this._onImagesRotation()}
 			</View>
 		);
 	}
@@ -479,6 +526,11 @@ const styles = StyleSheet.create({
 		marginBottom: 12,
 		marginRight: 12
 	},
+	imagesRotation: {
+		flex: 1,
+		height: 300,
+		backgroundColor: 'rgba(0, 0, 0, 0.2)'
+	},
 	imgsItem_img: {
 		width: 70,
 		height: 70
@@ -486,6 +538,5 @@ const styles = StyleSheet.create({
 	imgsItem_delete: {
 		width: 20,
 		height: 20
-	},
-	timeItem: {}
+	}
 });

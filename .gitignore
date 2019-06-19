@@ -5,6 +5,7 @@ package-lock.json
 yarn.lock
 .history
 Podfile
+coverage
 # Xcode
 #
 build/

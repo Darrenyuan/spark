@@ -67,14 +67,18 @@ global.toast = toast;
 global.imessage = new IMessage();
 
 type Props = {};
-type State = {};
+type State = {
+  loadingData: boolean,
+  store: any,
+};
 
 export default class App extends Component<Props, State> {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
 
     this.state = {
       loadingData: true,
+      store: null,
     };
   }
 
@@ -85,7 +89,7 @@ export default class App extends Component<Props, State> {
           data = initialState;
         }
         console.log(JSON.stringify(data));
-        store = configureStore(data);
+        let store = configureStore(data);
         store.subscribe(
           throttle(() => {
             saveState(store.getState());
@@ -94,7 +98,7 @@ export default class App extends Component<Props, State> {
         this.setState({ loadingData: false, store: store });
       },
       error => {
-        store = configureStore();
+        let store = configureStore();
         store.subscribe(
           throttle(() => {
             saveState(store.getState());

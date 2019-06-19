@@ -2,14 +2,13 @@ package com.spark;
 
 import android.app.Application;
 
-import com.facebook.react.ReactApplication;
 import com.RNFetchBlob.RNFetchBlobPackage;
+import com.facebook.react.ReactApplication;
 import com.theweflex.react.WeChatPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import org.reactnative.camera.RNCameraPackage;
 import com.cmcewen.blurview.BlurViewPackage;
@@ -33,7 +32,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFetchBlobPackage(),
             new WeChatPackage(),
             new VectorIconsPackage(),
             new RNSpinkitPackage(),
@@ -41,7 +39,8 @@ public class MainApplication extends Application implements ReactApplication {
             new PickerPackage(),
             new RNDeviceInfo(),
             new RNCameraPackage(),
-            new BlurViewPackage()
+            new BlurViewPackage(),
+              new RNFetchBlobPackage()
       );
     }
 

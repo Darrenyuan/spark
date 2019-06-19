@@ -10,19 +10,13 @@ export default class PublishEntrance extends React.Component {
       modalVisible: false,
     };
   }
-  componentWillMount() {
-    console.log('jinjinjinjinjin');
-  }
-  componentWillReceiveProps(nextProps) {
-    console.log('xinxixnxinxinxin');
-  }
+  componentWillMount() {}
   render() {
     return (
       <Modal
         animationType={'fade'}
         // transparent={true}
         visible={this.props.modalVisible}
-        // visible={true}
         onRequestClose={() => {}}
         // onShow={() => {}}
         supportedOrientations={['portrait']}
@@ -36,17 +30,6 @@ export default class PublishEntrance extends React.Component {
             opacity: 0.8,
           }}
         >
-          {/* <BlurView
-            blurType={'dark'}
-            blurAmount={10}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
-            }}
-          /> */}
           <View style={{ flex: 1, alignItems: 'stretch' }}>
             <View style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 30 }}>
               <View
@@ -56,7 +39,7 @@ export default class PublishEntrance extends React.Component {
                   alignItems: 'flex-end',
                 }}
               >
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={_ => {
                     this.props.callbackPublishClose();
                     navigate.pushNotNavBar(Publish, { type: 0, title: '话题' });
@@ -64,7 +47,7 @@ export default class PublishEntrance extends React.Component {
                 >
                   <Image source={require('../../assets/image/publish_topic.png')} />
                   <Text style={{ color: 'white', fontSize: 16, paddingTop: 10 }}>{'话题'}</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity
                   onPress={_ => {
                     this.props.callbackPublishClose();

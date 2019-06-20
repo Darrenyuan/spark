@@ -18,7 +18,17 @@ import * as actions from '../services/redux/actions';
 import DeviceInfo from 'react-native-device-info';
 import LocationService from './LocationService';
 import md5 from 'react-native-md5';
-
+import { PermissionsAndroid } from 'react-native';
+import {
+	init,
+	Geolocation,
+	setLocatingWithReGeocode,
+	setNeedAddress,
+	addLocationListener,
+	start,
+	stop,
+	setDistanceFilter,
+} from 'react-native-amap-geolocation';
 // import MoreInfo from "../pages/discovery/Search";
 
 class TabNavBar extends React.Component {
@@ -26,7 +36,11 @@ class TabNavBar extends React.Component {
 		super(props);
 		this.state = {
 			activeIndex: 0,
-			visible: false
+			visible: false,
+			latitude: 0,
+			longitude: 0,
+			coordsStr: '',
+			address: '',
 		};
 	}
 
@@ -37,34 +51,76 @@ class TabNavBar extends React.Component {
 		LocationService.init();
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		let auid = '';
 		let M9 = new Date().getTime();
 		let strM9 = '' + M9;
-		this.props.actions.fetchConfigInfo({
-			auid: auid,
-			M0: 'MMC',
-			M2: '',
-			M3: '120.45435,132.32424',
-			M8: md5.hex_md5(auid + strM9),
-			M9: strM9
+		if (Platform.OS === 'ios') {
+			init({
+				ios: '28d1259434784e7005d8ad3735c66a09',
+				// android: '043b24fe18785f33c491705ffe5b6935',
+			}).then(
+				res => {
+					console.log('geo location111111');
+					// ios，设备移动超过 10 米才会更新位置信息
+					setDistanceFilter(10);
+				},
+				error => console.log(error),
+			);
+			//   setLocatingWithReGeocode(true);
+		} else {
+			let permissionPromise = await PermissionsAndroid.request(
+				PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+			);
+			let initPromise = await init({
+				// ios: '9bd6c82e77583020a73ef1af59d0c759',
+				android: '043b24fe18785f33c491705ffe5b6935',
+			});
+			Promise.all(permissionPromise, initPromise).then(res => {
+				// android，5 秒请求一次定位
+				setInterval(5000);
+			});
+		}
+		let _this = this;
+		Geolocation.getCurrentPosition(({ coords, timestamp, location }) => {
+			console.log('coords=', JSON.stringify(coords));
+			let coordsStr = _this.coordsToString(coords);
+			console.log('coodsStr=', coordsStr);
+			_this.setState({ coordsStr: coordsStr });
+			_this.props.actions.fetchConfigInfo({
+				auid: auid,
+				M0: 'MMC',
+				M2: '',
+				M3: coordsStr,
+				M8: md5.hex_md5(auid + strM9),
+				M9: strM9,
+			});
+			_this.setState({
+				latitude: coords.latitude,
+				longitude: coords.longitude,
+				coordsStr: coordsStr,
+			});
 		});
 	}
+
 	componentWillUnmount() {
 		LocationService.destroy();
+	}
+	coordsToString(coords) {
+		return '' + coords.latitude + ',' + coords.longitude;
 	}
 
 	_netApplyLogon = () => {
 		const { loginInfo } = this.props.spark;
 		let auid = loginInfo.auid;
 		let M2 = loginInfo.loginToken;
-		let M3 = LocationService.getLocationString();
+		let M3 = this.state.coordsStr;
 		let M8 = md5.str_md5(auid + new Date().getTime());
 		this.props.actions.applyLogon({
 			auid: auid,
 			M2: M2,
 			M3: M3,
-			M8: M8
+			M8: M8,
 		});
 	};
 
@@ -73,15 +129,37 @@ class TabNavBar extends React.Component {
 			navigate.pushNotNavBar(LoginEnterPhone);
 			return;
 		} else {
+			// 添加定位监听函数
+			addLocationListener(location => {
+				console.log(location);
+				if (location.address) {
+					this.setState({
+						latitude: location.latitude,
+						longitude: location.longitude,
+						address: location.address,
+					});
+				} else {
+					this.setState({ latitude: location.latitude, longitude: location.longitude });
+				}
+			});
+
+			// 开始连续定位
+			start();
+			if (Platform.OS === 'ios') {
+				setLocatingWithReGeocode(true);
+			} else {
+				setNeedAddress(true);
+			}
 			this.setState({ visible: true });
 		}
 	};
 
 	_callbackPublishClose = () => {
 		this.setState({ visible: false });
+		stop();
 	};
 
-	onchangeTab = (index) => {
+	onchangeTab = index => {
 		this.setState({ activeIndex: index });
 	};
 
@@ -97,10 +175,17 @@ class TabNavBar extends React.Component {
 					alignItems: 'center',
 					justifyContent: 'center',
 					backgroundColor: 'white',
-					padding: 10
+					padding: 10,
 				}}
 			>
-				<PublishEntrance modalVisible={this.state.visible} callbackPublishClose={this._callbackPublishClose} />
+				<PublishEntrance
+					modalVisible={this.state.visible}
+					callbackPublishClose={this._callbackPublishClose}
+					latitude={this.state.latitude}
+					longitude={this.state.longitude}
+					coordsStr={this.state.coordsStr}
+					address={this.state.address}
+				/>
 				<Image source={require('../assets/image/tarbar_add.png')} />
 			</View>
 		);
@@ -122,15 +207,15 @@ class TabNavBar extends React.Component {
 				: {
 						borderTopWidth: 0.5,
 						borderTopColor: '#e8e8e8',
-						backgroundColor: 'white'
-					};
+						backgroundColor: 'white',
+				  };
 		return (
 			<TabView
 				style={{ flex: 1, backgroundColor: 'white' }}
 				type="projector"
 				activeIndex={activeIndex}
 				barStyle={customBarStyle}
-				onChange={(index) => this.onchangeTab(index)}
+				onChange={index => this.onchangeTab(index)}
 			>
 				<TabView.Sheet
 					title="附近"
@@ -141,11 +226,16 @@ class TabNavBar extends React.Component {
 						leftHidden
 						renderRightView={
 							<NavigationBar.Button
-								onPress={(_) => {
+								onPress={_ => {
 									navigate.pushNotNavBar(Search);
 								}}
 							>
-								<Icon name={'ios-search'} type={'ionicon'} color={styleUtil.navIconColor} size={22} />
+								<Icon
+									name={'ios-search'}
+									type={'ionicon'}
+									color={styleUtil.navIconColor}
+									size={22}
+								/>
 							</NavigationBar.Button>
 						}
 					/>
@@ -159,11 +249,16 @@ class TabNavBar extends React.Component {
 						leftHidden
 						renderRightView={
 							<NavigationBar.Button
-								onPress={(_) => {
+								onPress={_ => {
 									navigate.pushNotNavBar(Search);
 								}}
 							>
-								<Icon name={'ios-search'} type={'ionicon'} color={styleUtil.navIconColor} size={22} />
+								<Icon
+									name={'ios-search'}
+									type={'ionicon'}
+									color={styleUtil.navIconColor}
+									size={22}
+								/>
 							</NavigationBar.Button>
 						}
 					/>
@@ -189,15 +284,18 @@ class TabNavBar extends React.Component {
 }
 function mapStateToProps(state) {
 	return {
-		spark: state
+		spark: state,
 	};
 }
 
 /* istanbul ignore next */
 function mapDispatchToProps(dispatch) {
 	return {
-		actions: bindActionCreators({ ...actions }, dispatch)
+		actions: bindActionCreators({ ...actions }, dispatch),
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TabNavBar);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(TabNavBar);

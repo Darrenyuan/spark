@@ -7,8 +7,7 @@
   "extends": ["airbnb", "eslint-config-prettier", "eslint:recommended", "plugin:react/recommended"],
   "plugins": ["react-native", "eslint-plugin-prettier"],
   "rules": {
-    "semi": ["error", "never"],
-
+    "semi": ["off", "always"],
     "react-native/no-unused-styles": 2,
     "react-native/split-platform-components": 2,
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
@@ -43,6 +42,6 @@
       }
     ],
 
-    "prettier/prettier": ["error", { "singleQuote": true, "semi": false, "trailingComma": "es5" }]
+    "prettier/prettier": ["error", { "singleQuote": true, "semi": true, "trailingComma": "es5" }]
   }
 }

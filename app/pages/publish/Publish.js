@@ -1,35 +1,34 @@
 import React from 'react';
-
-import {
-	StyleSheet,
-	Text,
-	View,
-	Image,
-	ImageBackground,
-	TextInput,
-	TouchableOpacity,
-	Keyboard,
-	Platform,
-	Modal
-} from 'react-native';
+import { Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Icon } from 'react-native-elements';
+import ImageCropPicker from 'react-native-image-crop-picker';
+import md5 from 'react-native-md5';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import config from '../../common/config';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
 import navigate from '../../screens/navigate';
-import LoginPersonal from '../user/LoginPersonal';
-import { Icon } from 'react-native-elements';
-import config from '../../common/config';
-import ImageCropPicker from 'react-native-image-crop-picker';
 import { apiAdd, apiSjTypeInfo } from '../../services/axios/api';
-import md5 from 'react-native-md5';
-import { bindActionCreators } from 'redux';
 import * as actions from '../../services/redux/actions';
-import { connect } from 'react-redux';
 import toast from '../../common/toast';
 import TabNavBar from '../../screens/TabNavBar';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import LocationMap from '../maps/LocationMap';
+import { PermissionsAndroid } from 'react-native';
+import {
+	init,
+	Geolocation,
+	setLocatingWithReGeocode,
+	setNeedAddress,
+	addLocationListener,
+	start,
+	stop,
+} from 'react-native-amap-geolocation';
 
 let gType;
 let _netPublishSubject;
+
 class Publish extends NavigatorPage {
 	static defaultProps = {
 		...NavigatorPage.navigatorStyle,
@@ -45,15 +44,16 @@ class Publish extends NavigatorPage {
 					borderRadius: 15,
 					flexDirection: 'row',
 					alignItems: 'center',
-					marginRight: 10
+					marginRight: 10,
 				}}
-				onPress={(_) => {
+				onPress={_ => {
 					_netPublishSubject();
+					console.log(111);
 				}}
 			>
 				<Text style={{ fontSize: 16, color: '#fff', textAlign: 'center' }}>{'发布'}</Text>
 			</TouchableOpacity>
-		)
+		),
 	};
 
 	constructor(props) {
@@ -66,7 +66,8 @@ class Publish extends NavigatorPage {
 			imgs: [],
 			visible: false,
 			startTime: '',
-			areaR: ''
+			areaR: '',
+			address: this.props.address,
 		};
 	}
 
@@ -74,7 +75,7 @@ class Publish extends NavigatorPage {
 		let M9 = new Date().getTime();
 		let strM9 = '' + M9;
 		let { auid, loginToken } = this.props.spark.loginInfo;
-		let sjType = this.props.spark.configInfo.data.sjTypes.map((item) => {
+		let sjType = this.props.spark.configInfo.data.sjTypes.map(item => {
 			return item.sjType;
 		});
 
@@ -84,14 +85,14 @@ class Publish extends NavigatorPage {
 			auid: auid,
 			M0: 'MMC',
 			M2: loginToken,
-			M3: '120.45435,132.32424',
+			M3: this.props.coordsStr,
 			M8: md5.hex_md5(auid + strM9),
-			M9: strM9
-		}).then((res) => {
+			M9: strM9,
+		}).then(res => {
 			this.setState({
 				pageInfo: res.data.data[0],
 				startTime: res.data.data[0].startTimeDef,
-				areaR: res.data.data[0].areaRDef
+				areaR: res.data.data[0].areaRDef,
 			});
 			console.log(res);
 			console.log('pageInfo pageInfo pageInfo');
@@ -112,11 +113,11 @@ class Publish extends NavigatorPage {
 				auid: auid,
 				M0: 'MMC',
 				M2: loginToken,
-				M3: '120.45435,132.32424',
+				M3: this.props.coordsStr,
 				M8: md5.hex_md5(auid + strM9),
-				M9: strM9
+				M9: strM9,
 			}).then(
-				(res) => {
+				res => {
 					console.log(res);
 					console.log('add add add');
 					toast.modalLoadingHide();
@@ -125,14 +126,20 @@ class Publish extends NavigatorPage {
 						navigate.pushNotNavBar(TabNavBar);
 					}
 				},
-				(err) => {
+				err => {
 					console.log(err);
 					console.log('add add add');
 					toast.modalLoadingHide();
 					// toast.fail('发布失败！');
-				}
+				},
 			);
 		};
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.address !== this.props.address) {
+			this.setState({ address: this.props.address });
+		}
 	}
 	// 图片添加
 	_onImageAdd = () => {
@@ -141,8 +148,8 @@ class Publish extends NavigatorPage {
 			mediaType: 'photo',
 			cropping: true,
 			compressImageQuality: Platform.OS === 'ios' ? 0 : 1,
-			maxFiles: 9
-		}).then((images) => {
+			maxFiles: 9,
+		}).then(images => {
 			let newImgs = [];
 			this.state.imgs.concat(images).map((item, index) => {
 				index < 9 && newImgs.push(item);
@@ -151,13 +158,13 @@ class Publish extends NavigatorPage {
 		});
 	};
 	// 图片删除
-	_onImageDelete = (flag) => {
+	_onImageDelete = flag => {
 		let newImgs = [];
 		this.state.imgs.map((item, index) => {
 			flag !== index && newImgs.push(item);
 		});
 		this.setState({
-			imgs: newImgs
+			imgs: newImgs,
 		});
 	};
 	// Modal消失
@@ -168,9 +175,9 @@ class Publish extends NavigatorPage {
 		this.setState({ visible: true });
 	};
 	// 弹出Modal大图轮换
-	_onImagesRotation = (index) => {
+	_onImagesRotation = index => {
 		const { visible, imgs } = this.state;
-		const imagePath = imgs.map((item) => {
+		const imagePath = imgs.map(item => {
 			return item.path;
 		});
 		return (
@@ -180,7 +187,12 @@ class Publish extends NavigatorPage {
 				style={styles.imagesRotation}
 				onRequestClose={this._handleModelHidden}
 			>
-				<ImageViewer imageUrls={imagePath} enableSwipeDown onClick={this._handleModelHidden} index={0} />
+				<ImageViewer
+					imageUrls={imagePath}
+					enableSwipeDown
+					onClick={this._handleModelHidden}
+					index={0}
+				/>
 			</Modal>
 		);
 	};
@@ -189,7 +201,7 @@ class Publish extends NavigatorPage {
 		let { startTimeOptions } = this.state.pageInfo;
 		if (startTimeOptions.length > 0) {
 			let items = [];
-			Object.keys(startTimeOptions[0]).map((item) => {
+			Object.keys(startTimeOptions[0]).map(item => {
 				let timer = {};
 				timer.title = startTimeOptions[0][item];
 				timer.onPress = () => {
@@ -209,11 +221,11 @@ class Publish extends NavigatorPage {
 					placeholderTextColor="#E5E5E5"
 					autoCorrect={false}
 					underlineColorAndroid="transparent"
-					style={[ styles.inputField, { flex: 3 } ]}
+					style={[styles.inputField, { flex: 3 }]}
 					value={this.state.title}
 					maxLength={100}
 					autoFocus={true}
-					onChangeText={(text) => {
+					onChangeText={text => {
 						this.setState({ title: text });
 					}}
 				/>
@@ -224,10 +236,10 @@ class Publish extends NavigatorPage {
 							placeholderTextColor="#E5E5E5"
 							autoCorrect={false}
 							underlineColorAndroid="transparent"
-							style={[ styles.inputField, { flex: 1, marginLeft: 15, paddingLeft: 30 } ]}
+							style={[styles.inputField, { flex: 1, marginLeft: 15, paddingLeft: 30 }]}
 							value={this.state.price}
 							maxLength={100}
-							onChangeText={(text) => {
+							onChangeText={text => {
 								this.setState({ price: text });
 							}}
 						/>
@@ -241,17 +253,17 @@ class Publish extends NavigatorPage {
 		);
 	};
 
-	_renderLine2Input = (placeholder) => {
+	_renderLine2Input = placeholder => {
 		return (
 			<TextInput
 				placeholder={placeholder}
 				placeholderTextColor="#E5E5E5"
 				autoCorrect={false}
 				underlineColorAndroid="transparent"
-				style={[ styles.input2Field ]}
+				style={[styles.input2Field]}
 				value={this.state.content}
 				multiline={true}
-				onChangeText={(text) => {
+				onChangeText={text => {
 					this.setState({ content: text });
 				}}
 			/>
@@ -264,16 +276,16 @@ class Publish extends NavigatorPage {
 			<View
 				style={{
 					flexDirection: 'row',
-					flexWrap: 'wrap'
+					flexWrap: 'wrap',
 				}}
 			>
 				{imgs.length < 9 && (
 					<TouchableOpacity
-						onPress={(_) => {
+						onPress={_ => {
 							this._onImageAdd();
 						}}
 					>
-						<View style={[ styles.imgsItem, { justifyContent: 'center', alignItems: 'center' } ]}>
+						<View style={[styles.imgsItem, { justifyContent: 'center', alignItems: 'center' }]}>
 							<Icon name={'ios-add'} type={'ionicon'} size={40} color={'#D8D8D8'} />
 						</View>
 					</TouchableOpacity>
@@ -291,13 +303,13 @@ class Publish extends NavigatorPage {
 										<Image source={{ uri: item.path }} style={styles.imgsItem_img} />
 									</TouchableOpacity>
 									<TouchableOpacity
-										onPress={(_) => {
+										onPress={_ => {
 											this._onImageDelete(index);
 										}}
 										style={{
 											position: 'absolute',
 											right: -10,
-											top: -10
+											top: -10,
 										}}
 									>
 										<Image
@@ -313,13 +325,13 @@ class Publish extends NavigatorPage {
 		);
 	};
 
-	_renderTimer = (tip) => {
+	_renderTimer = tip => {
 		const { startTime, pageInfo } = this.state;
 		return (
 			<View
 				style={{
 					flexDirection: 'row',
-					alignItems: 'center'
+					alignItems: 'center',
 				}}
 			>
 				<View style={{ width: 25, alignItems: 'flex-start' }}>
@@ -333,7 +345,7 @@ class Publish extends NavigatorPage {
 						borderBottomWidth: styleUtil.borderSeparator,
 						borderBottomColor: styleUtil.borderColor,
 						justifyContent: 'space-between',
-						alignItems: 'center'
+						alignItems: 'center',
 					}}
 				>
 					<Text style={{ color: '#454545', fontSize: 14 }}>{tip}</Text>
@@ -342,9 +354,9 @@ class Publish extends NavigatorPage {
 							flexDirection: 'row',
 							alignItems: 'center',
 							flex: 1,
-							justifyContent: 'flex-end'
+							justifyContent: 'flex-end',
 						}}
-						onPress={(_) => {
+						onPress={_ => {
 							this._onClickTimer();
 						}}
 					>
@@ -355,13 +367,18 @@ class Publish extends NavigatorPage {
 								color: '#454545',
 								minWidth: 100,
 								textAlign: 'right',
-								fontSize: 14
+								fontSize: 14,
 							}}
 							numberOfLines={1}
 						>
 							{startTime === '' ? '现在' : pageInfo.startTimeOptions[0][startTime]}
 						</Text>
-						<Icon name={'ios-arrow-forward'} type={'ionicon'} size={25} color={styleUtil.grayColor} />
+						<Icon
+							name={'ios-arrow-forward'}
+							type={'ionicon'}
+							size={25}
+							color={styleUtil.grayColor}
+						/>
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -369,12 +386,13 @@ class Publish extends NavigatorPage {
 	};
 	_renderAddress = () => {
 		const { pageInfo, areaR } = this.state;
+		let labels = '';
 		return (
 			<View>
 				<View
 					style={{
 						flexDirection: 'row',
-						alignItems: 'center'
+						alignItems: 'center',
 					}}
 				>
 					<View style={{ width: 25, alignItems: 'flex-start' }}>
@@ -388,27 +406,33 @@ class Publish extends NavigatorPage {
 							borderBottomWidth: styleUtil.borderSeparator,
 							borderBottomColor: styleUtil.borderColor,
 							justifyContent: 'space-between',
-							alignItems: 'center'
+							alignItems: 'center',
 						}}
 					>
-						<Text style={{ color: '#454545', fontSize: 14 }}>{'上海市浦东新区梅花路'}</Text>
+						<Text style={{ color: '#454545', fontSize: 14 }}>{this.state.address}</Text>
 						<TouchableOpacity
 							style={{
 								flexDirection: 'row',
 								alignItems: 'center',
 								flex: 1,
-								justifyContent: 'flex-end'
+								justifyContent: 'flex-end',
 							}}
-							onPress={(_) => {
-								// navigate.pushNotNavBar(LoginPersonal, {
-								// 	labels,
-								// 	pageCallback: (labels) => {
-								// 		this.setState({ labels });
-								// 	}
-								// });
+							onPress={_ => {
+								navigate.pushNotNavBar(LocationMap, {
+									title: '我的位置',
+									labels,
+									pageCallback: labels => {
+										this.setState({ labels });
+									},
+								});
 							}}
 						>
-							<Icon name={'ios-arrow-forward'} type={'ionicon'} size={25} color={styleUtil.grayColor} />
+							<Icon
+								name={'ios-arrow-forward'}
+								type={'ionicon'}
+								size={25}
+								color={styleUtil.grayColor}
+							/>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -417,7 +441,7 @@ class Publish extends NavigatorPage {
 						fontSize: 12,
 						color: '#C1C1C1',
 						marginLeft: 25,
-						marginTop: 5
+						marginTop: 5,
 					}}
 				>
 					{areaR === '' ? '' : `*当前位置${pageInfo.areaROptions[0][areaR]}范围可被发现`}
@@ -475,17 +499,20 @@ class Publish extends NavigatorPage {
 }
 function mapStateToProps(state) {
 	return {
-		spark: state
+		spark: state,
 	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		actions: bindActionCreators({ ...actions }, dispatch)
+		actions: bindActionCreators({ ...actions }, dispatch),
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Publish);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(Publish);
 
 const styles = StyleSheet.create({
 	container: {
@@ -493,13 +520,13 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		justifyContent: 'flex-start',
 		paddingHorizontal: 15,
-		paddingTop: 15
+		paddingTop: 15,
 	},
 	title: {
 		marginBottom: 20,
 		color: '#333',
 		fontSize: 20,
-		textAlign: 'center'
+		textAlign: 'center',
 	},
 	inputField: {
 		height: 36,
@@ -507,7 +534,7 @@ const styles = StyleSheet.create({
 		color: '#454545',
 		fontSize: 14,
 		backgroundColor: '#F6F6F6',
-		borderRadius: 18
+		borderRadius: 18,
 	},
 	input2Field: {
 		minHeight: 80,
@@ -516,7 +543,7 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		backgroundColor: '#F6F6F6',
 		borderRadius: 4,
-		textAlignVertical: 'top'
+		textAlignVertical: 'top',
 	},
 	imgsItem: {
 		width: 70,
@@ -524,19 +551,19 @@ const styles = StyleSheet.create({
 		backgroundColor: '#F6F6F6',
 		borderRadius: 2,
 		marginBottom: 12,
-		marginRight: 12
+		marginRight: 12,
 	},
 	imagesRotation: {
 		flex: 1,
 		height: 300,
-		backgroundColor: 'rgba(0, 0, 0, 0.2)'
+		backgroundColor: 'rgba(0, 0, 0, 0.2)',
 	},
 	imgsItem_img: {
 		width: 70,
-		height: 70
+		height: 70,
 	},
 	imgsItem_delete: {
 		width: 20,
-		height: 20
-	}
+		height: 20,
+	},
 });

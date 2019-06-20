@@ -58,7 +58,7 @@ Theme.set({
 	rowActionButtonTitleColor: '#fff',
 	rowActionButtonDangerTitleColor: '#fff',
 	rowActionButtonTitleFontSize: 15,
-	rowActionButtonPaddingHorizontal: 12
+	rowActionButtonPaddingHorizontal: 12,
 });
 
 global.request = Request;
@@ -69,7 +69,7 @@ global.imessage = new IMessage();
 type Props = {};
 type State = {
 	loadingData: boolean,
-	store: any
+	store: any,
 };
 
 //TODO 1)Add hot code publish
@@ -81,13 +81,13 @@ export default class App extends Component<Props, State> {
 
 		this.state = {
 			loadingData: true,
-			store: null
+			store: null,
 		};
 	}
 
 	componentDidMount() {
 		loadState().then(
-			(data) => {
+			data => {
 				if (data == null) {
 					data = initialState;
 				}
@@ -96,19 +96,19 @@ export default class App extends Component<Props, State> {
 				store.subscribe(
 					throttle(() => {
 						saveState(store.getState());
-					}, 1000)
+					}, 1000),
 				);
 				this.setState({ loadingData: false, store: store });
 			},
-			(error) => {
+			error => {
 				let store = configureStore();
 				store.subscribe(
 					throttle(() => {
 						saveState(store.getState());
-					}, 1000)
+					}, 1000),
 				);
 				this.setState({ loadingData: false, store: store });
-			}
+			},
 		);
 	}
 
@@ -122,7 +122,7 @@ export default class App extends Component<Props, State> {
 		} else
 			return (
 				<Provider store={this.state.store}>
-					<TeaNavigator ref={(v) => navigate.setContainer(v)} rootView={<TabNavBar />} />
+					<TeaNavigator ref={v => navigate.setContainer(v)} rootView={<TabNavBar />} />
 				</Provider>
 			);
 		// return <View style={{ flex: 1, backgroundColor: "red" }} />;
@@ -134,16 +134,16 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#F5FCFF'
+		backgroundColor: '#F5FCFF',
 	},
 	welcome: {
 		fontSize: 20,
 		textAlign: 'center',
-		margin: 10
+		margin: 10,
 	},
 	instructions: {
 		textAlign: 'center',
 		color: '#333333',
-		marginBottom: 5
-	}
+		marginBottom: 5,
+	},
 });

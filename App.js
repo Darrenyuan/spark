@@ -72,6 +72,9 @@ type State = {
 	store: any
 };
 
+//TODO 1)Add hot code publish
+//TODO 2）react-native-maps
+
 export default class App extends Component<Props, State> {
 	constructor(props: any) {
 		super(props);

@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.facebook.react.ReactApplication;
+import cn.qiuxiang.react.amap3d.AMap3DPackage;
 import cn.qiuxiang.react.geolocation.AMapGeolocationPackage;
 import com.theweflex.react.WeChatPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -33,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new AMap3DPackage(),
             new AMapGeolocationPackage(),
             new WeChatPackage(),
             new VectorIconsPackage(),
@@ -42,7 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNDeviceInfo(),
             new RNCameraPackage(),
             new BlurViewPackage(),
-              new RNFetchBlobPackage()
+            new RNFetchBlobPackage()
       );
     }
 

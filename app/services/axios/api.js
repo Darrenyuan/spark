@@ -450,3 +450,11 @@ export function apiEditFace(args = {}) {
     config,
   );
 }
+
+export function apiRegeo(args = {}) {
+  114.4297976345486, 30.5044091796875;
+  let locationStr = '' + args.longitude + ',' + args.latitude;
+  return instance.get(
+    `http://restapi.amap.com/v3/geocode/regeo?key=b47dab6619bc7d71f22f6b4efed7ee03&location=${locationStr}&radius=1000&extensions=all&batch=false&roadlevel=0`,
+  );
+}

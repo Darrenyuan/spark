@@ -4,5 +4,9 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
-    <application tools:targetApi="28" tools:ignore="GoogleAppIndexingWarning" android:networkSecurityConfig="@xml/react_native_config" android:usesCleartextTraffic="true"/>
+    <application tools:targetApi="28" tools:ignore="GoogleAppIndexingWarning" android:networkSecurityConfig="@xml/react_native_config" android:usesCleartextTraffic="true">
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="3085d854c06796863a9d8e1612905405" />
+    </application>
 </manifest>

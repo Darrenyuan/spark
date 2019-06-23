@@ -67,7 +67,8 @@ class Publish extends NavigatorPage {
       visible: false,
       startTime: '',
       areaR: '',
-      address: this.props.address,
+      address: this.props.spark.locationInfo.address,
+      coordsStr: this.props.spark.locationInfo.coordsStr,
     };
   }
 
@@ -75,7 +76,7 @@ class Publish extends NavigatorPage {
     let M9 = new Date().getTime();
     let strM9 = '' + M9;
     let { auid, loginToken } = this.props.spark.loginInfo;
-    let sjType = this.props.spark.configInfo.data.sjTypes.map(item => {
+    let sjType = this.props.spark.configInfo.sjTypes.map(item => {
       return item.sjType;
     });
 
@@ -83,7 +84,7 @@ class Publish extends NavigatorPage {
     apiSjTypeInfo({
       sjType: sjType[this.props.type],
       auid: auid,
-      M0: 'MMC',
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
       M2: loginToken,
       M3: this.props.coordsStr,
       M8: md5.hex_md5(auid + strM9),
@@ -111,9 +112,9 @@ class Publish extends NavigatorPage {
         price: price,
         imgs: imgs,
         auid: auid,
-        M0: 'MMC',
+        M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
         M2: loginToken,
-        M3: this.props.coordsStr,
+        M3: this.props.spark.locationInfo.coordsStr,
         M8: md5.hex_md5(auid + strM9),
         M9: strM9,
       }).then(
@@ -136,11 +137,6 @@ class Publish extends NavigatorPage {
     };
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.address !== this.props.address) {
-      this.setState({ address: this.props.address });
-    }
-  }
   // 图片添加
   _onImageAdd = () => {
     ImageCropPicker.openPicker({
@@ -420,10 +416,10 @@ class Publish extends NavigatorPage {
               onPress={_ => {
                 navigate.pushNotNavBar(LocationMap, {
                   title: '我的位置',
-                  latitude: this.props.latitude,
-                  longitude: this.props.longitude,
-                  coordsStr: this.props.coordsStr,
-                  address: this.props.address,
+                  latitude: this.props.spark.locationInfo.latitude,
+                  longitude: this.props.spark.locationInfo.longitude,
+                  coordsStr: this.props.spark.locationInfo.coordsStr,
+                  address: this.props.spark.locationInfo.address,
                   pageCallback: (address, coordsStr) => {
                     this.setState({ address: address, coordsStr: coordsStr });
                   },

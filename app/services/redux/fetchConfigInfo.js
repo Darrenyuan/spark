@@ -28,7 +28,7 @@ export function fetchConfigInfo(args = {}) {
         res => {
           dispatch({
             type: COMMON_FETCH_CONFIG_INFO_SUCCESS,
-            data: res.data,
+            data: res.data.data,
           });
           resolve(res);
         },

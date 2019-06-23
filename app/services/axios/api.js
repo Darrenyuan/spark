@@ -58,12 +58,12 @@ export function apiFetchConfigInfo(args = {}) {
   return instance.post(
     baseUrl + 'HICService.y?cmd=onStart',
     jsonToQueryString({
-      auid: args.auid /*固有参数：用户唯一标识auid,可为空*/,
-      M0: args.M0 /*固有参数：H5前端标识，安卓为MMC，IOS为IMMC*/,
-      M2: args.M2 /*固有参数：登录TOKEN,可为空*/,
-      M3: args.M3 /*固有参数：实时位置经纬度*/,
-      M8: args.M8 /*固有参数：DES.MD5(auid+M9)*/,
-      M9: args.M9 /*固有参数：时间戳（毫秒）*/,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
     }),
   );
 }
@@ -271,17 +271,19 @@ export function apiApplyLogon(args = {}) {
   );
 }
 
-export function apiList(args = {}) {
-  let defaultArgs = getDefaultArgs(args);
+export function apiFetchContentList(args = {}) {
   return instance.post(
-    baseUrl + 'HICService.y?cmd=list',
+    baseUrl + 'SubjectCService.y?cmd=list',
     jsonToQueryString({
-      ...defaultArgs,
-      M0: DeviceInfo.getUniqueID(),
-      M9: new Date().getTime(),
-      sjType: args.sjType /*主题分类*/,
-      collectFlag: args.collectFlag /*收藏标记：1-查询我收藏的主题，其他为空*/,
-      keyword: args.keyword /*搜索关键字*/,
+      sjType: args.sjType,
+      collectFlag: args.collectFlag,
+      keyword: args.keyword,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
     }),
     config,
   );

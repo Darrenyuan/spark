@@ -9,12 +9,30 @@
 const initialState = {
   configInfo: {},
   loginInfo: {},
+  locationInfo: {
+    latitude: 0,
+    longitude: 0,
+    coordsStr: '0.0',
+    address: '',
+  },
   loginPending: false,
   loginError: null,
   userInfo: {},
   applyLogonError: null,
   fetchConfigInfoPending: false,
   fetchConfigInfoError: null,
+  contentList: {
+    default: {
+      items: [],
+      page: 1,
+      pageSize: 3,
+      total: 0,
+      byId: {},
+      listNeedReload: false,
+    },
+  },
+  fetchContentListPending: false,
+  fetchContentListError: null,
 };
 
 export default initialState;

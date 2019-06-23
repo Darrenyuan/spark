@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import {
   StyleSheet,
@@ -7,25 +7,25 @@ import {
   Image,
   ImageBackground,
   TextInput,
-  TouchableOpacity
-} from "react-native";
-import styleUtil from "../../common/styleUtil";
-import NavigatorPage from "../../components/NavigatorPage";
-import LoadingMore from "../../components/load/LoadingMore";
-import { Icon } from "react-native-elements";
-import { NavigationBar } from "teaset";
+  TouchableOpacity,
+} from 'react-native';
+import styleUtil from '../../common/styleUtil';
+import NavigatorPage from '../../components/NavigatorPage';
+import LoadingMore from '../../components/load/LoadingMore';
+import { Icon } from 'react-native-elements';
+import { NavigationBar } from 'teaset';
 
 export default class LoginAgreement extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navBarHidden: false,
-    title: "用户协议"
+    title: '用户协议',
   };
 
   constructor(props) {
     super(props);
     Object.assign(this.state, {
-      user: props.user
+      user: props.user,
     });
   }
 
@@ -44,10 +44,10 @@ export default class LoginAgreement extends NavigatorPage {
 
 const styles = StyleSheet.create({
   baseText: {
-    fontFamily: "Cochin"
+    fontFamily: 'Cochin',
   },
   titleText: {
     fontSize: 20,
-    fontWeight: "bold"
-  }
+    fontWeight: 'bold',
+  },
 });

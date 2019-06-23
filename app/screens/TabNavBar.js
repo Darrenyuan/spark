@@ -34,7 +34,6 @@ import {
 
 class TabNavBar extends React.Component {
   constructor(props) {
-    console.log('TabNavBar constructor enterd');
     super(props);
     this.state = {
       activeIndex: 0,
@@ -44,49 +43,35 @@ class TabNavBar extends React.Component {
       coordsStr: '',
       address: '',
     };
-    console.log('TabNavBar constructor leave');
   }
 
   componentWillMount() {
-    console.log('TabNavBar componentWillMount enterd');
     if (this.props.spark.loginInfo.auid) {
       this._netApplyLogon();
     }
-    LocationService.init();
-    console.log('TabNavBar componentWillMount leave');
   }
 
   async componentDidMount() {
-    console.log('TabNavBar componentDidMount enterd');
     let auid = '';
     let M9 = new Date().getTime();
     let strM9 = '' + M9;
     if (Platform.OS === 'ios') {
       init({
         ios: '28d1259434784e7005d8ad3735c66a09',
-        // android: '043b24fe18785f33c491705ffe5b6935',
       }).then(
         res => {
           console.log('geo location111111');
-          // ios，设备移动超过 10 米才会更新位置信息
           setDistanceFilter(10);
         },
         error => console.log(error),
       );
-      //   setLocatingWithReGeocode(true);
     } else {
       let permissionPromise = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
       );
       let initPromise = await init({
-        // ios: '9bd6c82e77583020a73ef1af59d0c759',
         android: '3085d854c06796863a9d8e1612905405',
       });
-      // setInterval(5000);
-      // Promise.all(permissionPromise, initPromise).then(res => {
-      // 	// android，5 秒请求一次定位
-      // 	setInterval(5000);
-      // });
     }
     let _this = this;
     Geolocation.getCurrentPosition(({ coords, timestamp, location }) => {
@@ -96,23 +81,23 @@ class TabNavBar extends React.Component {
       _this.setState({ coordsStr: coordsStr });
       _this.props.actions.fetchConfigInfo({
         auid: auid,
-        M0: 'MMC',
+        M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
         M2: '',
         M3: coordsStr,
         M8: md5.hex_md5(auid + strM9),
         M9: strM9,
       });
-      _this.setState({
+      _this.props.actions.registerLocation({
         latitude: coords.latitude,
         longitude: coords.longitude,
         coordsStr: coordsStr,
+        address: '',
       });
     });
   }
 
-  componentWillUnmount() {
-    LocationService.destroy();
-  }
+  componentWillUnmount() {}
+
   coordsToString(coords) {
     return '' + coords.longitude + ',' + coords.latitude;
   }
@@ -136,18 +121,17 @@ class TabNavBar extends React.Component {
       navigate.pushNotNavBar(LoginEnterPhone);
       return;
     } else {
+      let _this = this;
       // 添加定位监听函数
       addLocationListener(location => {
         console.log('listener:invoker', location);
-        if (location.address) {
-          this.setState({
-            latitude: location.latitude,
-            longitude: location.longitude,
-            address: location.address,
-          });
-        } else {
-          this.setState({ latitude: location.latitude, longitude: location.longitude });
-        }
+        let coordsStr = _this.coordsToString(location);
+        this.props.actions.registerLocation({
+          latitude: location.latitude,
+          longitude: location.longitude,
+          address: location.address,
+          coordsStr: coordsStr,
+        });
       });
 
       // 开始连续定位
@@ -188,10 +172,6 @@ class TabNavBar extends React.Component {
         <PublishEntrance
           modalVisible={this.state.visible}
           callbackPublishClose={this._callbackPublishClose}
-          latitude={this.state.latitude}
-          longitude={this.state.longitude}
-          coordsStr={this.state.coordsStr}
-          address={this.state.address}
         />
         <Image source={require('../assets/image/tarbar_add.png')} />
       </View>
@@ -229,23 +209,7 @@ class TabNavBar extends React.Component {
           icon={<Image source={require('../assets/image/tabbar_home.png')} />}
           activeIcon={<Image source={require('../assets/image/tabbar_home_highlight.png')} />}
         >
-          <Nearby
-            leftHidden
-            renderRightView={
-              <NavigationBar.Button
-                onPress={_ => {
-                  navigate.pushNotNavBar(Search);
-                }}
-              >
-                <Icon
-                  name={'ios-search'}
-                  type={'ionicon'}
-                  color={styleUtil.navIconColor}
-                  size={22}
-                />
-              </NavigationBar.Button>
-            }
-          />
+          <Nearby leftHidden rightHidden />
         </TabView.Sheet>
         <TabView.Sheet
           title="钉住"

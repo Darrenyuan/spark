@@ -12,12 +12,6 @@ export default class PublishEntrance extends React.Component {
   }
   componentWillMount() {}
   render() {
-    const coords = {
-      latitude: this.props.latitude,
-      longitude: this.props.longitude,
-      coordsStr: this.props.coordsStr,
-      address: this.props.address,
-    };
     return (
       <Modal
         animationType={'fade'}
@@ -51,7 +45,6 @@ export default class PublishEntrance extends React.Component {
                     navigate.pushNotNavBar(Publish, {
                       type: 0,
                       title: '话题',
-                      ...coords,
                     });
                   }}
                 >
@@ -61,7 +54,7 @@ export default class PublishEntrance extends React.Component {
                 <TouchableOpacity
                   onPress={_ => {
                     this.props.callbackPublishClose();
-                    navigate.pushNotNavBar(Publish, { type: 1, title: '一起', ...coords });
+                    navigate.pushNotNavBar(Publish, { type: 1, title: '一起' });
                   }}
                   style={{ paddingBottom: 30 }}
                 >
@@ -71,7 +64,7 @@ export default class PublishEntrance extends React.Component {
                 <TouchableOpacity
                   onPress={_ => {
                     this.props.callbackPublishClose();
-                    navigate.pushNotNavBar(Publish, { type: 2, title: '二手', ...coords });
+                    navigate.pushNotNavBar(Publish, { type: 2, title: '二手' });
                   }}
                   style={{ paddingBottom: 30 }}
                 >
@@ -81,7 +74,7 @@ export default class PublishEntrance extends React.Component {
                 <TouchableOpacity
                   onPress={_ => {
                     this.props.callbackPublishClose();
-                    navigate.pushNotNavBar(Publish, { type: 3, title: '时刻', ...coords });
+                    navigate.pushNotNavBar(Publish, { type: 3, title: '时刻' });
                   }}
                 >
                   <Image source={require('../../assets/image/publish_dynamic.png')} />

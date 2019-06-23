@@ -8,6 +8,7 @@ import {
   ImageBackground,
   TextInput,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
@@ -44,15 +45,9 @@ class LoginMoreInfo extends NavigatorPage {
 
   componentDidMount() {
     super.componentDidMount();
-    console.log(this.props.spark.configInfo);
-    console.log(this.props.spark.configInfo.data);
-    console.log('yuyuyuyuyuy');
-    if (this.props.spark.configInfo.data) {
-      // console.log(this.props.spark.configInfo.data);
-      // console.log('yuyuyuyuyuy');
-      const { data } = this.props.spark.configInfo;
-      this._status = data.kkStatusTypes; //交友状态类型
-      this.markersCategorys = data.markerTypes; //自我标签类型
+    if (this.props.spark.configInfo) {
+      this._status = this.props.spark.configInfo.kkStatusTypes; //交友状态类型
+      this.markersCategorys = this.props.spark.configInfo.markerTypes; //自我标签类型
     }
   }
 
@@ -70,7 +65,7 @@ class LoginMoreInfo extends NavigatorPage {
         kkStatus: kkStatus.typeID,
         markers: markerIDs,
         auid: auid,
-        M0: 'MMC',
+        M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
         M2: '',
         M3: '120.45435,132.32424',
         M8: md5.hex_md5(auid + strM9),

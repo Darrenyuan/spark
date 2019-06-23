@@ -21,44 +21,45 @@ import thunk from 'redux-thunk';
 import configureStore from './app/services/common/configStore';
 import { loadState, saveState } from './app/services/common/storage';
 import throttle from 'lodash/throttle';
+import TopView from 'teaset/components/Overlay/TopView';
 
 Theme.set({
-	fitIPhoneX: true,
-	tvBarBtnIconActiveTintColor: styleUtil.themeColor,
-	tvBarBtnActiveTitleColor: styleUtil.themeColor,
-	navColor: 'white',
-	backgroundColor: 'white',
-	navTintColor: 'black',
-	navTitleColor: 'black',
-	navSeparatorLineWidth: styleUtil.borderSeparator,
-	navSeparatorColor: styleUtil.borderColor,
-	navType: 'auto', //'auto', 'ios', 'android'
-	navStatusBarStyle: 'dark-content', //'default', 'light-content', 'dark-content'
+  fitIPhoneX: true,
+  tvBarBtnIconActiveTintColor: styleUtil.themeColor,
+  tvBarBtnActiveTitleColor: styleUtil.themeColor,
+  navColor: 'white',
+  backgroundColor: 'white',
+  navTintColor: 'black',
+  navTitleColor: 'black',
+  navSeparatorLineWidth: styleUtil.borderSeparator,
+  navSeparatorColor: styleUtil.borderColor,
+  navType: 'auto', //'auto', 'ios', 'android'
+  navStatusBarStyle: 'dark-content', //'default', 'light-content', 'dark-content'
 
-	//ListRow
-	rowMinHeight: 60,
-	rowPaddingLeft: 15,
-	rowPaddingRight: 15,
-	rowPaddingTop: 8,
-	rowPaddingBottom: 8,
-	rowIconWidth: 20,
-	rowIconHeight: 20,
-	rowIconPaddingRight: 12,
-	rowAccessoryWidth: 10,
-	rowAccessoryHeight: 10,
-	rowAccessoryPaddingLeft: 8,
-	rowAccessoryCheckColor: '#007aff',
-	rowAccessoryIndicatorColor: '#bebebe',
-	rowSeparatorColor: '#EBEBEB',
-	rowSeparatorLineWidth: 0.5,
-	rowPaddingTitleDetail: 4,
-	rowDetailLineHeight: 18,
-	rowActionButtonColor: '#c8c7cd',
-	rowActionButtonDangerColor: '#d9534f',
-	rowActionButtonTitleColor: '#fff',
-	rowActionButtonDangerTitleColor: '#fff',
-	rowActionButtonTitleFontSize: 15,
-	rowActionButtonPaddingHorizontal: 12,
+  //ListRow
+  rowMinHeight: 60,
+  rowPaddingLeft: 15,
+  rowPaddingRight: 15,
+  rowPaddingTop: 8,
+  rowPaddingBottom: 8,
+  rowIconWidth: 20,
+  rowIconHeight: 20,
+  rowIconPaddingRight: 12,
+  rowAccessoryWidth: 10,
+  rowAccessoryHeight: 10,
+  rowAccessoryPaddingLeft: 8,
+  rowAccessoryCheckColor: '#007aff',
+  rowAccessoryIndicatorColor: '#bebebe',
+  rowSeparatorColor: '#EBEBEB',
+  rowSeparatorLineWidth: 0.5,
+  rowPaddingTitleDetail: 4,
+  rowDetailLineHeight: 18,
+  rowActionButtonColor: '#c8c7cd',
+  rowActionButtonDangerColor: '#d9534f',
+  rowActionButtonTitleColor: '#fff',
+  rowActionButtonDangerTitleColor: '#fff',
+  rowActionButtonTitleFontSize: 15,
+  rowActionButtonPaddingHorizontal: 12,
 });
 
 global.request = Request;
@@ -68,82 +69,87 @@ global.imessage = new IMessage();
 
 type Props = {};
 type State = {
-	loadingData: boolean,
-	store: any,
+  loadingData: boolean,
+  store: any,
 };
 
 //TODO 1)Add hot code publish
 //TODO 2）react-native-maps
 
 export default class App extends Component<Props, State> {
-	constructor(props: any) {
-		super(props);
+  constructor(props: any) {
+    super(props);
 
-		this.state = {
-			loadingData: true,
-			store: null,
-		};
-	}
+    this.state = {
+      loadingData: true,
+      store: null,
+    };
+  }
 
-	componentDidMount() {
-		loadState().then(
-			data => {
-				if (data == null) {
-					data = initialState;
-				}
-				console.log(JSON.stringify(data));
-				let store = configureStore(data);
-				store.subscribe(
-					throttle(() => {
-						saveState(store.getState());
-					}, 1000),
-				);
-				this.setState({ loadingData: false, store: store });
-			},
-			error => {
-				let store = configureStore();
-				store.subscribe(
-					throttle(() => {
-						saveState(store.getState());
-					}, 1000),
-				);
-				this.setState({ loadingData: false, store: store });
-			},
-		);
-	}
+  componentDidMount() {
+    loadState().then(
+      data => {
+        if (data == null) {
+          data = initialState;
+        }
+        console.log(JSON.stringify(data));
+        let store = configureStore(data);
+        store.subscribe(
+          throttle(() => {
+            saveState(store.getState());
+          }, 1000),
+        );
+        this.setState({ loadingData: false, store: store });
+      },
+      error => {
+        let store = configureStore();
+        store.subscribe(
+          throttle(() => {
+            saveState(store.getState());
+          }, 1000),
+        );
+        this.setState({ loadingData: false, store: store });
+      },
+    );
+  }
+  _setContainer = v => {
+    navigate.setContainer(v);
+  };
 
-	render() {
-		if (this.state.loadingData) {
-			return (
-				<View>
-					<Text>loading</Text>
-				</View>
-			);
-		} else
-			return (
-				<Provider store={this.state.store}>
-					<TeaNavigator ref={v => navigate.setContainer(v)} rootView={<TabNavBar />} />
-				</Provider>
-			);
-		// return <View style={{ flex: 1, backgroundColor: "red" }} />;
-	}
+  render() {
+    if (this.state.loadingData) {
+      return (
+        <View>
+          <Text>loading</Text>
+        </View>
+      );
+    } else
+      return (
+        <Provider store={this.state.store}>
+          <TopView>
+            <TeaNavigator ref={this._setContainer} rootView={<TabNavBar />} />
+          </TopView>
+        </Provider>
+      );
+    // return <View style={{ flex: 1, backgroundColor: "red" }} />;
+  }
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#F5FCFF',
-	},
-	welcome: {
-		fontSize: 20,
-		textAlign: 'center',
-		margin: 10,
-	},
-	instructions: {
-		textAlign: 'center',
-		color: '#333333',
-		marginBottom: 5,
-	},
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
 });

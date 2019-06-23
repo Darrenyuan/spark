@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard,
+  Platform,
 } from 'react-native';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
@@ -102,7 +103,7 @@ class LoginSetPassword extends NavigatorPage {
     apiSendCodeToPhone({
       phone: this.props.phone,
       auid: auid,
-      M0: 'MMC',
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
       M2: '',
       M3: '120.45435,132.32424',
       M8: md5.hex_md5(auid + strM9),
@@ -131,7 +132,7 @@ class LoginSetPassword extends NavigatorPage {
       phone: this.props.phone,
       password: encoded,
       auid: auid,
-      M0: 'MMC',
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
       M2: '',
       M3: '120.45435,132.32424',
       M8: md5.hex_md5(auid + strM9),

@@ -14,123 +14,123 @@
  popToTop() - pop到栈中的第一个场景，卸载掉所有的其他场景。
  */
 
-import React from 'react'
+import React from 'react';
 
-import NavigatorPage from '../components/NavigatorPage'
-import TeaNavigatorScene from "teaset/components/TeaNavigator/TeaNavigatorScene";
-import utils from "../common/utils";
-import {InteractionManager} from 'react-native'
+import NavigatorPage from '../components/NavigatorPage';
+import TeaNavigatorScene from 'teaset/components/TeaNavigator/TeaNavigatorScene';
+import utils from '../common/utils';
+import { InteractionManager } from 'react-native';
 
 let _navigator;
 
 const sceneConfig = {
-	FloatFromBottom: TeaNavigatorScene.FloatFromBottom,
-	PushFromRight: TeaNavigatorScene.PushFromRight,
-	Replace: TeaNavigatorScene.Replace,
-	Suspension: TeaNavigatorScene.Suspension
+  FloatFromBottom: TeaNavigatorScene.FloatFromBottom,
+  PushFromRight: TeaNavigatorScene.PushFromRight,
+  Replace: TeaNavigatorScene.Replace,
+  Suspension: TeaNavigatorScene.Suspension,
 };
 
 function setContainer(container: Object) {
-	_navigator = container && container.navigator;
+  _navigator = container && container.navigator;
 }
 
 function push(screen: Function, passProps = {}) {
-	const screenName = utils.getFuncName(screen);
-	const routes = _navigator.getCurrentRoutes();
-	// console.log(routes)
-	const lastScreen = routes[routes.length - 1];
-	if (typeof screen.navigatorStyle === 'function') {
-		screen.navigatorStyle = screen.navigatorStyle(passProps)
-	}
-	// if (lastScreen.viewRef.props.screenName === screenName) {
-	// 	return;
-	// }
-	_navigator.push({
-		view: (
-			<NavigatorPage
-				leftTitle={lastScreen.viewRef.props.title}//默认为上一个页面的标题
-				navigationBarInsets={screen.navigatorStyle && !screen.navigatorStyle.navBarHidden}
-				{...screen.navigatorStyle}
-				screenName={screenName}
-				passProps={passProps}
-			>
-				{screen}
-			</NavigatorPage>
-		)
-	})
+  const screenName = utils.getFuncName(screen);
+  const routes = _navigator.getCurrentRoutes();
+  // console.log(routes)
+  const lastScreen = routes[routes.length - 1];
+  if (typeof screen.navigatorStyle === 'function') {
+    screen.navigatorStyle = screen.navigatorStyle(passProps);
+  }
+  // if (lastScreen.viewRef.props.screenName === screenName) {
+  // 	return;
+  // }
+  _navigator.push({
+    view: (
+      <NavigatorPage
+        leftTitle={lastScreen.viewRef.props.title} //默认为上一个页面的标题
+        navigationBarInsets={screen.navigatorStyle && !screen.navigatorStyle.navBarHidden}
+        {...screen.navigatorStyle}
+        screenName={screenName}
+        passProps={passProps}
+      >
+        {screen}
+      </NavigatorPage>
+    ),
+  });
 }
 
 function pushNotNavBar(Screen: Function, passProps = {}) {
-	// const screenName = utils.getFuncName(Screen);
-	// const routes = _navigator.getCurrentRoutes();
-	// // console.log(routes)
-	// const lastScreen = routes[routes.length - 1];
-	// if (lastScreen.viewRef.props.screenName === screenName) {
-	// 	return;
-	// }
-	_navigator.push({
-		view: <Screen {...passProps} />
-	})
+  // const screenName = utils.getFuncName(Screen);
+  // const routes = _navigator.getCurrentRoutes();
+  // // console.log(routes)
+  // const lastScreen = routes[routes.length - 1];
+  // if (lastScreen.viewRef.props.screenName === screenName) {
+  // 	return;
+  // }
+  _navigator.push({
+    view: <Screen {...passProps} />,
+  });
 }
 
 function replace(screen: Function, passProps = {}) {
-	const screenName = utils.getFuncName(screen);
-	const routes = _navigator.getCurrentRoutes();
-	// console.log(routes)
-	const lastScreen = routes[routes.length - 1];
-	if (typeof screen.navigatorStyle === 'function') {
-		screen.navigatorStyle = screen.navigatorStyle(passProps)
-	}
-	if (lastScreen.viewRef.props.screenName !== screenName) {
-		_navigator.replace({
-			view: (
-				<NavigatorPage
-					backTitle={lastScreen.viewRef.props.title}//默认为上一个页面的标题
-					navigationBarInsets={screen.navigatorStyle && !screen.navigatorStyle.navBarHidden}
-					{...screen.navigatorStyle}
-					screenName={screenName}
-					passProps={passProps}
-				>
-					{screen}
-				</NavigatorPage>
-			)
-		})
-	}
+  const screenName = utils.getFuncName(screen);
+  const routes = _navigator.getCurrentRoutes();
+  // console.log(routes)
+  const lastScreen = routes[routes.length - 1];
+  if (typeof screen.navigatorStyle === 'function') {
+    screen.navigatorStyle = screen.navigatorStyle(passProps);
+  }
+  if (lastScreen.viewRef.props.screenName !== screenName) {
+    _navigator.replace({
+      view: (
+        <NavigatorPage
+          backTitle={lastScreen.viewRef.props.title} //默认为上一个页面的标题
+          navigationBarInsets={screen.navigatorStyle && !screen.navigatorStyle.navBarHidden}
+          {...screen.navigatorStyle}
+          screenName={screenName}
+          passProps={passProps}
+        >
+          {screen}
+        </NavigatorPage>
+      ),
+    });
+  }
 }
 
 function pop() {
-	InteractionManager.runAfterInteractions(() => {
-		_navigator.pop()
-	})
+  InteractionManager.runAfterInteractions(() => {
+    _navigator.pop();
+  });
 }
 
 function popToTop() {
-	InteractionManager.runAfterInteractions(() => {
-		_navigator.popToTop()
-	})
+  InteractionManager.runAfterInteractions(() => {
+    _navigator.popToTop();
+  });
 }
 
 function popToRoute(route) {
-	_navigator.popToRoute(route)
+  _navigator.popToRoute(route);
 }
 
 function popN(n) {
-	_navigator.popN(n)
+  _navigator.popN(n);
 }
 
 function resetTo() {
-	_navigator.resetTo()
+  _navigator.resetTo();
 }
 
 export default {
-	setContainer,
-	sceneConfig,
-	push,
-	pop,
-	popToTop,
-	popToRoute,
-	popN,
-	resetTo,
-	pushNotNavBar,
-	replace
-}
+  setContainer,
+  sceneConfig,
+  push,
+  pop,
+  popToTop,
+  popToRoute,
+  popN,
+  resetTo,
+  pushNotNavBar,
+  replace,
+};

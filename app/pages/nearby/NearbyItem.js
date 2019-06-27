@@ -9,6 +9,7 @@ import ImageCached from '../../components/ImageCached';
 import { ImageCache } from 'react-native-img-cache/build/index';
 import NearbyDetail from './NearbyDetail';
 import Profile from '../profile/Profile';
+import { red } from 'ansi-colors';
 
 const icons = item => [
   {
@@ -24,6 +25,7 @@ export default class NearbyItem extends React.Component {
   state = {
     item: this.props.item,
     byId: this.props.byId,
+    dimensions: undefined,
   };
 
   updateItem = item => {
@@ -56,15 +58,49 @@ export default class NearbyItem extends React.Component {
     }
     return component;
   };
+
+  renderImage = uri => {
+    let dimensions = this.state.dimensions;
+    let containerWidth = dimensions === undefined ? styleUtil.window.width - 76 : dimensions.width;
+    const offsetScreen = 15;
+    const imageSpace = 10;
+    const imageHeight = Math.floor((containerWidth - imageSpace * 3) / 3);
+    return (
+      <ImageCached
+        style={{
+          width: imageHeight,
+          height: imageHeight,
+          marginRight: imageSpace,
+          marginTop: 10,
+        }}
+        source={{ uri: uri }}
+      />
+    );
+  };
+
+  onLayout = event => {
+    if (this.state.dimensions) return; // layout was already called
+    let { width, height } = event.nativeEvent.layout;
+    this.setState({ dimensions: { width, height } });
+  };
+
   render() {
     const { item, byId } = this.state;
-    const data = byId[item];
-    console.log(JSON.stringify(data));
+    const simpleData = byId[item];
+    console.log(JSON.stringify(simpleData));
     const { another, first = false } = this.props;
+    const price = simpleData.price;
+    const havePrice = simpleData.price !== undefined && simpleData.price !== '';
+    const picfile = simpleData.picfile;
+    const havePicfile = picfile !== undefined && picfile.length > 0;
     return (
       <TouchableOpacity
         onPress={() => {
-          navigate.pushNotNavBar(NearbyDetail);
+          navigate.pushNotNavBar(NearbyDetail, {
+            sjid: item,
+            simpleData: simpleData,
+            sjType: simpleData.sjType,
+          });
         }}
       >
         <View
@@ -91,7 +127,7 @@ export default class NearbyItem extends React.Component {
                   marginBottom: 2,
                 }}
               />
-              {this.renderLeftImage(data.sjType)}
+              {this.renderLeftImage(simpleData.sjType)}
               <View
                 style={{
                   flex: 1,
@@ -123,7 +159,7 @@ export default class NearbyItem extends React.Component {
                   navigate.pushNotNavBar(Profile);
                 }}
               >
-                <Avatar size={36} rounded source={require('../../assets/image/avatar.png')} />
+                <Avatar size={36} rounded source={{ uri: simpleData.userFace }} />
               </TouchableOpacity>
               <Text
                 numberOfLines={2}
@@ -134,85 +170,41 @@ export default class NearbyItem extends React.Component {
                   fontSize: 14,
                 }}
               >
-                {data.title}
+                {simpleData.title}
+                {havePrice ? (
+                  <Text
+                    style={{
+                      color: styleUtil.themeColor,
+                      fontSize: 16,
+                      fontWeight: '700',
+                      marginLeft: 10,
+                    }}
+                  >
+                    {`  ¥${price}`}
+                  </Text>
+                ) : null}
               </Text>
-              <Text style={{ marginLeft: 10, color: '#C1C1C1', fontSize: 12 }}>{'3小时前'}</Text>
+
+              <Text style={{ marginLeft: 10, color: '#C1C1C1', fontSize: 12 }}>
+                {simpleData.sjTimeDesc}
+              </Text>
             </View>
-            {/* <View
-              style={{
-                flexDirection: 'row',
-                flex: 1,
-                flexWrap: 'wrap',
-                marginLeft: 46,
-              }}
-            >
-              <ImageCached
-                source={require('../../assets/image/example.png')}
-                images={[require('../../assets/image/example.png')]}
-                isOnPress
+            {havePicfile ? (
+              <View
                 style={{
-                  marginTop: 10,
+                  flexDirection: 'row',
+                  flex: 1,
+                  flexWrap: 'wrap',
+                  marginLeft: 46,
                   marginRight: 10,
-                  width: 50,
-                  height: 50,
                 }}
-              />
-              <ImageCached
-                source={require('../../assets/image/example.png')}
-                images={[require('../../assets/image/example.png')]}
-                isOnPress
-                style={{
-                  marginTop: 10,
-                  marginRight: 10,
-                  width: 50,
-                  height: 50,
-                }}
-              />
-              <ImageCached
-                source={require('../../assets/image/example.png')}
-                images={[require('../../assets/image/example.png')]}
-                isOnPress
-                style={{
-                  marginTop: 10,
-                  marginRight: 10,
-                  width: 50,
-                  height: 50,
-                }}
-              />
-              <ImageCached
-                source={require('../../assets/image/example.png')}
-                images={[require('../../assets/image/example.png')]}
-                isOnPress
-                style={{
-                  marginTop: 10,
-                  marginRight: 10,
-                  width: 50,
-                  height: 50,
-                }}
-              />
-              <ImageCached
-                source={require('../../assets/image/example.png')}
-                images={[require('../../assets/image/example.png')]}
-                isOnPress
-                style={{
-                  marginTop: 10,
-                  marginRight: 10,
-                  width: 50,
-                  height: 50,
-                }}
-              />
-              <ImageCached
-                source={require('../../assets/image/example.png')}
-                images={[require('../../assets/image/example.png')]}
-                isOnPress
-                style={{
-                  marginTop: 10,
-                  marginRight: 10,
-                  width: 50,
-                  height: 50,
-                }}
-              />
-            </View> */}
+                onLayout={this.onLayout}
+              >
+                {picfile.map(uri => {
+                  return this.renderImage(uri);
+                })}
+              </View>
+            ) : null}
           </View>
         </View>
       </TouchableOpacity>

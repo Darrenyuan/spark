@@ -89,11 +89,13 @@ export default class App extends Component<Props, State> {
   componentDidMount() {
     loadState().then(
       data => {
-        if (data == null) {
-          data = initialState;
+        let realInitialState = initialState;
+        if (data !== null) {
+          realInitialState.configInfo = data.configInfo || initialState.configInfo;
+          realInitialState.locationInfo = data.locationInfo || initialState.locationInfo;
+          realInitialState.loginInfo = data.loginInfo || initialState.loginInfo;
         }
-        console.log(JSON.stringify(data));
-        let store = configureStore(data);
+        let store = configureStore(realInitialState);
         store.subscribe(
           throttle(() => {
             saveState(store.getState());

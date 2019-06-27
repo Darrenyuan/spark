@@ -58,6 +58,7 @@ export function apiFetchConfigInfo(args = {}) {
   return instance.post(
     baseUrl + 'HICService.y?cmd=onStart',
     jsonToQueryString({
+      sjid: args.sjid,
       auid: args.auid,
       M0: args.M0,
       M2: args.M2,
@@ -228,6 +229,7 @@ export function apiAdd(args = {}) {
   formData.append('M3', args.M3);
   formData.append('M8', args.M8);
   formData.append('M9', args.M9);
+  formData.append('location', args.location);
   args.imgs.map(item => {
     formData.append('face', {
       uri: item.path,
@@ -278,6 +280,8 @@ export function apiFetchContentList(args = {}) {
       sjType: args.sjType,
       collectFlag: args.collectFlag,
       keyword: args.keyword,
+      page: args.page,
+      pageRow: args.pageSize,
       auid: args.auid,
       M0: args.M0,
       M2: args.M2,
@@ -289,14 +293,17 @@ export function apiFetchContentList(args = {}) {
   );
 }
 
-export function apiDetail(args = {}) {
+export function apiFetchNearByDetail(args = {}) {
   return instance.post(
-    baseUrl + 'HICService.y?cmd=detail',
+    baseUrl + 'SubjectCService.y?cmd=detail',
     jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
       sjid: args.sjid,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
     }),
     config,
   );

@@ -4,6 +4,7 @@ import { reducer as applyLogonReducer } from './applyLogon';
 import { reducer as fetchConfigInfoReducer } from './fetchConfigInfo';
 import { reducer as fetchContentListReducer } from './fetchContentList';
 import { reducer as registerLocationReducer } from './registerLocation';
+import { reducer as fetchNearByDetailReducer } from './fetchNearByDetail';
 
 const reducers = [
   loginReducer,
@@ -11,6 +12,7 @@ const reducers = [
   fetchConfigInfoReducer,
   fetchContentListReducer,
   registerLocationReducer,
+  fetchNearByDetailReducer,
 ];
 
 export default function reducer(state = initialState, action) {

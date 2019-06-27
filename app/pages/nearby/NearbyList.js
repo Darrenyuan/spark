@@ -22,6 +22,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../services/redux/actions';
 import md5 from 'react-native-md5';
 import { SearchInput } from 'teaset';
+import _ from 'lodash';
 const WIDTH = Dimensions.get('window').width;
 
 class NearbyList extends NavigatorPage {
@@ -41,76 +42,98 @@ class NearbyList extends NavigatorPage {
   //
   constructor(props) {
     super(props);
-    this.page = 1;
-    this.total = 1;
+    const { sjType, keyword, nearBys } = this.props;
     this.state = {
       user: props.user,
-      list: [{ name: 'haha' }, { name: 'haha' }, { name: 'haha' }, { name: 'haha' }],
       another: false,
       isLoading: false, //上拉加载
       isRefreshing: false, //下拉刷新
       collectFlag: '1',
-      keyword: this.props.keyword,
-      sjType: this.props.sjType,
+      sjType: sjType,
       page: 1,
-      pageSize: 5,
+      pageSize: 10,
+      keyword: keyword,
+      prevSearchText: '',
     };
     this._isMounted = false;
   }
 
+  filter = (byId, keyword, sjType) => {
+    if (keyword === '' || keyword === undefined) {
+      if (sjType === '' || sjType === undefined) {
+        return byId;
+      } else {
+        return _.pickBy(byId, (item, key) => {
+          return item.sjType === sjType;
+        });
+      }
+    } else {
+      if (sjType === '' || sjType === undefined) {
+        return _.pickBy(byId, (item, key) => {
+          return item.title.includes(keyword);
+        });
+      } else {
+        return _.pickBy(byId, (item, key) => {
+          return item.sjType === sjType && item.title.includes(keyword);
+        });
+      }
+    }
+  };
   componentDidMount() {
     // config.removeUser()
     this.fetchData();
     this._isMounted = true;
   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.props.sjType != prevProps.sjType || this.props.keyword != prevProps.keyword) {
-  //     this.setState({ sjType: this.props.sjType, keyword: this.props.keyword });
-  //   }
-  // }
 
   componentWillUnmount() {}
 
   fetchData = () => {
-    const { loginInfo } = this.props.spark;
-    let auid = loginInfo.auid;
-    let M2 = loginInfo.loginToken;
-    let M3 = this.props.spark.locationInfo.coordsStr;
+    const { loginInfo, locationInfo, sjType, fetchContentList } = this.props;
+    const { collectFlag, keyword, page, pageSize } = this.state;
+    let auid = '';
+    let M2 = '';
+    if (loginInfo !== undefined) {
+      auid = loginInfo.auid;
+      M2 = loginInfo.loginToken;
+    }
+    let M3 = locationInfo.coordsStr;
     let M8 = md5.hex_md5(auid + new Date().getTime());
     let M9 = new Date().getTime();
-    this.props.actions.fetchContentList({
-      sjType: this.props.sjType,
-      collectFlag: this.state.collectFlag,
-      keyword: this.state.keyword,
-      auid: auid,
+    console.log('fetchData In near by list:M2:', M2, ':auid:', auid);
+    let searchTerm = this.getSearchTerm();
+    fetchContentList({
+      sjType: sjType,
+      collectFlag: collectFlag,
+      keyword: keyword,
+      auid: auid === undefined ? '' : auid,
       M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
       M2: M2,
-      M3: '114.429636,30.504164', //this.props.coordsStr,
+      M3: M3, //this.props.coordsStr,
       M8: M8,
       M9: M9,
-      page: this.state.page,
-      pageSize: this.state.pageSize,
+      page: page,
+      pageSize: pageSize,
+      searchTerm: searchTerm,
     });
   };
   _hasMore = () => {
-    // const { page, pageSize } = this.state;
-    // let currentTotal = page * pageSize;
-    // let keyword = '';
-    // if (this.state.keyword === '') {
-    //   keyword = 'default';
-    // } else {
-    //   keyword = this.state.keyword;
-    // }
-    // let total = this.props.spark.contentList[keyword].total;
-    // if (currentTotal < total) {
-    //   return true;
-    // }
-    return false;
+    const { page, pageSize } = this.state;
+    const { nearBys } = this.props;
+    let currentTotal = page * pageSize;
+    let searchTerm = this.getSearchTerm();
+    let totalCount = 0;
+    if (nearBys[searchTerm] !== undefined) {
+      totalCount = nearBys[searchTerm].totalCount;
+    }
+    return currentTotal < totalCount;
   };
 
   _fetchMoreData = () => {
-    let page = this.state.page + 1;
-    this.setState(this.setState({ page: page }));
+    console.log('____fetchMoreData');
+    if (this._hasMore()) {
+      let page = this.state.page + 1;
+      this.setState({ page: page }, this.fetchData);
+    }
   };
 
   _renderFooter = () => {
@@ -118,7 +141,7 @@ class NearbyList extends NavigatorPage {
   };
 
   _renderRows = ({ item, separators, index }) => {
-    const { byId } = this.getById();
+    const byId = this.props.nearBys.byId;
     // return (<View style={{width:100, height:40, backgroundColor:'red'}} />);
     return (
       <NearbyItem
@@ -134,19 +157,37 @@ class NearbyList extends NavigatorPage {
       />
     );
   };
-  getById = () => {
-    const contentList = this.props.spark.contentList;
-    console.log('contentList:', JSON.stringify(contentList));
-    let { keyword } = this.state;
-    if (keyword === undefined || keyword === '') {
-      keyword = 'default';
-    }
-    return contentList[keyword];
-  };
 
+  handleSearch = text => {
+    if (this.state.prevSearchText !== text) {
+      this.setState({ prevSearchText: text, page: 1 }, this.fetchData);
+    } else {
+      this.setState({ prevSearchText: text }, this.fetchData);
+    }
+  };
+  getSearchTerm = () => {
+    const { sjType, keyword, pageSize } = this.state;
+    let searchTerm = `search_${keyword}_${sjType}_${pageSize}`;
+    return searchTerm;
+  };
   render() {
-    console.log(JSON.stringify(this.props.spark));
-    if (this.props.spark.fetchContentListPending) {
+    console.log(JSON.stringify(this.props));
+    const { fetchContentListPending, nearBys } = this.props;
+    const { sjType, keyword, page, pageSize } = this.state;
+    const { byId } = nearBys;
+    const searchTerm = this.getSearchTerm();
+    const allPages = nearBys[searchTerm];
+    let items = [];
+    if (allPages !== undefined) {
+      for (i = 1; i <= page; i++) {
+        if (allPages[i] && allPages[i].items) {
+          allPages[i].items.forEach(item => {
+            items.push(item);
+          });
+        }
+      }
+    }
+    if (fetchContentListPending) {
       //Loading View while data is loading
       return (
         <View style={{ flex: 1, paddingTop: 20 }}>
@@ -154,48 +195,49 @@ class NearbyList extends NavigatorPage {
         </View>
       );
     }
-    const { byId } = this.getById();
-    const items = Object.keys(byId);
     return (
       <View style={styleUtil.container}>
         <SearchInput
           placeholder="搜索"
           style={styles.searchInput}
           onChangeText={text => this.setState({ keyword: text })}
-          // onBlur={() => {
-          //   console.log('onblur entered');
-          //   this.fetchData;
-          // }}
+          onBlur={this.handleSearch}
+          value={this.state.keyword}
         />
         <FlatList
-          extraData={this.state}
+          // extraData={this.state}
           data={items}
           renderItem={this._renderRows}
-          initialNumToRender={config.pageSize}
-          keyExtractor={(item, index) => index.toString()}
+          // initialNumToRender={config.pageSize}
+          // keyExtractor={(item, index) => index.toString()}
           onEndReached={this._fetchMoreData}
-          onEndReachedThreshold={0.3}
-          onRefresh={this._fetchDataWithRefreshing}
-          refreshing={this.state.isRefreshing}
-          ListHeaderComponent={this._renderHeader}
+          onEndReachedThreshold={0.2}
+          // onRefresh={this._fetchDataWithRefreshing}
+          // refreshing={this.state.isRefreshing}
+          // ListHeaderComponent={this._renderHeader}
           ListFooterComponent={this._renderFooter}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
           // onViewableItemsChanged={this._onViewableItemsChanged}
         />
       </View>
     );
   }
 }
-function mapStateToProps(state) {
+
+function mapStateToProps(state, ownProps) {
+  const { contentList, locationInfo, loginInfo, fetchContentListPending } = state;
   return {
-    spark: state,
+    locationInfo,
+    loginInfo,
+    fetchContentListPending,
+    nearBys: contentList,
   };
 }
 
 /* istanbul ignore next */
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ ...actions }, dispatch),
+    fetchContentList: bindActionCreators({ ...actions }, dispatch).fetchContentList,
   };
 }
 
@@ -203,6 +245,7 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(NearbyList);
+
 const styles = StyleSheet.create({
   searchInput: {
     borderWidth: 0,

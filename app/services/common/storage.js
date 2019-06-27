@@ -1,8 +1,10 @@
 import storageUtil from '../../common/storageUtil';
+import initialState from '../redux/initialState';
 
 export const loadState = () => {
   try {
-    return storageUtil.getItem('state');
+    let state = storageUtil.getItem('state');
+    return state;
   } catch (err) {
     return undefined;
   }

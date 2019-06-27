@@ -22,17 +22,22 @@ const initialState = {
   fetchConfigInfoPending: false,
   fetchConfigInfoError: null,
   contentList: {
-    default: {
-      items: [],
-      page: 1,
-      pageSize: 3,
-      total: 0,
-      byId: {},
-      listNeedReload: false,
-    },
+    searchTerms: [],
+    items: [],
+    page: 1,
+    pageSize: 10,
+    total: 0,
+    byId: {},
+    listNeedReload: false,
   },
   fetchContentListPending: false,
   fetchContentListError: null,
+  nearByDetails: {
+    byId: {},
+    items: [],
+  },
+  fetchNearByDetailPending: false,
+  fetchNearByDetailError: null,
 };
 
 export default initialState;

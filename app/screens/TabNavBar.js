@@ -46,7 +46,8 @@ class TabNavBar extends React.Component {
   }
 
   componentWillMount() {
-    if (this.props.spark.loginInfo.auid) {
+    const { loginInfo } = this.props;
+    if (loginInfo.auid) {
       this._netApplyLogon();
     }
   }
@@ -74,12 +75,13 @@ class TabNavBar extends React.Component {
       });
     }
     let _this = this;
+    const { fetchConfigInfo, registerLocation } = this.props;
     Geolocation.getCurrentPosition(({ coords, timestamp, location }) => {
       console.log('coords=', JSON.stringify(coords));
       let coordsStr = _this.coordsToString(coords);
       console.log('coodsStr=', coordsStr);
       _this.setState({ coordsStr: coordsStr });
-      _this.props.actions.fetchConfigInfo({
+      fetchConfigInfo({
         auid: auid,
         M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
         M2: '',
@@ -87,7 +89,7 @@ class TabNavBar extends React.Component {
         M8: md5.hex_md5(auid + strM9),
         M9: strM9,
       });
-      _this.props.actions.registerLocation({
+      registerLocation({
         latitude: coords.latitude,
         longitude: coords.longitude,
         coordsStr: coordsStr,
@@ -103,12 +105,13 @@ class TabNavBar extends React.Component {
   }
 
   _netApplyLogon = () => {
-    const { loginInfo } = this.props.spark;
+    const { loginInfo, applyLogon } = this.props;
+    const { coordsStr } = this.state;
     let auid = loginInfo.auid;
     let M2 = loginInfo.loginToken;
-    let M3 = this.state.coordsStr;
+    let M3 = coordsStr;
     let M8 = md5.str_md5(auid + new Date().getTime());
-    this.props.actions.applyLogon({
+    applyLogon({
       auid: auid,
       M2: M2,
       M3: M3,
@@ -117,7 +120,8 @@ class TabNavBar extends React.Component {
   };
 
   _onClickPublish = () => {
-    if (!this.props.spark.loginInfo.loginToken) {
+    const { loginInfo, registerLocation } = this.props;
+    if (!loginInfo.loginToken) {
       navigate.pushNotNavBar(LoginEnterPhone);
       return;
     } else {
@@ -126,7 +130,7 @@ class TabNavBar extends React.Component {
       addLocationListener(location => {
         console.log('listener:invoker', location);
         let coordsStr = _this.coordsToString(location);
-        this.props.actions.registerLocation({
+        registerLocation({
           latitude: location.latitude,
           longitude: location.longitude,
           address: location.address,
@@ -187,6 +191,11 @@ class TabNavBar extends React.Component {
   }
 
   render() {
+    const { loginInfo } = this.props;
+    console.log('logInfo================', JSON.stringify(loginInfo));
+    if (!loginInfo.loginToken) {
+      return <LoginEnterPhone />;
+    }
     let { activeIndex } = this.state;
     let customBarStyle =
       Platform.OS === 'android'
@@ -253,16 +262,24 @@ class TabNavBar extends React.Component {
     );
   }
 }
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  console.log('ownProps=====', JSON.stringify(ownProps));
+  const { loginInfo } = state;
   return {
-    spark: state,
+    loginInfo,
   };
 }
 
 /* istanbul ignore next */
 function mapDispatchToProps(dispatch) {
+  const { fetchConfigInfo, registerLocation, applyLogon } = bindActionCreators(
+    { ...actions },
+    dispatch,
+  );
   return {
-    actions: bindActionCreators({ ...actions }, dispatch),
+    fetchConfigInfo,
+    registerLocation,
+    applyLogon,
   };
 }
 

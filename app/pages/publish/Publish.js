@@ -101,7 +101,7 @@ class Publish extends NavigatorPage {
 
     // 发布主题，全局作用域
     _netPublishSubject = () => {
-      const { pageInfo, title, content, price, imgs, areaR, startTime } = this.state;
+      const { pageInfo, title, content, price, imgs, areaR, startTime, address } = this.state;
       toast.modalLoading();
       apiAdd({
         sjType: pageInfo.sjType,
@@ -117,6 +117,7 @@ class Publish extends NavigatorPage {
         M3: this.props.spark.locationInfo.coordsStr,
         M8: md5.hex_md5(auid + strM9),
         M9: strM9,
+        location: address,
       }).then(
         res => {
           console.log(res);

@@ -48,47 +48,26 @@
     "@react-native-community/eslint-config": "^0.0.3",
     "babel-jest": "^24.5.0",
     "babel-preset-react-native": "^4.0.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "eslint": "^6.0.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^5.0.0",
+    "eslint-config-react-native": "^4.0.0",
+    "eslint-plugin-flowtype": "^3.10.5",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
     "jest": "^24.5.0",
     "jest-react-native": "^18.0.0",
     "metro-react-native-babel-preset": "^0.53.1",
     "prop-types": "^15.7.2",
+    "react-dom": "^16.8.6",
     "react-test-renderer": "16.8.3"
   },
   "jest": {
-    "rootDir": ".",
-    "roots": [
-      "<rootDir>"
-    ],
-    "setupFiles": [
-      "<rootDir>/jest.setup.js"
-    ],
     "preset": "react-native",
-    "preprocessorIgnorePatterns": [
-      "node_modules/(?!react-native|jpush-react-native|teaset|rn-fetch-blob|react-native-wechat)"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "jsx"
-    ],
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "identity-obj-proxy"
-    },
-    "collectCoverage": false,
-    "verbose": true,
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      ".+/(resources)/.+",
-      ".+/(autoMockOff.js)",
-      ".+/(.history)/.+"
-    ],
-    "transform": {
-      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
-    },
-    "globals": {
-      "ts-jest": {
-        "diagnostics": false
-      }
-    }
+    "setupFiles": [
+      "<rootDir>/jest/setup.js"
+    ]
   }
 }

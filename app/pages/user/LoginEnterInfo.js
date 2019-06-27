@@ -11,17 +11,17 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
+import { Avatar, Icon } from 'react-native-elements';
+import md5 from 'react-native-md5';
+import ImageCropPicker from 'react-native-image-crop-picker';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
 import OverlayModal from '../../components/OverlayModal';
-import { Avatar, Icon } from 'react-native-elements';
 import config from '../../common/config';
-import ImageCropPicker from 'react-native-image-crop-picker';
 import navigate from '../../screens/navigate';
 import DatePicker from '../../components/DatePicker';
 import LoginMoreInfo from './LoginMoreInfo';
 import { apiEditRegistInfo1 } from '../../services/axios/api';
-import md5 from 'react-native-md5';
 
 export default class LoginEnterInfo extends NavigatorPage {
   static defaultProps = {
@@ -36,7 +36,7 @@ export default class LoginEnterInfo extends NavigatorPage {
           navigate.pop();
         }}
       >
-        <Icon name={'ios-arrow-back'} type={'ionicon'} color={'white'} size={25} />
+        <Icon name="ios-arrow-back" type="ionicon" color="white" size={25} />
       </TouchableOpacity>
     ),
   };
@@ -51,19 +51,19 @@ export default class LoginEnterInfo extends NavigatorPage {
     };
   }
 
-  //TODO
+  // TODO
   _netRegisterInfo1 = () => {
     const { face, nickName, birth, sex } = this.state;
     console.log(face);
-    let auid = '';
-    let M9 = new Date().getTime();
-    let strM9 = '' + M9;
+    const auid = '';
+    const M9 = new Date().getTime();
+    const strM9 = `${M9}`;
     const option = {
       nickName,
       birth,
       sex,
       face: {},
-      auid: auid,
+      auid,
       M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
       M2: '',
       M3: '120.45435,132.32424',
@@ -83,7 +83,7 @@ export default class LoginEnterInfo extends NavigatorPage {
       console.log(res.data);
       console.log('qqqqqqqqqqq');
       if (res.data.code === 1) {
-        //TODO  同步redux
+        // TODO  同步redux
         // config.setStatusAndMarker(res.data);
         navigate.pushNotNavBar(LoginMoreInfo, {
           phone: this.props.phone,
@@ -117,13 +117,12 @@ export default class LoginEnterInfo extends NavigatorPage {
       })
       .catch(err => {
         if (err.code === 'E_PICKER_CANCELLED') {
-          return;
         }
       });
   };
 
   _onClickAvatar = (type = 'avatar') => {
-    let items = [
+    const items = [
       {
         title: '拍照',
         onPress: _ => config.loadData(_ => this._openCamera(type)),
@@ -137,8 +136,8 @@ export default class LoginEnterInfo extends NavigatorPage {
   };
 
   showDatePicker = () => {
-    let birth = this.state.birth;
-    let arr = birth.split('/');
+    let { birth } = this.state;
+    const arr = birth.split('/');
     OverlayModal.show(
       <DatePicker
         selectedYear={arr[0]}
@@ -146,7 +145,7 @@ export default class LoginEnterInfo extends NavigatorPage {
         selectedDate={arr[2]}
         onDone={arr => {
           birth = arr.join('/');
-          this.setState({ birth: birth });
+          this.setState({ birth });
         }}
       />,
     );
@@ -186,7 +185,7 @@ export default class LoginEnterInfo extends NavigatorPage {
               }}
             >
               <Avatar size={71} rounded source={config.defaultAvatar(face ? face.path : '')} />
-              <Text style={{ fontSize: 14, color: 'white', marginTop: 10 }}>{'修改头像'}</Text>
+              <Text style={{ fontSize: 14, color: 'white', marginTop: 10 }}>修改头像</Text>
             </TouchableOpacity>
           </ImageBackground>
 
@@ -261,11 +260,11 @@ export default class LoginEnterInfo extends NavigatorPage {
               >
                 <Icon
                   name={sex == '男' ? 'ios-radio-button-on' : 'ios-radio-button-off'}
-                  type={'ionicon'}
+                  type="ionicon"
                   color={styleUtil.themeColor}
                   size={25}
                 />
-                <Text style={{ fontSize: 16, color: '#454545', marginLeft: 15 }}>{'男性'}</Text>
+                <Text style={{ fontSize: 16, color: '#454545', marginLeft: 15 }}>男性</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -280,11 +279,11 @@ export default class LoginEnterInfo extends NavigatorPage {
               >
                 <Icon
                   name={sex == '女' ? 'ios-radio-button-on' : 'ios-radio-button-off'}
-                  type={'ionicon'}
+                  type="ionicon"
                   color={styleUtil.themeColor}
                   size={25}
                 />
-                <Text style={{ fontSize: 16, color: '#454545', marginLeft: 15 }}>{'女性'}</Text>
+                <Text style={{ fontSize: 16, color: '#454545', marginLeft: 15 }}>女性</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
@@ -302,7 +301,7 @@ export default class LoginEnterInfo extends NavigatorPage {
                 }
               }}
             >
-              <Text style={styles.buttonText}>{'下一步'}</Text>
+              <Text style={styles.buttonText}>下一步</Text>
             </TouchableOpacity>
           </View>
         </View>

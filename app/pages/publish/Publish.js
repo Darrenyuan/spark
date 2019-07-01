@@ -47,8 +47,8 @@ class Publish extends NavigatorPage {
           marginRight: 10,
         }}
         onPress={_ => {
+          console.log(1111111111);
           _netPublishSubject();
-          console.log(111);
         }}
       >
         <Text style={{ fontSize: 16, color: '#fff', textAlign: 'center' }}>{'发布'}</Text>

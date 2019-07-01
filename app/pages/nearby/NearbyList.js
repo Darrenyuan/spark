@@ -31,15 +31,6 @@ class NearbyList extends NavigatorPage {
     navBarHidden: true,
     navigationBarInsets: false,
   };
-  //
-  // static fetchNewTopicWithRefreshing = () => {
-  // 	DeviceEventEmitter.emit('fetchNewTopicWithRefreshing')
-  // };
-  //
-  // static removeTopicWithUserId = (val) => {
-  // 	DeviceEventEmitter.emit('removeTopicWithUserId', val)
-  // };
-  //
   constructor(props) {
     super(props);
     const { sjType, keyword, nearBys } = this.props;

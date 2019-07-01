@@ -75,8 +75,6 @@ class LoginMoreInfo extends NavigatorPage {
         console.log(res);
         if (res.data.code === 1) {
           this._toLogin();
-          // navigate.popN(4);
-          // this._netApplyLogin();
         }
       });
     }

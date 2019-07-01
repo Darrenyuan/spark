@@ -80,8 +80,6 @@ export default class LoginEnterInfo extends NavigatorPage {
 
     apiEditRegistInfo1(option).then(res => {
       toast.modalLoadingHide();
-      console.log(res.data);
-      console.log('qqqqqqqqqqq');
       if (res.data.code === 1) {
         // TODO  同步redux
         // config.setStatusAndMarker(res.data);

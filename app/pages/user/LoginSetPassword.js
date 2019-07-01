@@ -19,10 +19,8 @@ import LoginEnterInfo from './LoginEnterInfo';
 import LoginAgreement from './LoginAgreement';
 import CountDownText from '../../components/countdown/countDownText';
 import CryptoJS from 'react-native-crypto-js';
-
 import { apiSendCodeToPhone, apiRegist } from '../../services/axios/api';
 import md5 from 'react-native-md5';
-
 import config from '../../common/config';
 import LoginEnterPassword from './LoginEnterPassword';
 import { apiResetPassword } from '../../services/axios/api';
@@ -148,12 +146,6 @@ class LoginSetPassword extends NavigatorPage {
       }
     });
   };
-
-  // _netEnterPasswordPage = () => {
-  //   console.log(1111111111111111);
-  //   let phone = this.props.phone;
-  //   console.log(phone);
-  // };
 
   _checkCodeValid = () => {
     const { verifyCode } = this.state;
@@ -357,13 +349,8 @@ class LoginSetPassword extends NavigatorPage {
                 },
               ]}
               onPress={_ => {
-                console.log('onpress11111111111');
-
                 if (this._checkAllInputValid()) {
-                  //this._netRegister();
                   resetPassword ? this._netSetPassword() : this._netRegister();
-                  // this._netEnterPasswordPage();
-                  // this._netSetPassword();
                 }
               }}
             >

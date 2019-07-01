@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   FlatList,
   DeviceEventEmitter,
@@ -7,26 +7,26 @@ import {
   Text,
   TouchableWithoutFeedback,
   Vibration,
-  Image
-} from "react-native";
+  Image,
+} from 'react-native';
 
-import "prop-types";
-import styleUtil from "../../common/styleUtil";
+import 'prop-types';
+import styleUtil from '../../common/styleUtil';
 
-import ChatListRow from "./ChatListRow";
-import config from "../../common/config";
-import TabNavBar, { MessageBadge } from "../../screens/TabNavBar";
-import navigate from "../../screens/navigate";
-import Chat from "./Chat";
-import { ActionPopover, ListRow, Badge, NavigationBar } from "teaset";
-import SystemNoticeIndex from "./SystemNoticeIndex";
-import utils from "../../common/utils";
-import NavigatorPage from "../../components/NavigatorPage";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import NearbyDetail from "../nearby/NearbyDetail";
-import FriendList from "./FriendList";
-import Notification from "../notification/Notification"
+import ChatListRow from './ChatListRow';
+import config from '../../common/config';
+import TabNavBar, { MessageBadge } from '../../screens/TabNavBar';
+import navigate from '../../screens/navigate';
+import Chat from './Chat';
+import { ActionPopover, ListRow, Badge, NavigationBar } from 'teaset';
+import SystemNoticeIndex from './SystemNoticeIndex';
+import utils from '../../common/utils';
+import NavigatorPage from '../../components/NavigatorPage';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import NearbyDetail from '../nearby/NearbyDetail';
+import FriendList from './FriendList';
+import Notification from '../notification/Notification';
 
 let gInstance;
 
@@ -36,42 +36,42 @@ export default class ChatList extends NavigatorPage {
     navBarHidden: false,
     navigationBarInsets: true,
     showBackButton: true,
-    title: "消息",
+    title: '消息',
     leftView: (
       <NavigationBar.Button onPress={() => gInstance._onClickNotifications()}>
-        <Ionicons name={"ios-notifications-outline"}  color={"#666666"} size={25} />
+        <Ionicons name={'ios-notifications-outline'} color={'#666666'} size={25} />
       </NavigationBar.Button>
     ),
     rightView: (
       <NavigationBar.Button onPress={() => gInstance._onClickContact()}>
-        <AntDesign name={"contacts"} color={"#666666"} size={22} />
+        <AntDesign name={'contacts'} color={'#666666'} size={22} />
       </NavigationBar.Button>
-    )
+    ),
   };
 
   static onReceive = val => {
-    DeviceEventEmitter.emit("onReceive", val);
+    DeviceEventEmitter.emit('onReceive', val);
   };
   static updateList = val => {
-    DeviceEventEmitter.emit("updateList", val);
+    DeviceEventEmitter.emit('updateList', val);
   };
   static listenerChatMsg = () => {
-    DeviceEventEmitter.emit("listenerChatMsg");
+    DeviceEventEmitter.emit('listenerChatMsg');
   };
 
   constructor(props) {
     super(props);
     this.state = {
       list: [],
-      noticeCount: 0
-      // list: Array(20).fill('').map((_, i) => `item #${i}`),
+      noticeCount: 0,
+      // list: Array(20).fill('').((_, i) => `item #${i}`),
     };
     this._isMounted = false;
     this.chatList = [];
     this.fromUser = {
       _id: config.user._id,
       username: config.user.username,
-      avatar: config.user.avatar
+      avatar: config.user.avatar,
     };
     this.onReceive = this.onReceive.bind(this);
     this.updateList = this.updateList.bind(this);
@@ -82,11 +82,11 @@ export default class ChatList extends NavigatorPage {
   componentDidMount() {
     // config.removeUser()
     // config.removeAllChatList()
-    AppState.addEventListener("change", this.handleAppStateChange);
+    AppState.addEventListener('change', this.handleAppStateChange);
     this._isMounted = true;
-    DeviceEventEmitter.addListener("updateList", v => this.updateList(v));
-    DeviceEventEmitter.addListener("onReceive", v => this.onReceive(v));
-    DeviceEventEmitter.addListener("listenerChatMsg", this.listenerChatMsg);
+    DeviceEventEmitter.addListener('updateList', v => this.updateList(v));
+    DeviceEventEmitter.addListener('onReceive', v => this.onReceive(v));
+    DeviceEventEmitter.addListener('listenerChatMsg', this.listenerChatMsg);
     this._getChatList();
     config.getSystemNotice().then(list => {
       this.setState({ noticeCount: list.length });
@@ -97,10 +97,10 @@ export default class ChatList extends NavigatorPage {
 
   componentWillUnmount() {
     this._isMounted = false;
-    DeviceEventEmitter.removeAllListeners("updateList");
-    DeviceEventEmitter.removeAllListeners("onReceive");
-    DeviceEventEmitter.removeAllListeners("listenerChatMsg");
-    AppState.removeEventListener("change", this.handleAppStateChange);
+    DeviceEventEmitter.removeAllListeners('updateList');
+    DeviceEventEmitter.removeAllListeners('onReceive');
+    DeviceEventEmitter.removeAllListeners('listenerChatMsg');
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   _onClickContact = () => {
@@ -108,15 +108,15 @@ export default class ChatList extends NavigatorPage {
   };
 
   _onClickNotifications = () => {
-      navigate.pushNotNavBar(Notification);
-  }
+    navigate.pushNotNavBar(Notification);
+  };
 
   handleAppStateChange = nextAppState => {
     if (!nextAppState.match(/inactive|background|active/)) {
       return;
     }
     // console.warn(nextAppState)
-    if (nextAppState === "active") {
+    if (nextAppState === 'active') {
       this.listenerChatMsg();
       this.listenerSystemNotice();
     } else if (nextAppState.match(/inactive|background/)) {
@@ -128,9 +128,9 @@ export default class ChatList extends NavigatorPage {
     if (this._isMounted) {
       this.setState(
         {
-          list
+          list,
         },
-        _ => callback && callback()
+        _ => callback && callback(),
       );
     }
   }
@@ -155,7 +155,7 @@ export default class ChatList extends NavigatorPage {
     config.getChatList().then(list => {
       if (list) {
         this.setState({
-          list: list
+          list: list,
         });
         this._generateChatList(list);
       }
@@ -222,7 +222,7 @@ export default class ChatList extends NavigatorPage {
     const newData = [...this.state.list];
     newData.splice(index, 1);
     this.setState({
-      list: newData
+      list: newData,
     });
     config.removeChatListWithToId(item.toId);
   };
@@ -231,7 +231,7 @@ export default class ChatList extends NavigatorPage {
     pressView.measure((ox, oy, width, height, px, py) => {
       let items = [
         {
-          title: "标记已读",
+          title: '标记已读',
           onPress: () => {
             config.getUnreadCount(item.toId).then(count => {
               config.resetUnreadCount(item.toId).then(list => {
@@ -244,10 +244,10 @@ export default class ChatList extends NavigatorPage {
                 TabNavBar.updateMessageBadge(MessageBadge - count);
               }
             });
-          }
+          },
         },
         {
-          title: "标记未读",
+          title: '标记未读',
           onPress: () => {
             config.setUnreadCount(item.toId, 1).then(list => {
               ChatList.updateList(list);
@@ -258,23 +258,23 @@ export default class ChatList extends NavigatorPage {
               this.props.updateTabs(tabs);
               TabNavBar.updateMessageBadge(MessageBadge + 1);
             }
-          }
+          },
         },
         {
-          title: "删除",
+          title: '删除',
           onPress: () => {
             this.deleteRow(item, index);
-          }
-        }
+          },
+        },
       ];
       ActionPopover.show(
         {
           x: px,
           y: py,
           width,
-          height
+          height,
         },
-        items
+        items,
       );
     });
   };
@@ -306,7 +306,7 @@ export default class ChatList extends NavigatorPage {
           item,
           messages: list,
           total,
-          canLoadMore
+          canLoadMore,
         });
       });
     });
@@ -328,7 +328,7 @@ export default class ChatList extends NavigatorPage {
 
   setIsSearch = isSearch => {
     this.setState({
-      isSearch
+      isSearch,
     });
   };
 

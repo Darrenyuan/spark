@@ -68,12 +68,6 @@ class LoginEnterPassword extends NavigatorPage {
       M3: M3,
       M8: M8,
     });
-    // request.post(config.api.applyLogon, {}).then(res => {
-    //   toast.modalLoadingHide();
-    //   if (res.code === 1) {
-    //     config.setUserToStorage(res.data.user);
-    //   }
-    // });
   };
 
   _netLogin = () => {
@@ -92,20 +86,6 @@ class LoginEnterPassword extends NavigatorPage {
         navigate.pushNotNavBar(TabNavBar);
       }
     });
-
-    // request
-    //   .post(config.api.login, {
-    //     phone,
-    //     password: encoded,
-    //   })
-    //   .then(res => {
-    //     toast.modalLoadingHide();
-    //     if (res.code === 1) {
-    //       config.setLoginInfoToStorage(res.data);
-    //       this._netApplyLogin();
-    //       navigate.popN(2);
-    //     }
-    //   });
   };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);

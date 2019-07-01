@@ -1,5 +1,6 @@
 import initialState from './initialState';
 import { reducer as loginReducer } from './login';
+import { reducer as logoutReducer } from './logout';
 import { reducer as applyLogonReducer } from './applyLogon';
 import { reducer as fetchConfigInfoReducer } from './fetchConfigInfo';
 import { reducer as fetchContentListReducer } from './fetchContentList';
@@ -7,6 +8,7 @@ import { reducer as registerLocationReducer } from './registerLocation';
 
 const reducers = [
   loginReducer,
+  logoutReducer,
   applyLogonReducer,
   fetchConfigInfoReducer,
   fetchContentListReducer,

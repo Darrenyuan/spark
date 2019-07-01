@@ -68,7 +68,7 @@ export function reducer(state, action) {
       };
 
     case FETCH_CONTENT_LIST_SUCCESS:
-      console.log('contentList fetching:data:', JSON.stringify(action.data));
+      // console.log('contentList fetching:data:', JSON.stringify(action.data));
       if (_.isEqual(action.data, {})) {
         return {
           ...state,

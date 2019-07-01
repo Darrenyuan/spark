@@ -36,6 +36,7 @@ class TabNavBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isPermission: false,
       activeIndex: 0,
       visible: false,
       latitude: 0,
@@ -52,9 +53,20 @@ class TabNavBar extends React.Component {
   }
 
   async componentDidMount() {
+    if (this.props.spark.loginInfo.loginToken) {
+      this.setState({ isPermission: true });
+    }
     let auid = '';
     let M9 = new Date().getTime();
     let strM9 = '' + M9;
+    this.props.actions.fetchConfigInfo({
+      auid: auid,
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
+      M2: '',
+      M3: '',
+      M8: md5.hex_md5(auid + strM9),
+      M9: strM9,
+    });
     if (Platform.OS === 'ios') {
       init({
         ios: '28d1259434784e7005d8ad3735c66a09',
@@ -77,7 +89,6 @@ class TabNavBar extends React.Component {
     Geolocation.getCurrentPosition(({ coords, timestamp, location }) => {
       console.log('coords=', JSON.stringify(coords));
       let coordsStr = _this.coordsToString(coords);
-      console.log('coodsStr=', coordsStr);
       _this.setState({ coordsStr: coordsStr });
       _this.props.actions.fetchConfigInfo({
         auid: auid,
@@ -117,9 +128,9 @@ class TabNavBar extends React.Component {
   };
 
   _onClickPublish = () => {
-    if (!this.props.spark.loginInfo.loginToken) {
+    const { isPermission } = this.state;
+    if (!isPermission) {
       navigate.pushNotNavBar(LoginEnterPhone);
-      return;
     } else {
       let _this = this;
       // 添加定位监听函数
@@ -187,7 +198,7 @@ class TabNavBar extends React.Component {
   }
 
   render() {
-    let { activeIndex } = this.state;
+    let { activeIndex, isPermission } = this.state;
     let customBarStyle =
       Platform.OS === 'android'
         ? null
@@ -247,7 +258,11 @@ class TabNavBar extends React.Component {
           icon={<Image source={require('../assets/image/tabbar_mine.png')} />}
           activeIcon={<Image source={require('../assets/image/tabbar_mine_highlight.png')} />}
         >
-          <Profile style={{ backgroundColor: 'transparent', borderBottomWidth: 0 }} />
+          {isPermission ? (
+            <Profile style={{ backgroundColor: 'transparent', borderBottomWidth: 0 }} />
+          ) : (
+            <LoginEnterPhone />
+          )}
         </TabView.Sheet>
       </TabView>
     );

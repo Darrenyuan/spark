@@ -69,9 +69,6 @@ export default class LoginPersonal extends NavigatorPage {
   };
   renderPage() {
     const { markers, markersCategorys } = this.state;
-    console.log('mimimii');
-    console.log(markersCategorys);
-    console.log(markers);
 
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -92,20 +89,22 @@ export default class LoginPersonal extends NavigatorPage {
               height: 180,
             }}
           >
-            {markers.map((marker, i) => (
-              <TouchableOpacity
-                style={styles.buttonBox}
-                onPress={_ => {
-                  markers.splice(markers.indexOf(marker), 1);
-                  this.setState({ markers: markers });
-                }}
-              >
-                <Text style={styles.buttonText}>{marker.typeName}</Text>
-                <View style={{ marginLeft: 8 }}>
-                  <Icon name={'md-close'} type={'ionicon'} size={16} color={'white'} />
-                </View>
-              </TouchableOpacity>
-            ))}
+            {markers.length > 0 &&
+              markers.map((marker, i) => (
+                <TouchableOpacity
+                  key={i}
+                  style={styles.buttonBox}
+                  onPress={_ => {
+                    markers.splice(markers.indexOf(marker), 1);
+                    this.setState({ markers: markers });
+                  }}
+                >
+                  <Text style={styles.buttonText}>{marker.typeName}</Text>
+                  <View style={{ marginLeft: 8 }}>
+                    <Icon name={'md-close'} type={'ionicon'} size={16} color={'white'} />
+                  </View>
+                </TouchableOpacity>
+              ))}
           </View>
 
           <ScrollableTabView
@@ -119,11 +118,12 @@ export default class LoginPersonal extends NavigatorPage {
             {markersCategorys.map((markersCategory, i) => (
               <View
                 style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}
-                key={markersCategory.typeName}
+                key={i}
                 tabLabel={markersCategory.typeName}
               >
                 {markersCategory.childs.map((marker, i) => (
                   <TouchableOpacity
+                    key={i}
                     style={markers.indexOf(marker) > -1 ? styles.buttonBox : styles.unselectBox}
                     onPress={_ => {
                       let index = markers.indexOf(marker);

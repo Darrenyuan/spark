@@ -30,15 +30,6 @@ class NearbyList extends NavigatorPage {
     navBarHidden: true,
     navigationBarInsets: false,
   };
-  //
-  // static fetchNewTopicWithRefreshing = () => {
-  // 	DeviceEventEmitter.emit('fetchNewTopicWithRefreshing')
-  // };
-  //
-  // static removeTopicWithUserId = (val) => {
-  // 	DeviceEventEmitter.emit('removeTopicWithUserId', val)
-  // };
-  //
   constructor(props) {
     super(props);
     this.page = 1;
@@ -136,7 +127,7 @@ class NearbyList extends NavigatorPage {
   };
   getById = () => {
     const contentList = this.props.spark.contentList;
-    console.log('contentList:', JSON.stringify(contentList));
+    // console.log('contentList:', JSON.stringify(contentList));
     let { keyword } = this.state;
     if (keyword === undefined || keyword === '') {
       keyword = 'default';
@@ -145,7 +136,6 @@ class NearbyList extends NavigatorPage {
   };
 
   render() {
-    console.log(JSON.stringify(this.props.spark));
     if (this.props.spark.fetchContentListPending) {
       //Loading View while data is loading
       return (

@@ -75,7 +75,44 @@ export function apiOnStart(args = {}) {
     config,
   );
 }
-
+export function apiUserInfo(args = {}) {
+  let defaultArgs = getDefaultArgs(args);
+  return instance.post(
+    baseUrl + 'UserCService.y?cmd=userInfo',
+    jsonToQueryString({
+      ...defaultArgs,
+      userAuid: args.userAuid,
+    }),
+    config,
+  );
+}
+//修改密码
+export function apiEditPassword(args = {}) {
+  let defaultArgs = getDefaultArgs(args);
+  return instance.post(
+    baseUrl + 'UserCService.y?cmd=editPassword',
+    jsonToQueryString({
+      ...defaultArgs,
+      phone: args.phone,
+      oldPassword: args.oldPassword,
+      password: args.password,
+    }),
+    config,
+  );
+}
+//修改手机号码
+export function apiEditPhone(args = {}) {
+  let defaultArgs = getDefaultArgs(args);
+  return instance.post(
+    baseUrl + 'UserCService.y?cmd=editPhone',
+    jsonToQueryString({
+      ...defaultArgs,
+      phone: args.phone,
+      password: args.password,
+    }),
+    config,
+  );
+}
 //检查手机号码是否已注册
 export function apiCheckPhone(args = {}) {
   return instance.post(
@@ -182,6 +219,52 @@ export function apiEditRegistInfo1(args = {}) {
   return axios.post(`${baseUrl}HICService.y?cmd=editRegistInfo1`, formData, options);
 }
 
+//编辑背景图片
+export function apiEditMyBackground(args = {}) {
+  let formData = new FormData();
+  formData.append('auid', args.auid);
+  formData.append('M0', args.M0);
+  formData.append('M2', args.M2);
+  formData.append('M3', args.M3);
+  formData.append('M8', args.M8);
+  formData.append('M9', args.M9);
+  formData.append('file1', {
+    uri: args.file1,
+    name: 'file.jpg',
+    type: 'multipart/form-data',
+  });
+  let options = {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  return axios.post(`${baseUrl}UserCService.y?cmd=editMyBackground`, formData, options);
+}
+//编辑头像
+export function apiEditFace(args = {}) {
+  let formData = new FormData();
+  formData.append('auid', args.auid);
+  formData.append('M0', args.M0);
+  formData.append('M2', args.M2);
+  formData.append('M3', args.M3);
+  formData.append('M8', args.M8);
+  formData.append('M9', args.M9);
+  formData.append('file1', {
+    uri: args.file1,
+    name: 'file.jpg',
+    type: 'multipart/form-data',
+  });
+  let options = {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  return axios.post(`${baseUrl}UserCService.y?cmd=editFace`, formData, options);
+}
 //注册信息完善2
 export function apiEditRegistInfo2(args = {}) {
   return instance.post(
@@ -250,8 +333,6 @@ export function apiLogout(args = {}) {
     baseUrl + 'HICService.y?cmd=logout',
     jsonToQueryString({
       ...defaultArgs,
-      M0: DeviceInfo.getUniqueID(),
-      M9: new Date().getTime(),
     }),
     config,
   );
@@ -270,7 +351,20 @@ export function apiApplyLogon(args = {}) {
     config,
   );
 }
-
+export function apiEditMyInfo(args = {}) {
+  let defaultArgs = getDefaultArgs(args);
+  return instance.post(
+    baseUrl + 'UserCService.y?cmd=editMyInfo',
+    jsonToQueryString({
+      ...defaultArgs,
+      nickName: args.nickName,
+      sex: args.sex,
+      kkStatus: args.kkStatus,
+      markers: args.markers,
+    }),
+    config,
+  );
+}
 export function apiFetchContentList(args = {}) {
   return instance.post(
     baseUrl + 'SubjectCService.y?cmd=list',
@@ -391,63 +485,6 @@ export function apiMsgList(args = {}) {
       ...defaultArgs,
       auid: args.auid,
       M2: args.M2,
-    }),
-    config,
-  );
-}
-
-export function apiUserInfo(args = {}) {
-  return instance.post(
-    baseUrl + 'HICService.y?cmd=userInfo',
-    jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
-      userAuid: args.userAuid /*用户auid*/,
-    }),
-    config,
-  );
-}
-
-export function apiEditMyInfo(args = {}) {
-  return instance.post(
-    baseUrl + 'HICService.y?cmd=editMyInfo',
-    jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
-      nickName: args.nickName /*昵称*/,
-      phone: args.phone,
-      sex: args.sex /*性别：男，女*/,
-      birth: args.birth /*生日*/,
-      kkStatus: args.kkStatus /*交友状态，可不传*/,
-      markers: args.markers /*标签，可不传*/,
-    }),
-    config,
-  );
-}
-
-export function apiEditNickName(args = {}) {
-  return instance.post(
-    baseUrl + 'HICService.y?cmd=editNickName',
-    jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
-      nickName: args.nickName /*昵称*/,
-    }),
-    config,
-  );
-}
-
-export function apiEditFace(args = {}) {
-  return instance.post(
-    baseUrl + 'HICService.y?cmd=editFace',
-    jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
-      file1: args.file1 /*头像文件*/,
     }),
     config,
   );

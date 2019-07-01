@@ -17,6 +17,8 @@ const initialState = {
   },
   loginPending: false,
   loginError: null,
+  logoutPending: false,
+  logoutError: null,
   userInfo: {},
   applyLogonError: null,
   fetchConfigInfoPending: false,

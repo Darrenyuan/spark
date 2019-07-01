@@ -1,16 +1,15 @@
 import {
-  SPARK_LOGIN_BEGIN,
-  SPARK_LOGIN_SUCCESS,
-  SPARK_LOGIN_FAILURE,
-  SPARK_LOGIN_DISMISS_ERROR,
+  SPARK_LOGOUT_BEGIN,
+  SPARK_LOGOUT_SUCCESS,
+  SPARK_LOGOUT_FAILURE,
+  SPARK_LOGOUT_DISMISS_ERROR,
 } from './constants';
-import { apiLogin } from '../axios/api';
-
-export function login(args = {}) {
+import { apiLogout } from '../axios/api';
+export function logout(args = {}) {
   return dispatch => {
     // optionally you can have getState as the second argument
     dispatch({
-      type: SPARK_LOGIN_BEGIN,
+      type: SPARK_LOGOUT_BEGIN,
     });
 
     // Return a promise so that you could control UI flow without states in the store.
@@ -18,11 +17,13 @@ export function login(args = {}) {
     // It's hard to use state to manage it, but returning a promise allows you to easily achieve it.
     // e.g.: handleSubmit() { this.props.actions.submitForm(data).then(()=> {}).catch(() => {}); }
     const promise = new Promise((resolve, reject) => {
-      const doRequest = apiLogin(args);
+      const doRequest = apiLogout(args);
       doRequest.then(
         res => {
+          console.log(res);
+          console.log('teyrtyetrwetryw');
           dispatch({
-            type: SPARK_LOGIN_SUCCESS,
+            type: SPARK_LOGOUT_SUCCESS,
             data: res.data.data,
           });
           resolve(res);
@@ -30,7 +31,7 @@ export function login(args = {}) {
         // Use rejectHandler as the second argument so that render errors won't be caught.
         err => {
           dispatch({
-            type: SPARK_LOGIN_FAILURE,
+            type: SPARK_LOGOUT_FAILURE,
             data: { error: err },
           });
           reject(err);
@@ -41,45 +42,41 @@ export function login(args = {}) {
     return promise;
   };
 }
-
-export function dismissLoginError() {
+export function dismissLogoutError() {
   return {
-    type: SPARK_LOGIN_DISMISS_ERROR,
+    type: SPARK_LOGOUT_DISMISS_ERROR,
   };
 }
-
 export function reducer(state, action) {
   switch (action.type) {
-    case SPARK_LOGIN_BEGIN:
-      // Just after a request is sent
+    case SPARK_LOGOUT_BEGIN:
       return {
         ...state,
-        loginPending: true,
-        loginError: null,
+        logoutPending: true,
+        logoutError: null,
       };
 
-    case SPARK_LOGIN_SUCCESS:
-      // The request is success
+    case SPARK_LOGOUT_SUCCESS:
       return {
         ...state,
-        loginInfo: action.data,
-        loginPending: false,
-        loginError: null,
+        userInfo: {},
+        loginInfo: {},
+        logoutPending: false,
+        logoutError: null,
       };
 
-    case SPARK_LOGIN_FAILURE:
-      // The request is failed
+    case SPARK_LOGOUT_FAILURE:
       return {
         ...state,
-        loginPending: false,
-        loginError: action.data.error,
+        logoutPending: false,
+        // loginError: action.data.error,
       };
 
-    case SPARK_LOGIN_DISMISS_ERROR:
+    case SPARK_LOGOUT_DISMISS_ERROR:
       // Dismiss the request failure error
       return {
         ...state,
-        loginError: null,
+        logoutError: null,
       };
 
     default:

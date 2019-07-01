@@ -71,11 +71,10 @@ export default class Nearby extends React.Component {
       >
         {this.state.tabs.map((v, i) => (
           <NearbyList
-            // {...this.props}
             tabLabel={v.name}
             sjType={v.sjType}
+            key={i}
             keyword={this.state.keyword}
-            // uri={v.uri}
             activeIndex={this.state.activeIndex}
             leftHidden={this.props.leftHidden}
             coordsStr={this.props.coordsStr}

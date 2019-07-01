@@ -59,7 +59,7 @@ export default class NearbyItem extends React.Component {
   render() {
     const { item, byId } = this.state;
     const data = byId[item];
-    console.log(JSON.stringify(data));
+    // console.log(JSON.stringify(data));
     const { another, first = false } = this.props;
     return (
       <TouchableOpacity

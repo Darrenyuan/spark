@@ -322,14 +322,19 @@ export function apiAgreeList(args = {}) {
   );
 }
 
-export function apiCommentList(args = {}) {
+export function apiFetchCommentList(args = {}) {
   return instance.post(
-    baseUrl + 'HICService.y?cmd=commentList',
+    baseUrl + 'SubjectCService.y?cmd=commentList',
     jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
       sjid: args.sjid,
+      page: args.page,
+      pageRow: args.pageSize,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
     }),
     config,
   );
@@ -350,13 +355,16 @@ export function apiCollectList(args = {}) {
 
 export function apiAgree(args = {}) {
   return instance.post(
-    baseUrl + 'HICService.y?cmd=agree',
+    baseUrl + 'SubjectCService.y?cmd=agree',
     jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
       sjid: args.sjid,
-      agreeFlag: args.agreeFlag /*赞标识  1 赞  0 取消赞*/,
+      agreeFlag: args.agreeFlag,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
     }),
     config,
   );
@@ -364,14 +372,35 @@ export function apiAgree(args = {}) {
 
 export function apiComment(args = {}) {
   return instance.post(
-    baseUrl + 'HICService.y?cmd=comment',
+    baseUrl + 'SubjectCService.y?cmd=comment',
     jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
       sjid: args.sjid,
-      content: args.content /*内容*/,
-      replyID: args.replyID /*若是回复：上级评论的dataid*/,
+      content: args.content,
+      replyID: args.replyID,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
+    }),
+    config,
+  );
+}
+
+export function apiCommentAgree(args = {}) {
+  return instance.post(
+    baseUrl + 'SubjectCService.y?cmd=commentAgree',
+    jsonToQueryString({
+      sjid: args.sjid,
+      commentDataid: args.commentDataid,
+      agreeFlag: args.agreeFlag,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
     }),
     config,
   );
@@ -379,13 +408,16 @@ export function apiComment(args = {}) {
 
 export function apiCollect(args = {}) {
   return instance.post(
-    baseUrl + 'HICService.y?cmd=colllect',
+    baseUrl + 'SubjectCService.y?cmd=colllect',
     jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
       sjid: args.sjid,
-      collectFlag: args.collectFlag /*收藏标识  1 收藏  0 取消收藏*/,
+      collectFlag: args.collectFlag,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
     }),
     config,
   );

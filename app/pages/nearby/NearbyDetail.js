@@ -1,8 +1,9 @@
 import React from 'react';
-
+import ReactNative from 'react-native';
 import {
   StyleSheet,
   Text,
+  TextInput,
   View,
   FlatList,
   DeviceEventEmitter,
@@ -13,6 +14,8 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   StatusBar,
+  Animated,
+  Keyboard,
 } from 'react-native';
 import styleUtil from '../../common/styleUtil';
 // import LoadingMore from "../components/load/LoadingMore";
@@ -25,45 +28,52 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../services/redux/actions';
+import { ActionPopover, PullPicker } from 'teaset';
 import md5 from 'react-native-md5';
-import { NavigationBar, Input } from 'teaset';
+import { NavigationBar, Input, Button, Label } from 'teaset';
 import { default as EntypoIcon } from 'react-native-vector-icons/Entypo';
 import { default as OcticonsIcon } from 'react-native-vector-icons/Octicons';
-
+import logo from './logo.png';
+import { red } from 'ansi-colors';
+import KeyboardShift from './KeyboardShift';
+import TextInputBar from '../../components/TextInputBar';
+import { apiComment, apiAgree, apiCommentAgree } from '../../services/axios/api';
+import toast from '../../common/toast';
+import { isArgumentPlaceholder } from '@babel/types';
+const UIManager = require('NativeModules').UIManager;
 class NearbyDetail extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navBarHidden: false,
     navigationBarInsets: true,
   };
-  //
-  // static fetchNewTopicWithRefreshing = () => {
-  // 	DeviceEventEmitter.emit('fetchNewTopicWithRefreshing')
-  // };
-  //
-  // static removeTopicWithUserId = (val) => {
-  // 	DeviceEventEmitter.emit('removeTopicWithUserId', val)
-  // };
-  //
+
   constructor(props) {
-    console.log('aaa:constructor');
     super(props);
+    this.replyRef = {};
+
     this.state = {
       sjid: props.sjid,
       simpleData: props.simpleData,
       nearByType: this.getNearByDetailType(props.sjType),
       containerHeight: 0,
-      btnLocation: 0,
+      page: 1,
+      pageSize: 10,
+      commentPage: 1,
+      commentPageSize: 10,
+      replyText: 0,
       list: [{ name: 'haha' }, { name: 'haha' }, { name: 'haha' }, { name: 'haha' }],
     };
   }
 
   componentDidMount() {
-    console.log('aaa:111111111111');
-    console.log('aaa:componenetDidMount');
     this.fetchData();
+    this.fetchCommentListData();
   }
-
+  _reloadAllData() {
+    this.fetchData();
+    this.fetchCommentListData();
+  }
   _hasMore = () => {
     return false;
   };
@@ -115,6 +125,52 @@ class NearbyDetail extends NavigatorPage {
       M9: M9,
     });
   };
+  fetchCommentListData = () => {
+    const { loginInfo, locationInfo, fetchCommentList, sjid } = this.props;
+    let auid = '';
+    let M2 = '';
+    if (loginInfo !== undefined) {
+      auid = loginInfo.auid;
+      M2 = loginInfo.loginToken;
+    }
+    let M3 = locationInfo.coordsStr;
+    let M8 = md5.hex_md5(auid + new Date().getTime());
+    let M9 = new Date().getTime();
+    let searchTerm = `search_${sjid}`;
+    let page = this.state.commentPage;
+    let pageSize = this.state.commentPageSize;
+    fetchCommentList({
+      sjid: sjid,
+      page: page,
+      pageSize: pageSize,
+      auid: auid === undefined ? '' : auid,
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
+      M2: M2,
+      M3: M3,
+      M8: M8,
+      M9: M9,
+      searchTerm: searchTerm,
+    });
+  };
+  _hasMoreComment = () => {
+    const { commentPage, commentPageSize } = this.state;
+    const { commentList } = this.props;
+    const { sjid } = this.props;
+    let currentTotal = commentPage * commentPageSize;
+    let searchTerm = `search_${sjid}`;
+    let totalCount = 0;
+    if (commentList[searchTerm] !== undefined) {
+      totalCount = commentList[searchTerm].totalCount;
+    }
+    return currentTotal < totalCount;
+  };
+
+  _fetchCommentMoreData = () => {
+    if (this._hasMoreComment()) {
+      commentPage = this.state.commentPage + 1;
+      this.setState({ commentPage: commentPage }, this.fetchCommentListData);
+    }
+  };
   renderImage = uri => {
     const offsetScreen = 15;
     const imageSpace = 10;
@@ -134,7 +190,6 @@ class NearbyDetail extends NavigatorPage {
   };
 
   _renderNearByContent = () => {
-    console.log('aaa:_renderHeaderConetent');
     const offsetScreen = 15;
     const imageSpace = 10;
     const imageHeight = Math.floor(
@@ -360,8 +415,123 @@ class NearbyDetail extends NavigatorPage {
     const { x, y, width, height } = event.nativeEvent.layout;
     this.setState({ containerHeight: height });
   };
+  _sendReply = replyID => {
+    const { loginInfo, locationInfo, fetchNearByDetail, sjid } = this.props;
+    const { replyText } = this.state;
+    let auid = '';
+    let M2 = '';
+    if (loginInfo !== undefined) {
+      auid = loginInfo.auid;
+      M2 = loginInfo.loginToken;
+    }
+    let M3 = locationInfo.coordsStr;
+    let M8 = md5.hex_md5(auid + new Date().getTime());
+    let M9 = new Date().getTime();
+    apiComment({
+      sjid: sjid,
+      content: replyText,
+      replyID: replyID,
+      auid: auid === undefined ? '' : auid,
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
+      M2: M2,
+      M3: M3,
+      M8: M8,
+      M9: M9,
+    })
+      .then(res => {
+        if (res.data.code === 1) {
+          toast.success('发表评论成功');
+          this.setState({ replyText: '', commentPage: 1 });
+          this._reloadAllData();
+        } else {
+          toast.fail('发表评论失败');
+        }
+      })
+      .catch(err => {
+        toast.fail('发表评论失败');
+      });
+  };
+
+  _onPressLikeForComment = (commentId, like) => {
+    const { loginInfo, locationInfo, fetchNearByDetail, sjid } = this.props;
+    const { replyText } = this.state;
+    let auid = '';
+    let M2 = '';
+    if (loginInfo !== undefined) {
+      auid = loginInfo.auid;
+      M2 = loginInfo.loginToken;
+    }
+    let M3 = locationInfo.coordsStr;
+    let M8 = md5.hex_md5(auid + new Date().getTime());
+    let M9 = new Date().getTime();
+    apiCommentAgree({
+      sjid: sjid,
+      commentDataid: commentId,
+      agreeFlag: like,
+      auid: auid === undefined ? '' : auid,
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
+      M2: M2,
+      M3: M3,
+      M8: M8,
+      M9: M9,
+    })
+      .then(res => {
+        if (res.data.code === 1) {
+          toast.success('点赞成功');
+          this._reloadAllData();
+        } else {
+          toast.fail('点赞失败');
+        }
+      })
+      .catch(err => {
+        toast.fail('点赞失败');
+      });
+  };
+  _onPressLike = like => {
+    const { loginInfo, locationInfo, fetchNearByDetail, sjid } = this.props;
+    const { replyText } = this.state;
+    let auid = '';
+    let M2 = '';
+    if (loginInfo !== undefined) {
+      auid = loginInfo.auid;
+      M2 = loginInfo.loginToken;
+    }
+    let M3 = locationInfo.coordsStr;
+    let M8 = md5.hex_md5(auid + new Date().getTime());
+    let M9 = new Date().getTime();
+    apiAgree({
+      sjid: sjid,
+      agreeFlag: like,
+      auid: auid === undefined ? '' : auid,
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
+      M2: M2,
+      M3: M3,
+      M8: M8,
+      M9: M9,
+    })
+      .then(res => {
+        if (res.data.code === 1) {
+          toast.success('点赞成功');
+          this.fetchData();
+        } else {
+          toast.fail('点赞失败');
+        }
+      })
+      .catch(err => {
+        toast.fail('点赞失败');
+      });
+  };
 
   _renderOperationBar = () => {
+    const { sjid, nearByDetails } = this.props;
+    const { nearByType } = this.state;
+    const nearByDetail = nearByDetails.byId[sjid];
+    let isAgreed = 0;
+    let isCollected = 0;
+    if (nearByDetail !== undefined) {
+      isAgreed = nearByDetail.isAgreed;
+      isCollected = nearByDetail.isCollected;
+    }
     return (
       <View
         style={{
@@ -371,61 +541,199 @@ class NearbyDetail extends NavigatorPage {
           bottom: 0,
           width: styleUtil.window.width,
           height: styleUtil.window.height * 0.05,
-          backgroundColor: 'red',
+          backgroundColor: 'white',
           zIndex: 99999999,
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <Input
-          style={{ width: 200, padding: 20 }}
+          style={{
+            flex: 1,
+            backgroundColor: '#F5F5F5',
+            marginLeft: 10,
+            radius: '10',
+          }}
+          rounded
           size="sm"
-          value={this.state.value}
-          onChangeText={text => this.setState({ value: text })}
+          value={this.state.replyText}
+          onChangeText={text => this.setState({ replyText: text })}
+          placeholder="写回复"
+        />
+        <Button
+          sylte={{
+            marginRigth: 8,
+            color: '#F5F5F5',
+            justifyContent: 'flex-start',
+          }}
+          type="link"
+          size="sm"
+          onPress={() => this._sendReply('')}
+        >
+          <Label
+            style={{
+              color: 'grey',
+              fontSize: 16,
+              paddingLeft: 8,
+              //borderWidth: 1,
+              //borderColor: 'red',
+            }}
+            text="发布"
+          />
+        </Button>
+        <TouchableOpacity onPress={() => this._onPressLike(isAgreed === 0 ? 1 : 0)}>
+          <Image
+            style={{ marginRight: 8, paddingTop: 10 }}
+            source={
+              isAgreed === 0
+                ? require('../../assets/image/like.png')
+                : require('../../assets/image/like_highlight.png')
+            }
+          />
+        </TouchableOpacity>
+        <Image
+          style={{ marginRight: 8 }}
+          source={
+            isCollected === 0
+              ? require('../../assets/image/pin.png')
+              : require('../../assets/image/tabbar_pin_highlight.png')
+          }
         />
       </View>
     );
   };
   _renderCommunityContent = () => {
     const { type } = this.state;
+    const { sjid } = this.props;
     let renderItem = null;
+    let list = [];
+    let initialNum = 0;
+    let onEndReachedAction = null;
+    let { commentList } = this.props;
+    let page = this.state.commentPage;
     switch (type) {
       case 0:
-        renderItem = this._renderReplyRows;
-        break;
-      case 1:
-        renderItem = this._renderLikeRows;
-        break;
-      case 2:
-        renderItem = this._renderPinRows;
-        break;
       default:
         renderItem = this._renderReplyRows;
+        let searchTerm = `search_${sjid}`;
+        const allPages = commentList[searchTerm];
+        const byId = commentList.byId;
+        let items = [];
+        if (allPages !== undefined) {
+          for (i = 1; i <= page; i++) {
+            if (allPages[i] && allPages[i].items) {
+              allPages[i].items.forEach(item => {
+                let data = byId[item];
+                if (data.level === 1) {
+                  items.push(item);
+                }
+              });
+            }
+          }
+        }
+        list = items;
+        initialNum = this.state.commentPageSize;
+        onEndReachedAction = this._fetchCommentMoreData;
+        break;
+        // case 1:
+        //   renderItem = this._renderLikeRows;
+        //   break;
+        // case 2:
+        //   renderItem = this._renderPinRows;
+        //   break;
+        // default:
+        //   renderItem = this._renderReplyRows;
         break;
     }
     return (
       <FlatList
+        ref={ref => (this.flatListRef = ref)}
         style={{
+          backgroundColor: 'white',
           width: styleUtil.window.width,
           height: styleUtil.window.height * 0.95 - this.state.containerHeight,
         }}
         contentInset={{ bottom: 60 }}
         extraData={this.state}
-        data={this.state.list}
+        data={list}
         renderItem={renderItem}
-        initialNumToRender={config.pageSize}
+        initialNumToRender={initialNum}
         keyExtractor={(item, index) => index.toString()}
-        onEndReached={this._fetchMoreData}
+        onEndReached={onEndReachedAction}
         onEndReachedThreshold={0.3}
-        onRefresh={this._fetchDataWithRefreshing}
-        refreshing={this.state.isRefreshing}
-        ListHeaderComponent={this._renderHeader}
         // ListFooterComponent={this._renderFooter}
         showsVerticalScrollIndicator={false}
         // onViewableItemsChanged={this._onViewableItemsChanged}
       />
     );
   };
+
+  _showPopOver = (commentId, type) => {
+    let items = [];
+    if (type === 2) {
+      items = [
+        {
+          title: '回复',
+          onPress: () => {
+            this._removeOnPress(item, removeCommentUri);
+          },
+        },
+        {
+          title: '举报',
+          onPress: () => {
+            this._removeOnPress(item, removeCommentUri);
+          },
+        },
+      ];
+    }
+    const handle = ReactNative.findNodeHandle(this.replyRef[commentId]);
+    UIManager.measure(handle, (x, y, width, height, fx, fy) => {
+      console.log('sdfjkadfkjafoffset', x, y, width, height, fx, fy);
+      ActionPopover.show({ x, y, width, height }, items);
+    });
+  };
+  // handleLayoutChange(event, commentId) {
+  //   this.replyRef[commentId].measure((fx, fy, width, height, px, py) => {
+  //     console.log('Component width is: ' + width);
+  //     console.log('Component height is: ' + height);
+  //     console.log('X offset to page: ' + px);
+  //     console.log('Y offset to page: ' + py);
+  //   });
+  // }
+  handleReplyLayout = event => {
+    console.log('handleReplyLayouthandleReplyLayouthandleReplyLayout');
+    const layout = event.nativeEvent.layout;
+    console.log('layout:', JSON.stringify(layout));
+    console.log('height:', layout.height);
+    console.log('width:', layout.width);
+    console.log('x:', layout.x);
+    console.log('y:', layout.y);
+  };
   _renderReplyRows = ({ item, separators, index }) => {
-    console.log('aaa:_renderReplyRows');
+    let _this = this;
+    const { loginInfo } = this.props;
+    const { sjid, nearByDetails } = this.props;
+    const { nearByType } = this.state;
+    const nearByDetail = nearByDetails.byId[sjid];
+    const { replyText } = this.state;
+    let auid = '';
+    if (nearByDetail !== undefined) {
+      auid = nearByDetail.userAuid;
+    }
+    const { commentList } = this.props;
+    const byId = commentList.byId;
+    const data = byId[item];
+    commentId = data.dataid;
+    let childData = [];
+    Object.keys(byId).forEach(key => {
+      let value = byId[key];
+      if (value.replyID === commentId) {
+        childData.push(value);
+      }
+    });
+    let hasChildData = childData.length > 0;
     return (
       <View
         style={{
@@ -435,7 +743,7 @@ class NearbyDetail extends NavigatorPage {
         }}
       >
         <View style={{ flexDirection: 'row' }}>
-          <Avatar large rounded source={require('../../assets/image/avatar.png')} />
+          <Avatar large rounded source={{ uri: data.userFace }} />
           <View
             style={{
               marginLeft: 10,
@@ -445,9 +753,7 @@ class NearbyDetail extends NavigatorPage {
               borderBottomColor: '#D8D8D8',
             }}
           >
-            <Text style={{ marginTop: 10, color: '#252525', fontSize: 14 }}>
-              {'还可以吧，国产片拍成这样已经不错了。'}
-            </Text>
+            <Text style={{ marginTop: 10, color: '#252525', fontSize: 14 }}>{data.content}</Text>
             <View
               style={{
                 flexDirection: 'row',
@@ -455,56 +761,99 @@ class NearbyDetail extends NavigatorPage {
                 alignItems: 'center',
               }}
             >
-              <Image style={{ marginRight: 8 }} source={require('../../assets/image/host.png')} />
-              <Text style={{ flex: 1, color: '#C1C1C1', fontSize: 12 }}>{'3分钟'}</Text>
-              <Image style={{ marginRight: 8 }} source={require('../../assets/image/like.png')} />
-              <Text style={{ width: 40, fontSize: 12, color: '#252525' }}>{3}</Text>
-              <Ionicons name={'ios-more'} size={18} color={'#818181'} />
-            </View>
-
-            <View
-              style={{
-                paddingLeft: 8,
-                paddingVertical: 8,
-                backgroundColor: '#f8f8f8',
-                borderRadius: 0,
-                marginTop: 10,
-              }}
-            >
-              <View style={{ flexDirection: 'row' }}>
-                <Avatar large rounded source={require('../../assets/image/avatar.png')} />
-                <View
-                  style={{
-                    marginLeft: 10,
-                    paddingBottom: 10,
-                    flex: 1,
-                  }}
-                >
-                  <Text style={{ marginTop: 10, color: '#252525', fontSize: 14 }}>
-                    {'还可以吧，国产片拍成这样已经不错了。'}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: 15,
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Image
-                      style={{ marginRight: 8 }}
-                      source={require('../../assets/image/host.png')}
-                    />
-                    <Text style={{ flex: 1, color: '#C1C1C1', fontSize: 12 }}>{'3分钟'}</Text>
-                    <Image
-                      style={{ marginRight: 8 }}
-                      source={require('../../assets/image/like.png')}
-                    />
-                    <Text style={{ width: 40, fontSize: 12, color: '#252525' }}>{3}</Text>
-                    <Ionicons name={'ios-more'} size={18} color={'#818181'} />
-                  </View>
-                </View>
+              {data.userAuid === auid && (
+                <Image style={{ marginRight: 8 }} source={require('../../assets/image/host.png')} />
+              )}
+              <Text style={{ flex: 1, color: '#C1C1C1', fontSize: 12 }}>{data.actionTimeDesc}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  this._onPressLikeForComment(commentId, data.isAgreed === 0 ? 1 : 0);
+                }}
+              >
+                <Image
+                  style={{ marginRight: 8 }}
+                  source={
+                    data.isAgreed === 0
+                      ? require('../../assets/image/like.png')
+                      : require('../../assets/image/like_highlight.png')
+                  }
+                />
+              </TouchableOpacity>
+              <Text style={{ width: 40, fontSize: 12, color: '#252525' }}>{data.agreeNum}</Text>
+              <View
+                onLayout={this.handleReplyLayout.bind(this)}
+                collapsable={false}
+                renderToHardwareTextureAndroid={true}
+                ref={c => (_this.replyRef[commentId] = c)}
+              >
+                <TouchableOpacity onPress={() => this._showPopOver(commentId, 2)}>
+                  <Ionicons name={'ios-more'} size={18} color={'#818181'} />
+                </TouchableOpacity>
               </View>
             </View>
+            {hasChildData && (
+              <View
+                style={{
+                  paddingLeft: 8,
+                  paddingVertical: 8,
+                  backgroundColor: '#f8f8f8',
+                  borderRadius: 0,
+                  marginTop: 10,
+                }}
+              >
+                {childData.map(rowData => {
+                  return (
+                    <View style={{ flexDirection: 'row' }}>
+                      <Avatar large rounded source={{ uri: rowData.userFace }} />
+                      <View
+                        style={{
+                          marginLeft: 10,
+                          paddingBottom: 10,
+                          flex: 1,
+                        }}
+                      >
+                        <Text style={{ marginTop: 10, color: '#252525', fontSize: 14 }}>
+                          {rowData.content}
+                        </Text>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            marginTop: 15,
+                            alignItems: 'center',
+                          }}
+                        >
+                          {rowData.isOwner === 1 && (
+                            <Image
+                              style={{ marginRight: 8 }}
+                              source={require('../../assets/image/host.png')}
+                            />
+                          )}
+
+                          <Text style={{ flex: 1, color: '#C1C1C1', fontSize: 12 }}>
+                            {rowData.actionTimeDesc}
+                          </Text>
+                          {rowData.isAgreed === 0 ? (
+                            <Image
+                              style={{ marginRight: 8 }}
+                              source={require('../../assets/image/like.png')}
+                            />
+                          ) : (
+                            <Image
+                              style={{ marginRight: 8 }}
+                              source={require('../../assets/image/like_highlight.png')}
+                            />
+                          )}
+                          <Text style={{ width: 40, fontSize: 12, color: '#252525' }}>
+                            {rowData.agreeNum}
+                          </Text>
+                          <Ionicons name={'ios-more'} size={18} color={'#818181'} />
+                        </View>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            )}
           </View>
         </View>
       </View>
@@ -567,6 +916,10 @@ class NearbyDetail extends NavigatorPage {
     );
   };
 
+  render() {
+    return <KeyboardShift>{() => super.render()}</KeyboardShift>;
+    // return super.render();
+  }
   renderPage() {
     const { fetchNearByDetailPending } = this.props;
     if (fetchNearByDetailPending) {
@@ -577,7 +930,11 @@ class NearbyDetail extends NavigatorPage {
         </View>
       );
     }
-    return <View style={styleUtil.container}>{this._renderDetails()}</View>;
+    return (
+      <KeyboardAvoidingView style={styleUtil.container} behavior="padding">
+        {this._renderDetails()}
+      </KeyboardAvoidingView>
+    );
   }
 
   renderNavigationRightView() {
@@ -594,20 +951,22 @@ class NearbyDetail extends NavigatorPage {
   }
 }
 function mapStateToProps(state, ownProps) {
-  const { locationInfo, loginInfo, fetchNearByDetailPending, nearByDetails } = state;
+  const { locationInfo, loginInfo, fetchNearByDetailPending, nearByDetails, commentList } = state;
   return {
     locationInfo,
     loginInfo,
     nearByDetails,
     fetchNearByDetailPending,
+    commentList,
   };
 }
 
 /* istanbul ignore next */
 function mapDispatchToProps(dispatch) {
-  const { fetchNearByDetail } = bindActionCreators({ ...actions }, dispatch);
+  const { fetchNearByDetail, fetchCommentList } = bindActionCreators({ ...actions }, dispatch);
   return {
     fetchNearByDetail: fetchNearByDetail,
+    fetchCommentList,
   };
 }
 

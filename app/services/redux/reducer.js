@@ -5,6 +5,7 @@ import { reducer as fetchConfigInfoReducer } from './fetchConfigInfo';
 import { reducer as fetchContentListReducer } from './fetchContentList';
 import { reducer as registerLocationReducer } from './registerLocation';
 import { reducer as fetchNearByDetailReducer } from './fetchNearByDetail';
+import { reducer as fetchCommentListReducer } from './fetchCommentList';
 
 const reducers = [
   loginReducer,
@@ -13,6 +14,7 @@ const reducers = [
   fetchContentListReducer,
   registerLocationReducer,
   fetchNearByDetailReducer,
+  fetchCommentListReducer,
 ];
 
 export default function reducer(state = initialState, action) {

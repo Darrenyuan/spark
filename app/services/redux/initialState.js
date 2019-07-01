@@ -38,6 +38,13 @@ const initialState = {
   },
   fetchNearByDetailPending: false,
   fetchNearByDetailError: null,
+  commentList: {
+    byId: {},
+    items: [],
+    searchTerms: [],
+  },
+  fetchCommentListPengding: false,
+  fetchCommentListError: null,
 };
 
 export default initialState;

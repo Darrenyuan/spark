@@ -47,6 +47,20 @@ const initialState = {
   },
   fetchCommentListPengding: false,
   fetchCommentListError: null,
+  agreeList: {
+    byId: {},
+    items: [],
+    searchTerms: [],
+  },
+  fetchAgreeListPending: false,
+  fetchAgreeListError: null,
+  collectList: {
+    byId: {},
+    items: [],
+    searchTerms: [],
+  },
+  fetchCollectListPengding: false,
+  fetchCollectListError: null,
 };
 
 export default initialState;

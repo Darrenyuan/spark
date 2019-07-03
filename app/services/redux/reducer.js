@@ -7,6 +7,8 @@ import { reducer as fetchContentListReducer } from './fetchContentList';
 import { reducer as registerLocationReducer } from './registerLocation';
 import { reducer as fetchNearByDetailReducer } from './fetchNearByDetail';
 import { reducer as fetchCommentListReducer } from './fetchCommentList';
+import { reducer as fetchAgreeListReducer } from './fetchAgreeList';
+import { reducer as fetchCollectListReducer } from './fetchCollectList';
 
 const reducers = [
   loginReducer,
@@ -17,6 +19,8 @@ const reducers = [
   registerLocationReducer,
   fetchNearByDetailReducer,
   fetchCommentListReducer,
+  fetchAgreeListReducer,
+  fetchCollectListReducer,
 ];
 
 export default function reducer(state = initialState, action) {

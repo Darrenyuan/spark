@@ -6,3 +6,5 @@ export { fetchContentList, dismissFetchContentListError } from './fetchContentLi
 export { registerLocation } from './registerLocation';
 export { fetchNearByDetail, dismissFetchNearByDetailError } from './fetchNearByDetail';
 export { fetchCommentList, dismissFetchCommentListError } from './fetchCommentList';
+export { fetchAgreeList, dismissFetchAgreeListError } from './fetchAgreeList.js';
+export { fetchCollectList, dismissFetchCollectListError } from './fetchCollectList.js';

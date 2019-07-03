@@ -403,22 +403,9 @@ export function apiFetchNearByDetail(args = {}) {
   );
 }
 
-export function apiAgreeList(args = {}) {
+export function apiFetchAgreeList(args = {}) {
   return instance.post(
-    baseUrl + 'HICService.y?cmd=agreeList',
-    jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
-      sjid: args.sjid,
-    }),
-    config,
-  );
-}
-
-export function apiFetchCommentList(args = {}) {
-  return instance.post(
-    baseUrl + 'SubjectCService.y?cmd=commentList',
+    baseUrl + 'SubjectCService.y?cmd=agreeList',
     jsonToQueryString({
       sjid: args.sjid,
       page: args.page,
@@ -434,14 +421,56 @@ export function apiFetchCommentList(args = {}) {
   );
 }
 
-export function apiCollectList(args = {}) {
-  return instance.post(
-    baseUrl + 'HICService.y?cmd=collectList',
-    jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
+export function apiFetchCommentList(args = {}) {
+  let param = {};
+  if (args.replyID === undefined || args.replyID === '') {
+    param = {
       sjid: args.sjid,
+      page: args.page,
+      pageRow: args.pageSize,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
+    };
+  } else {
+    param = {
+      sjid: args.sjid,
+      replyID: args.replyID,
+      page: args.page,
+      pageRow: args.pageSize,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
+    };
+  }
+  return instance.post(
+    baseUrl + 'SubjectCService.y?cmd=commentList',
+    jsonToQueryString({
+      ...param,
+    }),
+    config,
+  );
+}
+
+export function apiFetchCollectList(args = {}) {
+  return instance.post(
+    baseUrl + 'SubjectCService.y?cmd=collectList',
+    jsonToQueryString({
+      sjid: args.sjid,
+      page: args.page,
+      pageRow: args.pageSize,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
     }),
     config,
   );

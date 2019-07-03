@@ -60,6 +60,8 @@ Theme.set({
   rowActionButtonDangerTitleColor: '#fff',
   rowActionButtonTitleFontSize: 15,
   rowActionButtonPaddingHorizontal: 12,
+  //ActionSheetCancel
+  asCancelItemTitleColor: '#FC7168',
 });
 
 global.request = Request;

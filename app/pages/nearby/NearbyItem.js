@@ -87,7 +87,7 @@ export default class NearbyItem extends React.Component {
   render() {
     const { item, byId } = this.state;
     const simpleData = byId[item];
-    console.log(JSON.stringify(simpleData));
+
     const { another, first = false } = this.props;
     const price = simpleData.price;
     const havePrice = simpleData.price !== undefined && simpleData.price !== '';

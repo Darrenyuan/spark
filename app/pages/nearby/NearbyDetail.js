@@ -207,7 +207,6 @@ class NearbyDetail extends NavigatorPage {
         </View>
       );
     }
-    console.log('nearByDetail:', JSON.stringify(nearByDetail));
     const userFace = nearByDetail.userFace || '';
     const userName = nearByDetail.userName || '';
     const sjTimeDesc = nearByDetail.sjTimeDesc || '';
@@ -296,7 +295,6 @@ class NearbyDetail extends NavigatorPage {
         </Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
           {picfile.map(uri => {
-            console.log('renderImage:uri:', uri);
             return this.renderImage(uri);
           })}
         </View>
@@ -690,7 +688,6 @@ class NearbyDetail extends NavigatorPage {
     }
     const handle = ReactNative.findNodeHandle(this.replyRef[commentId]);
     UIManager.measure(handle, (x, y, width, height, fx, fy) => {
-      console.log('sdfjkadfkjafoffset', x, y, width, height, fx, fy);
       ActionPopover.show({ x, y, width, height }, items);
     });
   };
@@ -861,7 +858,6 @@ class NearbyDetail extends NavigatorPage {
   };
 
   _renderLikeRows = ({ item, separators, index }) => {
-    console.log('aaa:_renderLikeRows');
     return (
       <View
         style={{
@@ -889,7 +885,6 @@ class NearbyDetail extends NavigatorPage {
   };
 
   _renderPinRows = ({ item, separators, index }) => {
-    console.log('aaa:_renderPinRows');
     return (
       <View
         style={{

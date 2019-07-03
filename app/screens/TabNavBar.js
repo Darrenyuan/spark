@@ -61,7 +61,6 @@ class TabNavBar extends React.Component {
         ios: '28d1259434784e7005d8ad3735c66a09',
       }).then(
         res => {
-          console.log('geo location111111');
           setDistanceFilter(10);
         },
         error => console.log(error),
@@ -77,9 +76,8 @@ class TabNavBar extends React.Component {
     let _this = this;
     const { fetchConfigInfo, registerLocation } = this.props;
     Geolocation.getCurrentPosition(({ coords, timestamp, location }) => {
-      console.log('coords=', JSON.stringify(coords));
       let coordsStr = _this.coordsToString(coords);
-      console.log('coodsStr=', coordsStr);
+
       _this.setState({ coordsStr: coordsStr });
       fetchConfigInfo({
         auid: auid,
@@ -128,7 +126,6 @@ class TabNavBar extends React.Component {
       let _this = this;
       // 添加定位监听函数
       addLocationListener(location => {
-        console.log('listener:invoker', location);
         let coordsStr = _this.coordsToString(location);
         registerLocation({
           latitude: location.latitude,
@@ -192,7 +189,7 @@ class TabNavBar extends React.Component {
 
   render() {
     const { loginInfo } = this.props;
-    console.log('logInfo================', JSON.stringify(loginInfo));
+
     if (!loginInfo.loginToken) {
       return <LoginEnterPhone />;
     }
@@ -263,7 +260,6 @@ class TabNavBar extends React.Component {
   }
 }
 function mapStateToProps(state, ownProps) {
-  console.log('ownProps=====', JSON.stringify(ownProps));
   const { loginInfo } = state;
   return {
     loginInfo,

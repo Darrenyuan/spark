@@ -368,23 +368,23 @@ export function apiEditMyInfo(args = {}) {
   );
 }
 export function apiFetchContentList(args = {}) {
-  return instance.post(
-    baseUrl + 'SubjectCService.y?cmd=list',
-    jsonToQueryString({
-      sjType: args.sjType,
-      collectFlag: args.collectFlag,
-      keyword: args.keyword,
-      page: args.page,
-      pageRow: args.pageSize,
-      auid: args.auid,
-      M0: args.M0,
-      M2: args.M2,
-      M3: args.M3,
-      M8: args.M8,
-      M9: args.M9,
-    }),
-    config,
-  );
+  const obj = {
+    sjType: args.sjType,
+    collectFlag: args.collectFlag,
+    keyword: args.keyword,
+    page: args.page,
+    pageRow: args.pageSize,
+    auid: args.auid,
+    M0: args.M0,
+    M2: args.M2,
+    M3: args.M3,
+    M8: args.M8,
+    M9: args.M9,
+  };
+  if (args.userAuid) {
+    obj.userAuid = args.userAuid;
+  }
+  return instance.post(baseUrl + 'SubjectCService.y?cmd=list', jsonToQueryString(obj), config);
 }
 
 export function apiFetchNearByDetail(args = {}) {

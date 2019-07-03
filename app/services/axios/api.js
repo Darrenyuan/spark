@@ -368,9 +368,9 @@ export function apiEditMyInfo(args = {}) {
   );
 }
 export function apiFetchContentList(args = {}) {
-  return instance.post(
-    baseUrl + 'SubjectCService.y?cmd=list',
-    jsonToQueryString({
+  let param = {};
+  if (args.userAuid === undefined || args.userAuid === '') {
+    param = {
       sjType: args.sjType,
       collectFlag: args.collectFlag,
       keyword: args.keyword,
@@ -382,6 +382,27 @@ export function apiFetchContentList(args = {}) {
       M3: args.M3,
       M8: args.M8,
       M9: args.M9,
+    };
+  } else {
+    param = {
+      sjType: args.sjType,
+      userAuid: args.userAuid,
+      collectFlag: args.collectFlag,
+      keyword: args.keyword,
+      page: args.page,
+      pageRow: args.pageSize,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
+    };
+  }
+  return instance.post(
+    baseUrl + 'SubjectCService.y?cmd=list',
+    jsonToQueryString({
+      ...param,
     }),
     config,
   );
@@ -476,6 +497,23 @@ export function apiFetchCollectList(args = {}) {
   );
 }
 
+export function apiCollect(args = {}) {
+  return instance.post(
+    baseUrl + 'SubjectCService.y?cmd=collect',
+    jsonToQueryString({
+      sjid: args.sjid,
+      collectFlag: args.collectFlag,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
+    }),
+    config,
+  );
+}
+
 export function apiAgree(args = {}) {
   return instance.post(
     baseUrl + 'SubjectCService.y?cmd=agree',
@@ -518,23 +556,6 @@ export function apiCommentAgree(args = {}) {
       sjid: args.sjid,
       commentDataid: args.commentDataid,
       agreeFlag: args.agreeFlag,
-      auid: args.auid,
-      M0: args.M0,
-      M2: args.M2,
-      M3: args.M3,
-      M8: args.M8,
-      M9: args.M9,
-    }),
-    config,
-  );
-}
-
-export function apiCollect(args = {}) {
-  return instance.post(
-    baseUrl + 'SubjectCService.y?cmd=colllect',
-    jsonToQueryString({
-      sjid: args.sjid,
-      collectFlag: args.collectFlag,
       auid: args.auid,
       M0: args.M0,
       M2: args.M2,

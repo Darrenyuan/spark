@@ -12,42 +12,34 @@ import {
   Dimensions,
 } from 'react-native';
 import styleUtil from '../../common/styleUtil';
-// import LoadingMore from "../components/load/LoadingMore";
 import NavigatorPage from '../../components/NavigatorPage';
-import NearbyItem from './NearbyItem';
+import NearbyItem from '../nearby/NearbyItem';
 import config from '../../common/config';
 import LoadingMore from '../../components/load/LoadingMore';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../services/redux/actions';
 import md5 from 'react-native-md5';
-import { SearchInput } from 'teaset';
 import _ from 'lodash';
-const WIDTH = Dimensions.get('window').width;
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import { NavigationBar, SearchInput } from 'teaset';
 
-class NearbyList extends NavigatorPage {
-  static defaultProps = {
-    ...NavigatorPage.navigatorStyle,
-    navBarHidden: true,
-    navigationBarInsets: false,
-  };
+class Pins extends NavigatorPage {
   constructor(props) {
     super(props);
-    const { sjType, keyword, nearBys } = this.props;
     this.state = {
       user: props.user,
       another: false,
       isLoading: false, //上拉加载
       isRefreshing: false, //下拉刷新
-      collectFlag: '0',
-      sjType: sjType,
+      collectFlag: '1',
+      sjType: '',
       page: 1,
       pageSize: 10,
-      keyword: keyword,
+      keyword: '',
       prevSearchText: '',
     };
   }
-
   filter = (byId, keyword, sjType) => {
     if (keyword === '' || keyword === undefined) {
       if (sjType === '' || sjType === undefined) {
@@ -69,16 +61,16 @@ class NearbyList extends NavigatorPage {
       }
     }
   };
+
   componentDidMount() {
-    // config.removeUser()
     this.fetchData();
   }
 
   componentWillUnmount() {}
 
   fetchData = () => {
-    const { loginInfo, locationInfo, sjType, fetchContentList } = this.props;
-    const { collectFlag, keyword, page, pageSize } = this.state;
+    const { loginInfo, locationInfo, fetchContentList } = this.props;
+    const { collectFlag, keyword, page, pageSize, sjType } = this.state;
     let auid = '';
     let M2 = '';
     if (loginInfo !== undefined) {
@@ -92,6 +84,7 @@ class NearbyList extends NavigatorPage {
     let searchTerm = this.getSearchTerm();
     fetchContentList({
       sjType: sjType,
+      userAuid: auid,
       collectFlag: collectFlag,
       keyword: keyword,
       auid: auid === undefined ? '' : auid,
@@ -124,16 +117,15 @@ class NearbyList extends NavigatorPage {
       this.setState({ page: page }, this.fetchData);
     }
   };
-  onRefresh = () => {
-    this.setState({ page: 1 }, this.fetchData);
-  };
+
   _renderFooter = () => {
     return <LoadingMore hasMore={this._hasMore()} />;
   };
-
+  onRefresh = () => {
+    this.setState({ page: 1 }, this.fetchData);
+  };
   _renderRows = ({ item, separators, index }) => {
     const byId = this.props.nearBys.byId;
-    // return (<View style={{width:100, height:40, backgroundColor:'red'}} />);
     return (
       <NearbyItem
         item={item}
@@ -158,11 +150,41 @@ class NearbyList extends NavigatorPage {
   };
   getSearchTerm = () => {
     const { sjType, keyword, pageSize } = this.state;
-    let searchTerm = `search_${keyword}_${sjType}_${pageSize}`;
+    let searchTerm = `pin_search_${keyword}_${sjType}_${pageSize}`;
     return searchTerm;
   };
-  render() {
-    console.log(JSON.stringify(this.props));
+
+  renderNavigationLeftView() {
+    return (
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <NavigationBar.Button onPress={() => gInstance._onClickContact()}>
+          <Text>所有</Text>
+          <AntDesign name={'down'} color={'#666666'} size={styleUtil.fontSize} />
+        </NavigationBar.Button>
+      </View>
+    );
+  }
+  renderNavigationRightView() {
+    return (
+      <View>
+        <NavigationBar.Button onPress={() => gInstance._onClickContact()}>
+          <SearchInput
+            placeholder="搜索"
+            style={{
+              ...styleUtil.searchInput,
+              width: styleUtil.window.width * 0.5,
+              marginTop: 0,
+            }}
+            onChangeText={text => this.setState({ keyword: text })}
+            onBlur={this.handleSearch}
+            value={this.state.keyword}
+          />
+        </NavigationBar.Button>
+      </View>
+    );
+  }
+
+  renderPage() {
     const { fetchContentListPending, nearBys } = this.props;
     const { sjType, keyword, page, pageSize } = this.state;
     const { byId } = nearBys;
@@ -187,14 +209,7 @@ class NearbyList extends NavigatorPage {
       );
     }
     return (
-      <View style={styleUtil.container}>
-        <SearchInput
-          placeholder="搜索"
-          style={styleUtil.searchInput}
-          onChangeText={text => this.setState({ keyword: text })}
-          onBlur={this.handleSearch}
-          value={this.state.keyword}
-        />
+      <View>
         <FlatList
           // extraData={this.state}
           data={items}
@@ -204,7 +219,7 @@ class NearbyList extends NavigatorPage {
           onEndReached={this._fetchMoreData}
           onEndReachedThreshold={0.2}
           onRefresh={this.onRefresh}
-          refreshing={fetchContentListPending}
+          refreshing={this.props.fetchContentListPending}
           // ListHeaderComponent={this._renderHeader}
           ListFooterComponent={this._renderFooter}
           showsVerticalScrollIndicator={true}
@@ -235,4 +250,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(NearbyList);
+)(Pins);

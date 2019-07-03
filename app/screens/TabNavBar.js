@@ -3,6 +3,7 @@ import React from 'react';
 import { Platform, StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native';
 import { TabView, NavigationBar } from 'teaset';
 import Nearby from '../pages/nearby/Nearby';
+import Pins from '../pages/pins/Pins';
 import { Icon } from 'react-native-elements';
 import styleUtil from '../common/styleUtil';
 import PublishEntrance from '../pages/publish/PublishEntrance';
@@ -225,7 +226,7 @@ class TabNavBar extends React.Component {
           icon={<Image source={require('../assets/image/tabbar_pin.png')} />}
           activeIcon={<Image source={require('../assets/image/tabbar_pin_highlight.png')} />}
         >
-          <Nearby
+          <Pins
             leftHidden
             renderRightView={
               <NavigationBar.Button

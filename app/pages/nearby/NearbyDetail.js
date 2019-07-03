@@ -21,10 +21,11 @@ import md5 from 'react-native-md5';
 import { default as EntypoIcon } from 'react-native-vector-icons/Entypo';
 import { default as OcticonsIcon } from 'react-native-vector-icons/Octicons';
 import KeyboardShift from './KeyboardShift';
-import { apiComment, apiAgree, apiCommentAgree } from '../../services/axios/api';
+import { apiComment, apiAgree, apiCommentAgree, apiCollect } from '../../services/axios/api';
 import toast from '../../common/toast';
 import navigate from '../../screens/navigate';
 import NearbyChildrenReply from './NearbyChildrenReply';
+
 class NearbyDetail extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
@@ -60,6 +61,7 @@ class NearbyDetail extends NavigatorPage {
     this.fetchData();
     this.fetchCommentListData();
     this.fetchAgreeListData();
+    this.fetchCollectListData();
   }
 
   getNearByDetailType = sjType => {
@@ -105,7 +107,33 @@ class NearbyDetail extends NavigatorPage {
       M9,
     });
   };
-
+  fetchCollectListData = () => {
+    const { loginInfo, locationInfo, fetchCollectList, sjid } = this.props;
+    let auid = '';
+    let M2 = '';
+    if (loginInfo !== undefined) {
+      auid = loginInfo.auid;
+      M2 = loginInfo.loginToken;
+    }
+    const M3 = locationInfo.coordsStr;
+    const M8 = md5.hex_md5(auid + new Date().getTime());
+    const M9 = new Date().getTime();
+    const searchTerm = `search_${sjid}`;
+    const page = this.state.collectPage;
+    const pageSize = this.state.collectPageSize;
+    fetchCollectList({
+      sjid,
+      page,
+      pageSize,
+      auid: auid === undefined ? '' : auid,
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
+      M2,
+      M3,
+      M8,
+      M9,
+      searchTerm,
+    });
+  };
   fetchAgreeListData = () => {
     const { loginInfo, locationInfo, fetchAgreeList, sjid } = this.props;
     let auid = '';
@@ -114,23 +142,23 @@ class NearbyDetail extends NavigatorPage {
       auid = loginInfo.auid;
       M2 = loginInfo.loginToken;
     }
-    let M3 = locationInfo.coordsStr;
-    let M8 = md5.hex_md5(auid + new Date().getTime());
-    let M9 = new Date().getTime();
-    let searchTerm = `search_${sjid}`;
-    let page = this.state.agreePage;
-    let pageSize = this.state.agreePageSize;
+    const M3 = locationInfo.coordsStr;
+    const M8 = md5.hex_md5(auid + new Date().getTime());
+    const M9 = new Date().getTime();
+    const searchTerm = `search_${sjid}`;
+    const page = this.state.agreePage;
+    const pageSize = this.state.agreePageSize;
     fetchAgreeList({
-      sjid: sjid,
-      page: page,
-      pageSize: pageSize,
+      sjid,
+      page,
+      pageSize,
       auid: auid === undefined ? '' : auid,
       M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
-      M2: M2,
-      M3: M3,
-      M8: M8,
-      M9: M9,
-      searchTerm: searchTerm,
+      M2,
+      M3,
+      M8,
+      M9,
+      searchTerm,
     });
   };
   fetchCommentListData = () => {
@@ -141,30 +169,30 @@ class NearbyDetail extends NavigatorPage {
       auid = loginInfo.auid;
       M2 = loginInfo.loginToken;
     }
-    let M3 = locationInfo.coordsStr;
-    let M8 = md5.hex_md5(auid + new Date().getTime());
-    let M9 = new Date().getTime();
-    let searchTerm = `search_${sjid}`;
-    let page = this.state.commentPage;
-    let pageSize = this.state.commentPageSize;
+    const M3 = locationInfo.coordsStr;
+    const M8 = md5.hex_md5(auid + new Date().getTime());
+    const M9 = new Date().getTime();
+    const searchTerm = `search_${sjid}`;
+    const page = this.state.commentPage;
+    const pageSize = this.state.commentPageSize;
     fetchCommentList({
-      sjid: sjid,
-      page: page,
-      pageSize: pageSize,
+      sjid,
+      page,
+      pageSize,
       auid: auid === undefined ? '' : auid,
       M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
-      M2: M2,
-      M3: M3,
-      M8: M8,
-      M9: M9,
-      searchTerm: searchTerm,
+      M2,
+      M3,
+      M8,
+      M9,
+      searchTerm,
     });
   };
   _hasMoreComment = () => {
     const { commentPage, commentPageSize } = this.state;
     const { commentList, sjid } = this.props;
-    let currentTotal = commentPage * commentPageSize;
-    let searchTerm = `search_${sjid}`;
+    const currentTotal = commentPage * commentPageSize;
+    const searchTerm = `search_${sjid}`;
     let totalCount = 0;
     if (commentList[searchTerm] !== undefined) {
       totalCount = commentList[searchTerm].totalCount;
@@ -174,15 +202,15 @@ class NearbyDetail extends NavigatorPage {
 
   _fetchCommentMoreData = () => {
     if (this._hasMoreComment()) {
-      commentPage = this.state.commentPage + 1;
-      this.setState({ commentPage: commentPage }, this.fetchCommentListData);
+      const commentPage = this.state.commentPage + 1;
+      this.setState({ commentPage }, this.fetchCommentListData);
     }
   };
   _hasMoreAgree = () => {
     const { agreePage, agreePageSize } = this.state;
     const { agreeList, sjid } = this.props;
-    let currentTotal = agreePage * agreePageSize;
-    let searchTerm = `search_${sjid}`;
+    const currentTotal = agreePage * agreePageSize;
+    const searchTerm = `search_${sjid}`;
     let totalCount = 0;
     if (agreeList[searchTerm] !== undefined) {
       totalCount = agreeList[searchTerm].totalCount;
@@ -192,11 +220,29 @@ class NearbyDetail extends NavigatorPage {
 
   _fetchAgreeMoreData = () => {
     if (this._hasMoreAgree()) {
-      agreePage = this.state.agreePage + 1;
-      this.setState({ agreePage: agreePage }, this.fetchAgreeListData);
+      const agreePage = this.state.agreePage + 1;
+      this.setState({ agreePage }, this.fetchAgreeListData);
     }
   };
 
+  _hasMoreCollect = () => {
+    const { collectPage, collectPageSize } = this.state;
+    const { collectList, sjid } = this.props;
+    const currentTotal = collectPage * collectPageSize;
+    const searchTerm = `search_${sjid}`;
+    let totalCount = 0;
+    if (collectList[searchTerm] !== undefined) {
+      totalCount = collectList[searchTerm].totalCount;
+    }
+    return currentTotal < totalCount;
+  };
+
+  _fetchCollectMoreData = () => {
+    if (this._hasMoreCollect()) {
+      const collectPage = this.state.collectPage + 1;
+      this.setState({ collectPage }, this.fetchCollectListData);
+    }
+  };
   renderImage = uri => {
     const offsetScreen = 15;
     const imageSpace = 10;
@@ -210,7 +256,7 @@ class NearbyDetail extends NavigatorPage {
           height: imageHeight,
           marginRight: imageSpace,
         }}
-        source={{ uri: uri }}
+        source={{ uri }}
       />
     );
   };
@@ -450,19 +496,19 @@ class NearbyDetail extends NavigatorPage {
       auid = loginInfo.auid;
       M2 = loginInfo.loginToken;
     }
-    let M3 = locationInfo.coordsStr;
-    let M8 = md5.hex_md5(auid + new Date().getTime());
-    let M9 = new Date().getTime();
+    const M3 = locationInfo.coordsStr;
+    const M8 = md5.hex_md5(auid + new Date().getTime());
+    const M9 = new Date().getTime();
     apiComment({
-      sjid: sjid,
+      sjid,
       content: replyText,
-      replyID: replyID,
+      replyID,
       auid: auid === undefined ? '' : auid,
       M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
-      M2: M2,
-      M3: M3,
-      M8: M8,
-      M9: M9,
+      M2,
+      M3,
+      M8,
+      M9,
     })
       .then(res => {
         if (res.data.code === 1) {
@@ -487,19 +533,19 @@ class NearbyDetail extends NavigatorPage {
       auid = loginInfo.auid;
       M2 = loginInfo.loginToken;
     }
-    let M3 = locationInfo.coordsStr;
-    let M8 = md5.hex_md5(auid + new Date().getTime());
-    let M9 = new Date().getTime();
+    const M3 = locationInfo.coordsStr;
+    const M8 = md5.hex_md5(auid + new Date().getTime());
+    const M9 = new Date().getTime();
     apiCommentAgree({
-      sjid: sjid,
+      sjid,
       commentDataid: commentId,
       agreeFlag: like,
       auid: auid === undefined ? '' : auid,
       M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
-      M2: M2,
-      M3: M3,
-      M8: M8,
-      M9: M9,
+      M2,
+      M3,
+      M8,
+      M9,
     })
       .then(res => {
         if (res.data.code === 1) {
@@ -522,18 +568,18 @@ class NearbyDetail extends NavigatorPage {
       auid = loginInfo.auid;
       M2 = loginInfo.loginToken;
     }
-    let M3 = locationInfo.coordsStr;
-    let M8 = md5.hex_md5(auid + new Date().getTime());
-    let M9 = new Date().getTime();
+    const M3 = locationInfo.coordsStr;
+    const M8 = md5.hex_md5(auid + new Date().getTime());
+    const M9 = new Date().getTime();
     apiAgree({
-      sjid: sjid,
+      sjid,
       agreeFlag: like,
       auid: auid === undefined ? '' : auid,
       M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
-      M2: M2,
-      M3: M3,
-      M8: M8,
-      M9: M9,
+      M2,
+      M3,
+      M8,
+      M9,
     })
       .then(res => {
         if (res.data.code === 1) {
@@ -545,6 +591,41 @@ class NearbyDetail extends NavigatorPage {
       })
       .catch(err => {
         toast.fail('点赞失败');
+      });
+  };
+
+  _onPressCollect = collect => {
+    const { loginInfo, locationInfo, fetchNearByDetail, sjid } = this.props;
+    const { replyText } = this.state;
+    let auid = '';
+    let M2 = '';
+    if (loginInfo !== undefined) {
+      auid = loginInfo.auid;
+      M2 = loginInfo.loginToken;
+    }
+    const M3 = locationInfo.coordsStr;
+    const M8 = md5.hex_md5(auid + new Date().getTime());
+    const M9 = new Date().getTime();
+    apiCollect({
+      sjid,
+      collectFlag: collect,
+      auid: auid === undefined ? '' : auid,
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
+      M2,
+      M3,
+      M8,
+      M9,
+    })
+      .then(res => {
+        if (res.data.code === 1) {
+          toast.success('钉住成功');
+          this.fetchData();
+        } else {
+          toast.fail('钉住失败');
+        }
+      })
+      .catch(err => {
+        toast.fail('钉住失败');
       });
   };
 
@@ -616,27 +697,29 @@ class NearbyDetail extends NavigatorPage {
             }
           />
         </TouchableOpacity>
-        <Image
-          style={{ marginRight: 8 }}
-          source={
-            isCollected === 0
-              ? require('../../assets/image/pin.png')
-              : require('../../assets/image/tabbar_pin_highlight.png')
-          }
-        />
+        <TouchableOpacity onPress={() => this._onPressCollect(isCollected === 0 ? 1 : 0)}>
+          <Image
+            style={{ marginRight: 8 }}
+            source={
+              isCollected === 0
+                ? require('../../assets/image/pin.png')
+                : require('../../assets/image/tabbar_pin_highlight.png')
+            }
+          />
+        </TouchableOpacity>
       </View>
     );
   };
 
-  _renderCommentFooter = () => {
-    return <LoadingMore hasMore={this._hasMoreComment()} />;
-  };
-  _renderAgreeFooter = () => {
-    return <LoadingMore hasMore={this._hasMoreAgree()} />;
-  };
+  _renderCommentFooter = () => <LoadingMore hasMore={this._hasMoreComment()} />;
+
+  _renderAgreeFooter = () => <LoadingMore hasMore={this._hasMoreAgree()} />;
+
+  _renderCollectFooter = () => <LoadingMore hasMore={this._hasMoreCollect()} />;
+
   _renderCommunityContent = () => {
     const { type } = this.state;
-    const { sjid, agreeList, commentList } = this.props;
+    const { sjid, agreeList, commentList, collectList } = this.props;
     let renderItem = null;
     let list = [];
     let initialNum = 0;
@@ -655,7 +738,7 @@ class NearbyDetail extends NavigatorPage {
           for (i = 1; i <= page; i++) {
             if (allPages[i] && allPages[i].items) {
               allPages[i].items.forEach(item => {
-                let data = byId[item];
+                const data = byId[item];
                 if (data.level === 1) {
                   items.push(item);
                 }
@@ -679,7 +762,7 @@ class NearbyDetail extends NavigatorPage {
           for (i = 1; i <= page; i++) {
             if (allPages[i] && allPages[i].items) {
               allPages[i].items.forEach(item => {
-                let data = byId[item];
+                const data = byId[item];
                 items.push(data);
               });
             }
@@ -687,16 +770,31 @@ class NearbyDetail extends NavigatorPage {
         }
         list = items;
         initialNum = this.state.agreePageSize;
-        // initialNum = 1;
         onEndReachedAction = this._fetchAgreeMoreData;
         renderFooter = this._renderAgreeFooter;
         break;
-      // case 2:
-      //   renderItem = this._renderPinRows;
-      //   break;
-      // default:
-      //   renderItem = this._renderReplyRows;
-      // break;
+      case 2:
+        renderItem = this._renderPinRows;
+        page = this.state.collectPage;
+        searchTerm = `search_${sjid}`;
+        allPages = collectList[searchTerm];
+        byId = collectList.byId;
+        items = [];
+        if (allPages !== undefined) {
+          for (i = 1; i <= page; i++) {
+            if (allPages[i] && allPages[i].items) {
+              allPages[i].items.forEach(item => {
+                const data = byId[item];
+                items.push(data);
+              });
+            }
+          }
+        }
+        list = items;
+        initialNum = this.state.collectPageSize;
+        onEndReachedAction = this._fetchCollectMoreData;
+        renderFooter = this._renderCollectFooter;
+        break;
       default:
         renderItem = this._renderReplyRows;
         page = this.state.commentPage;
@@ -708,7 +806,7 @@ class NearbyDetail extends NavigatorPage {
           for (i = 1; i <= page; i++) {
             if (allPages[i] && allPages[i].items) {
               allPages[i].items.forEach(item => {
-                let data = byId[item];
+                const data = byId[item];
                 if (data.level === 1) {
                   items.push(item);
                 }
@@ -756,7 +854,7 @@ class NearbyDetail extends NavigatorPage {
         {
           title: '回复',
           onPress: () => {
-            let overlayView = (
+            const overlayView = (
               <Overlay.PopView
                 style={{
                   position: 'absolute',
@@ -801,7 +899,7 @@ class NearbyDetail extends NavigatorPage {
                     // value={this.state.replyText}
                     onChangeText={text => this.setState({ replyText: text })}
                     placeholder="写回复"
-                    autoFocus={true}
+                    autoFocus
                   />
                   <Button
                     style={{
@@ -840,12 +938,12 @@ class NearbyDetail extends NavigatorPage {
         },
       ];
     }
-    let cancelItem = { title: '取消' };
+    const cancelItem = { title: '取消' };
     ActionSheet.show(items, cancelItem);
   };
 
   _renderReplyRows = ({ item, separators, index }) => {
-    let _this = this;
+    const _this = this;
     const { loginInfo } = this.props;
     const { sjid, nearByDetails } = this.props;
     const { nearByType } = this.state;
@@ -858,9 +956,9 @@ class NearbyDetail extends NavigatorPage {
     const { commentList } = this.props;
     const byId = commentList.byId;
     const data = byId[item];
-    let commentId = item;
-    let childNum = data.replyNum;
-    let hasChildData = childNum && childNum > 0;
+    const commentId = item;
+    const childNum = data.replyNum;
+    const hasChildData = childNum && childNum > 0;
     return (
       <View
         style={{
@@ -929,9 +1027,9 @@ class NearbyDetail extends NavigatorPage {
                   onPress={() =>
                     navigate.pushNotNavBar(NearbyChildrenReply, {
                       title: `${childNum}条回复`,
-                      sjid: sjid,
+                      sjid,
                       dataid: commentId,
-                      auid: auid,
+                      auid,
                       _onPressLikeForComment: this._onPressLikeForComment,
                       _showPopOver: this._showPopOver,
                     })
@@ -947,7 +1045,34 @@ class NearbyDetail extends NavigatorPage {
     );
   };
 
-  _renderLikeRows = ({ item, separators, index }) => {
+  _renderLikeRows = ({ item, separators, index }) => (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 15,
+        backgroundColor: 'white',
+      }}
+    >
+      <Avatar large rounded source={{ uri: item.userFace }} />
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          paddingVertical: 20,
+          borderBottomColor: '#F5F5F5',
+          borderBottomWidth: 0.5,
+        }}
+      >
+        <Text style={{ flex: 1, marginLeft: 8, fontSize: 14, color: '#252525' }}>
+          {item.userName}
+        </Text>
+        <Text style={{ fontSize: 12, color: '#C1C1C1' }}>{item.actionTimeDesc}</Text>
+      </View>
+    </View>
+  );
+
+  _renderPinRows = ({ item, separators, index }) => {
     return (
       <View
         style={{
@@ -976,34 +1101,6 @@ class NearbyDetail extends NavigatorPage {
     );
   };
 
-  _renderPinRows = ({ item, separators, index }) => {
-    console.log('aaa:_renderPinRows');
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: 15,
-          backgroundColor: 'white',
-        }}
-      >
-        <Avatar large rounded source={require('../../assets/image/avatar.png')} />
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            paddingVertical: 20,
-            borderBottomColor: '#F5F5F5',
-            borderBottomWidth: 0.5,
-          }}
-        >
-          <Text style={{ flex: 1, marginLeft: 8, fontSize: 14, color: '#252525' }}>{'老大'}</Text>
-          <Text style={{ fontSize: 12, color: '#C1C1C1' }}>{'刚刚'}</Text>
-        </View>
-      </View>
-    );
-  };
-
   render() {
     return <KeyboardShift>{() => super.render()}</KeyboardShift>;
   }
@@ -1023,7 +1120,7 @@ class NearbyDetail extends NavigatorPage {
     );
   }
   _showPopOverRightView = () => {
-    let items = [
+    const items = [
       {
         title: '举报',
         onPress: () => {
@@ -1031,7 +1128,7 @@ class NearbyDetail extends NavigatorPage {
         },
       },
     ];
-    let cancelItem = { title: '取消' };
+    const cancelItem = { title: '取消' };
     ActionSheet.show(items, cancelItem);
   };
 

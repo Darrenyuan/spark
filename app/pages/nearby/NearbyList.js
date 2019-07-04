@@ -88,7 +88,6 @@ class NearbyList extends NavigatorPage {
     let M3 = locationInfo.coordsStr;
     let M8 = md5.hex_md5(auid + new Date().getTime());
     let M9 = new Date().getTime();
-    console.log('fetchData In near by list:M2:', M2, ':auid:', auid);
     let searchTerm = this.getSearchTerm();
     fetchContentList({
       sjType: sjType,
@@ -162,7 +161,6 @@ class NearbyList extends NavigatorPage {
     return searchTerm;
   };
   render() {
-    console.log(JSON.stringify(this.props));
     const { fetchContentListPending, nearBys } = this.props;
     const { sjType, keyword, page, pageSize } = this.state;
     const { byId } = nearBys;

@@ -3,6 +3,7 @@ import { Image, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { BlurView } from 'react-native-blur';
 import navigate from '../../screens/navigate';
 import Publish from './Publish';
+
 export default class PublishEntrance extends React.Component {
   constructor(props) {
     super(props);

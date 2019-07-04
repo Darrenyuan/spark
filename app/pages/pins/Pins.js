@@ -22,7 +22,7 @@ import * as actions from '../../services/redux/actions';
 import md5 from 'react-native-md5';
 import _ from 'lodash';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { NavigationBar, SearchInput } from 'teaset';
+import { NavigationBar, SearchInput, ActionSheet } from 'teaset';
 
 class Pins extends NavigatorPage {
   constructor(props) {
@@ -34,6 +34,7 @@ class Pins extends NavigatorPage {
       isRefreshing: false, //下拉刷新
       collectFlag: '1',
       sjType: '',
+      displaySjType: '所有',
       page: 1,
       pageSize: 10,
       keyword: '',
@@ -154,11 +155,38 @@ class Pins extends NavigatorPage {
     return searchTerm;
   };
 
+  _showPopOver = () => {
+    let items = [
+      {
+        title: '所有 ',
+        onPress: () => this.setState({ sjType: '', displaySjType: '所有' }, this.fetchData),
+      },
+      {
+        title: '话题',
+        onPress: () => this.setState({ sjType: '200004', displaySjType: '话题' }, this.fetchData),
+      },
+      {
+        title: '一起',
+        onPress: () => this.setState({ sjType: '200001', displaySjType: '一起' }, this.fetchData),
+      },
+      {
+        title: '二手',
+        onPress: () => this.setState({ sjType: '200002', displaySjType: '二手' }, this.fetchData),
+      },
+      {
+        title: '时刻',
+        onPress: () => this.setState({ sjType: '200003', displaySjType: '时刻' }, this.fetchData),
+      },
+    ];
+    let cancelItem = { title: '取消' };
+    ActionSheet.show(items, cancelItem);
+  };
   renderNavigationLeftView() {
+    const { displaySjType } = this.state;
     return (
       <View style={{ flex: 1, flexDirection: 'row' }}>
-        <NavigationBar.Button onPress={() => gInstance._onClickContact()}>
-          <Text>所有</Text>
+        <NavigationBar.Button onPress={() => this._showPopOver()}>
+          <Text>{displaySjType}</Text>
           <AntDesign name={'down'} color={'#666666'} size={styleUtil.fontSize} />
         </NavigationBar.Button>
       </View>
@@ -167,7 +195,7 @@ class Pins extends NavigatorPage {
   renderNavigationRightView() {
     return (
       <View>
-        <NavigationBar.Button onPress={() => gInstance._onClickContact()}>
+        <NavigationBar.Button>
           <SearchInput
             placeholder="搜索"
             style={{

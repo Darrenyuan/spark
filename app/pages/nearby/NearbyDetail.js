@@ -645,7 +645,7 @@ class NearbyDetail extends NavigatorPage {
           right: 0,
           bottom: 0,
           width: styleUtil.window.width,
-          height: styleUtil.window.height * 0.05,
+          height: styleUtil.window.height * 0.1,
           backgroundColor: 'white',
           zIndex: 99999999,
           flex: 1,
@@ -936,32 +936,8 @@ class NearbyDetail extends NavigatorPage {
         },
       ];
     }
-<<<<<<< HEAD
     const cancelItem = { title: '取消' };
     ActionSheet.show(items, cancelItem);
-=======
-    const handle = ReactNative.findNodeHandle(this.replyRef[commentId]);
-    UIManager.measure(handle, (x, y, width, height, fx, fy) => {
-      ActionPopover.show({ x, y, width, height }, items);
-    });
-  };
-  // handleLayoutChange(event, commentId) {
-  //   this.replyRef[commentId].measure((fx, fy, width, height, px, py) => {
-  //     console.log('Component width is: ' + width);
-  //     console.log('Component height is: ' + height);
-  //     console.log('X offset to page: ' + px);
-  //     console.log('Y offset to page: ' + py);
-  //   });
-  // }
-  handleReplyLayout = event => {
-    console.log('handleReplyLayouthandleReplyLayouthandleReplyLayout');
-    const layout = event.nativeEvent.layout;
-    console.log('layout:', JSON.stringify(layout));
-    console.log('height:', layout.height);
-    console.log('width:', layout.width);
-    console.log('x:', layout.x);
-    console.log('y:', layout.y);
->>>>>>> feature_addList
   };
 
   _renderReplyRows = ({ item, separators, index }) => {
@@ -1067,7 +1043,6 @@ class NearbyDetail extends NavigatorPage {
     );
   };
 
-<<<<<<< HEAD
   _renderLikeRows = ({ item, separators, index }) => (
     <View
       style={{
@@ -1078,10 +1053,6 @@ class NearbyDetail extends NavigatorPage {
       }}
     >
       <Avatar large rounded source={{ uri: item.userFace }} />
-=======
-  _renderLikeRows = ({ item, separators, index }) => {
-    return (
->>>>>>> feature_addList
       <View
         style={{
           flex: 1,

@@ -22,6 +22,8 @@ import configureStore from './app/services/common/configStore';
 import { loadState, saveState } from './app/services/common/storage';
 import throttle from 'lodash/throttle';
 import TopView from 'teaset/components/Overlay/TopView';
+import codePush from 'react-native-code-push';
+import SplashScreen from 'react-native-splash-screen';
 
 Theme.set({
   fitIPhoneX: true,
@@ -78,7 +80,7 @@ type State = {
 //TODO 1)Add hot code publish
 //TODO 2）react-native-maps
 
-export default class App extends Component<Props, State> {
+class App extends Component<Props, State> {
   constructor(props: any) {
     super(props);
 
@@ -115,6 +117,7 @@ export default class App extends Component<Props, State> {
         this.setState({ loadingData: false, store: store });
       },
     );
+    SplashScreen.hide();
   }
   _setContainer = v => {
     navigate.setContainer(v);
@@ -157,3 +160,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+const codePushOptions = {
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  installMode: codePush.InstallMode.ON_NEXT_SUSPEND,
+  minimumBackgroundDuration: 600,
+};
+
+// codePush.getUpdateMetadata().then(update => {
+//   if (update) {
+//     console.log('update code push', update.label);
+//   }
+//   // if (update) Sentry.setVersion(update.appVersion + '-codepush:' + update.label);
+// });
+
+export default codePush(codePushOptions)(App);

@@ -1,6 +1,15 @@
 import { apiOnStart } from '../services/axios/api';
 import React from 'react';
-import { Platform, StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Modal,
+  StatusBar,
+} from 'react-native';
 import { TabView, NavigationBar } from 'teaset';
 import Nearby from '../pages/nearby/Nearby';
 import { Icon } from 'react-native-elements';
@@ -61,7 +70,6 @@ class TabNavBar extends React.Component {
         ios: '28d1259434784e7005d8ad3735c66a09',
       }).then(
         res => {
-          console.log('geo location111111');
           setDistanceFilter(10);
         },
         error => console.log(error),
@@ -77,9 +85,7 @@ class TabNavBar extends React.Component {
     let _this = this;
     const { fetchConfigInfo, registerLocation } = this.props;
     Geolocation.getCurrentPosition(({ coords, timestamp, location }) => {
-      console.log('coords=', JSON.stringify(coords));
       let coordsStr = _this.coordsToString(coords);
-      console.log('coodsStr=', coordsStr);
       _this.setState({ coordsStr: coordsStr });
       fetchConfigInfo({
         auid: auid,
@@ -116,6 +122,9 @@ class TabNavBar extends React.Component {
       M2: M2,
       M3: M3,
       M8: M8,
+    }).then(res => {
+      console.log(res);
+      console.log('res res___________________');
     });
   };
 
@@ -189,10 +198,8 @@ class TabNavBar extends React.Component {
       />
     );
   }
-
   render() {
     const { loginInfo } = this.props;
-    console.log('logInfo================', JSON.stringify(loginInfo));
     if (!loginInfo.loginToken) {
       return <LoginEnterPhone />;
     }

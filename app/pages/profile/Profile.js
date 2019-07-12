@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Animated,
   FlatList,
+  StatusBar,
 } from 'react-native';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
@@ -30,6 +31,7 @@ import Settings from '../settings/Settings';
 import UserQRCode from '../message/UserQRCode';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import md5 from 'react-native-md5';
 import * as actions from '../../services/redux/actions';
 import { getApiVersion } from 'react-native-wechat';
 
@@ -54,6 +56,21 @@ class Profile extends NavigatorPage {
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
   componentDidMount() {
+    // const { loginInfo, locationInfo } = this.props;
+    // let auid = loginInfo.auid;
+    // let M8 = md5.str_md5(auid + new Date().getTime());
+    // this.props.actions
+    //   .applyLogon({
+    //     auid: auid,
+    //     M2: loginInfo.loginToken,
+    //     M3: locationInfo.coordsStr,
+    //     M8: M8,
+    //   })
+    //   .then(res => {
+    //     console.log(res);
+    //     console.log('res res___________________');
+    //   });
+
     let { markers } = this.props.userInfo;
     let expansionMarkerTypes = [];
     this.props.configInfo.markerTypes.map(item => {
@@ -70,8 +87,6 @@ class Profile extends NavigatorPage {
       });
     }
     this.setState({ markersArr: arr });
-    console.log(arr);
-    console.log('arr arr arr');
   }
   openCamera = type => {
     ImageCropPicker.openCamera({
@@ -217,7 +232,7 @@ class Profile extends NavigatorPage {
                 rounded
                 source={
                   userInfo.face === ''
-                    ? require('../../assets/image/avatar.png')
+                    ? require('../../assets/image/login_default_avatar.png')
                     : {
                         uri: userInfo.face && userInfo.face.replace(/cs.png/g, '.png'),
                       }
@@ -325,6 +340,8 @@ function mapStateToProps(state) {
   return {
     userInfo: state.userInfo,
     configInfo: state.configInfo,
+    loginInfo: state.loginInfo,
+    locationInfo: state.locationInfo,
   };
 }
 

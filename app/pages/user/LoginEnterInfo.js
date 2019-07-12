@@ -54,7 +54,10 @@ export default class LoginEnterInfo extends NavigatorPage {
   // TODO
   _netRegisterInfo1 = () => {
     const { face, nickName, birth, sex } = this.state;
-    console.log(face);
+    if (face === null) {
+      toast.info('请选择图像哦！');
+      return;
+    }
     const auid = '';
     const M9 = new Date().getTime();
     const strM9 = `${M9}`;
@@ -69,20 +72,12 @@ export default class LoginEnterInfo extends NavigatorPage {
       M3: '120.45435,132.32424',
       M8: md5.hex_md5(auid + strM9),
       M9: strM9,
+      face: face,
     };
-    if (face !== null) {
-      option.face.uri = face.path;
-    } else {
-      option.face.uri = '../../assets/image/login_default_avatar.png';
-    }
     toast.modalLoading();
-    console.log(option);
-
     apiEditRegistInfo1(option).then(res => {
       toast.modalLoadingHide();
       if (res.data.code === 1) {
-        // TODO  同步redux
-        // config.setStatusAndMarker(res.data);
         navigate.pushNotNavBar(LoginMoreInfo, {
           phone: this.props.phone,
         });
@@ -97,7 +92,13 @@ export default class LoginEnterInfo extends NavigatorPage {
       cropping: true,
       // compressImageQuality: 1
     }).then(image => {
-      this.setState({ face: image });
+      console.log(image);
+      console.log('Avatar Avatar Avatar_________________');
+      if (image.size > 2097152) {
+        toast.info('图片过大，请重新选择哦！');
+      } else {
+        this.setState({ face: image });
+      }
     });
   };
 
@@ -111,7 +112,13 @@ export default class LoginEnterInfo extends NavigatorPage {
       maxFiles: 1,
     })
       .then(image => {
-        this.setState({ face: image });
+        console.log(image);
+        console.log('Avatar Avatar Avatar_________________');
+        if (image.size > 2097152) {
+          toast.info('图片过大，请重新选择哦！');
+        } else {
+          this.setState({ face: image });
+        }
       })
       .catch(err => {
         if (err.code === 'E_PICKER_CANCELLED') {
@@ -289,8 +296,12 @@ export default class LoginEnterInfo extends NavigatorPage {
               style={[
                 styles.buttonBox,
                 {
-                  backgroundColor: this._btnStyle(nickName.length > 0 && birth.length > 0),
-                  borderColor: this._btnStyle(nickName.length > 0 && birth.length > 0),
+                  backgroundColor: this._btnStyle(
+                    nickName.length > 0 && birth.length > 0 && face !== null,
+                  ),
+                  borderColor: this._btnStyle(
+                    nickName.length > 0 && birth.length > 0 && face !== null,
+                  ),
                 },
               ]}
               onPress={_ => {

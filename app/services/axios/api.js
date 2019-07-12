@@ -206,7 +206,7 @@ export function apiEditRegistInfo1(args = {}) {
   formData.append('M8', args.M8);
   formData.append('M9', args.M9);
   formData.append('face', {
-    uri: args.face.uri,
+    uri: args.face.path,
     name: 'file.jpg',
     type: 'multipart/form-data',
   });

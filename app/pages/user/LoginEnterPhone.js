@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Keyboard,
   Platform,
+  StatusBar,
 } from 'react-native';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
@@ -74,7 +75,6 @@ export default class LoginEnterPhone extends NavigatorPage {
 
   renderPage() {
     const { phone } = this.state;
-
     return (
       <TouchableOpacity
         style={styleUtil.container}

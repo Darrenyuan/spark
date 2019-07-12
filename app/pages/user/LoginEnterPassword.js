@@ -28,6 +28,7 @@ import md5 from 'react-native-md5';
 import Profile from '../profile/Profile';
 import Nearby from '../nearby/Nearby';
 import TabNavBar from '../../screens/TabNavBar';
+import toast from '../../common/toast';
 
 class LoginEnterPassword extends NavigatorPage {
   static defaultProps = {
@@ -48,7 +49,6 @@ class LoginEnterPassword extends NavigatorPage {
   };
 
   constructor(props) {
-    console.log('LoginEnterPassword');
     super(props);
     this.state = {
       password: '',
@@ -61,7 +61,6 @@ class LoginEnterPassword extends NavigatorPage {
     let M2 = loginInfo.loginToken;
     let M3 = LocationService.getLocationString();
     let M8 = md5.str_md5(auid + new Date().getTime());
-    // toast.modalLoading();
     this.props.actions.applyLogon({
       auid: auid,
       M2: M2,
@@ -71,26 +70,33 @@ class LoginEnterPassword extends NavigatorPage {
   };
 
   _netLogin = () => {
+    toast.modalLoading();
     let auid = '';
     let M2 = '';
     let M3 = LocationService.getLocationString();
     let M8 = md5.str_md5(auid + new Date().getTime());
     let phone = this.props.phone;
     let encoded = CryptoJS.MD5(this.state.password);
-    toast.modalLoading();
-
-    this.props.actions.login({ phone, auid, M2, M3, M8, password: encoded }).then(res => {
-      toast.modalLoadingHide();
-      if (res.data.code === 1) {
-        this._netApplyLogon();
-        navigate.pushNotNavBar(TabNavBar);
-      }
-    });
+    this.props.actions
+      .login({ phone, auid, M2, M3, M8, password: encoded })
+      .then(res => {
+        toast.modalLoadingHide();
+        if (res.data.code === 1) {
+          this._netApplyLogon();
+          navigate.pushNotNavBar(TabNavBar);
+        } else {
+          toast.info(res.data.msg);
+        }
+      })
+      .catch(err => {
+        toast.modalLoadingHide();
+      });
   };
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
 
   renderPage() {
+    const { password } = this.state;
     return (
       <TouchableOpacity
         style={styleUtil.container}
@@ -151,7 +157,7 @@ class LoginEnterPassword extends NavigatorPage {
             </View>
 
             <TouchableOpacity
-              activeOpacity={0.5}
+              activeOpacity={1}
               style={[
                 styles.buttonBox,
                 {
@@ -161,9 +167,7 @@ class LoginEnterPassword extends NavigatorPage {
               ]}
               onPress={this._netLogin}
             >
-              <View>
-                <Text style={styles.buttonText}>{'登录'}</Text>
-              </View>
+              <Text style={styles.buttonText}>{'登录'}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{

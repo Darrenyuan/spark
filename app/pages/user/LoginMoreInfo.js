@@ -243,9 +243,8 @@ class LoginMoreInfo extends NavigatorPage {
 
           <TouchableOpacity
             onPress={() => {
-              // navigate.popN(4);
-              // this._netApplyLogin();
-              navigate.pushNotNavBar(LoginEnterPassword, { phone: this.props.phone });
+              this._toLogin();
+              // navigate.pushNotNavBar(LoginEnterPassword, { phone: this.props.phone });
             }}
           >
             <Text

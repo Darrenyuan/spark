@@ -1,5 +1,14 @@
 import React from 'react';
-import { Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Keyboard,
+} from 'react-native';
 import { Icon } from 'react-native-elements';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import md5 from 'react-native-md5';
@@ -482,18 +491,26 @@ class Publish extends NavigatorPage {
     }
 
     return (
-      <View style={styles.container}>
-        {(placeholder1 || placeholder2) && this._renderLine1Input(placeholder1, placeholder2)}
-        {(placeholder1 || placeholder2) && <View style={{ height: 10 }} />}
-        {this._renderLine2Input(placeholder)}
-        {type != 1 && <View style={{ height: 10 }} />}
-        {type != 1 && this._renderImageAdd()}
-        <View style={{ height: 30 }} />
-        {this._renderTimer(tip)}
-        <View style={{ height: 10 }} />
-        {this._renderAddress()}
-        {visible && this._onImagesRotation()}
-      </View>
+      <TouchableOpacity
+        style={styleUtil.container}
+        activeOpacity={1}
+        onPress={_ => {
+          Keyboard.dismiss();
+        }}
+      >
+        <View style={styles.container}>
+          {(placeholder1 || placeholder2) && this._renderLine1Input(placeholder1, placeholder2)}
+          {(placeholder1 || placeholder2) && <View style={{ height: 10 }} />}
+          {this._renderLine2Input(placeholder)}
+          {type != 1 && <View style={{ height: 10 }} />}
+          {type != 1 && this._renderImageAdd()}
+          <View style={{ height: 30 }} />
+          {this._renderTimer(tip)}
+          <View style={{ height: 10 }} />
+          {this._renderAddress()}
+          {visible && this._onImagesRotation()}
+        </View>
+      </TouchableOpacity>
     );
   }
 }

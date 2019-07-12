@@ -121,10 +121,22 @@ android {
         }
     }
     buildTypes {
+        debug {
+            // Note: CodePush updates should not be tested in Debug mode as they are overriden by the RN packager. However, because CodePush checks for updates in all modes, we must supply a key.
+            buildConfigField "String", "CODEPUSH_KEY", '""'
+        }
+        releaseStaging {
+            buildConfigField "String", "CODEPUSH_KEY", '"xNII29DI9iPI4nT9i5BDBPZm46444ksvOXqog"'
+            // Note: It is a good idea to provide matchingFallbacks for the new buildType you create to prevent build issues
+            // Add the following line if not already there
+            matchingFallbacks = ['release']
+        }
+
         release {
             aaptOptions.cruncherEnabled=false
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            buildConfigField "String", "CODEPUSH_KEY", '"8YFAvL97FKYqEIUN0USwOvJ9vtFc4ksvOXqog"'
         }
     }
     // applicationVariants are e.g. debug, release

@@ -5,6 +5,7 @@
     <domain includeSubdomains="true">10.0.2.2</domain>
     <domain includeSubdomains="true">10.0.3.2</domain>
     <domain includeSubdomains="true">127.0.0.1</domain>
+    <domain includeSubdomains="true">212.64.74.113</domain>
     <domain includeSubdomains="true">kk.melepark.com</domain>
     <domain includeSubdomains="true">restapi.amap.com</domain>
   </domain-config>

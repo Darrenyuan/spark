@@ -152,6 +152,7 @@ export default class NearbyItem extends React.Component {
                 flexDirection: 'row',
                 flex: 1,
                 overflow: 'hidden',
+                alignItems: 'center',
               }}
             >
               <TouchableOpacity

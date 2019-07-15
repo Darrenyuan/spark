@@ -117,7 +117,9 @@ class App extends Component<Props, State> {
         this.setState({ loadingData: false, store: store });
       },
     );
-    SplashScreen.hide();
+    if (Platform.OS === 'android') {
+      SplashScreen.hide();
+    }
   }
   _setContainer = v => {
     navigate.setContainer(v);

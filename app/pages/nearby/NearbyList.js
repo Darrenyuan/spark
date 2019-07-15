@@ -160,6 +160,18 @@ class NearbyList extends NavigatorPage {
     let searchTerm = `search_${keyword}_${sjType}_${pageSize}`;
     return searchTerm;
   };
+  renderSearchBar = () => {
+    return (
+      <SearchInput
+        placeholder="搜索"
+        style={styleUtil.searchInput}
+        onChangeText={text => this.setState({ keyword: text })}
+        onBlur={this.handleSearch}
+        value={this.state.keyword}
+      />
+    );
+  };
+
   render() {
     const { fetchContentListPending, nearBys } = this.props;
     const { sjType, keyword, page, pageSize } = this.state;
@@ -186,13 +198,6 @@ class NearbyList extends NavigatorPage {
     }
     return (
       <View style={styleUtil.container}>
-        <SearchInput
-          placeholder="搜索"
-          style={styleUtil.searchInput}
-          onChangeText={text => this.setState({ keyword: text })}
-          onBlur={this.handleSearch}
-          value={this.state.keyword}
-        />
         <FlatList
           // extraData={this.state}
           data={items}
@@ -203,7 +208,7 @@ class NearbyList extends NavigatorPage {
           onEndReachedThreshold={0.2}
           onRefresh={this.onRefresh}
           refreshing={fetchContentListPending}
-          // ListHeaderComponent={this._renderHeader}
+          ListHeaderComponent={this.renderSearchBar}
           ListFooterComponent={this._renderFooter}
           showsVerticalScrollIndicator={true}
           // onViewableItemsChanged={this._onViewableItemsChanged}

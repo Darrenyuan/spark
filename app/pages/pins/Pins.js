@@ -10,6 +10,8 @@ import {
   Platform,
   ActivityIndicator,
   Dimensions,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
@@ -179,6 +181,7 @@ class Pins extends NavigatorPage {
       },
     ];
     let cancelItem = { title: '取消' };
+    Keyboard.dismiss();
     ActionSheet.show(items, cancelItem);
   };
   renderNavigationLeftView() {
@@ -237,23 +240,25 @@ class Pins extends NavigatorPage {
       );
     }
     return (
-      <View>
-        <FlatList
-          // extraData={this.state}
-          data={items}
-          renderItem={this._renderRows}
-          // initialNumToRender={config.pageSize}
-          // keyExtractor={(item, index) => index.toString()}
-          onEndReached={this._fetchMoreData}
-          onEndReachedThreshold={0.2}
-          onRefresh={this.onRefresh}
-          refreshing={this.props.fetchContentListPending}
-          // ListHeaderComponent={this._renderHeader}
-          ListFooterComponent={this._renderFooter}
-          showsVerticalScrollIndicator={true}
-          // onViewableItemsChanged={this._onViewableItemsChanged}
-        />
-      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View>
+          <FlatList
+            // extraData={this.state}
+            data={items}
+            renderItem={this._renderRows}
+            // initialNumToRender={config.pageSize}
+            // keyExtractor={(item, index) => index.toString()}
+            onEndReached={this._fetchMoreData}
+            onEndReachedThreshold={0.2}
+            onRefresh={this.onRefresh}
+            refreshing={this.props.fetchContentListPending}
+            // ListHeaderComponent={this._renderHeader}
+            ListFooterComponent={this._renderFooter}
+            showsVerticalScrollIndicator={true}
+            // onViewableItemsChanged={this._onViewableItemsChanged}
+          />
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }

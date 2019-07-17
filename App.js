@@ -3,7 +3,7 @@
  * https://github.com/facebook/react-native *  * @format * @flow */
 
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View, StatusBar } from 'react-native';
 import { TeaNavigator } from 'teaset';
 import TabNavBar from './app/screens/TabNavBar';
 import { Theme } from 'teaset';
@@ -60,6 +60,8 @@ Theme.set({
   rowActionButtonDangerTitleColor: '#fff',
   rowActionButtonTitleFontSize: 15,
   rowActionButtonPaddingHorizontal: 12,
+  //ActionSheetCancel
+  asCancelItemTitleColor: '#FC7168',
 });
 
 global.request = Request;
@@ -120,11 +122,7 @@ export default class App extends Component<Props, State> {
 
   render() {
     if (this.state.loadingData) {
-      return (
-        <View>
-          <Text>loading</Text>
-        </View>
-      );
+      return <View />;
     } else
       return (
         <Provider store={this.state.store}>

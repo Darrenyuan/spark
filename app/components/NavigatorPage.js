@@ -12,6 +12,7 @@ export default class NavigatorPage extends NavigationPage {
     navBarHidden: false,
     navigationBarInsets: true,
     scene: navigate.sceneConfig.PushFromRight,
+    // statusBarStyle: 'default',
     // autoKeyboardInsets:true,
     // keyboardTopInsets:0,
   };
@@ -108,6 +109,7 @@ export default class NavigatorPage extends NavigationPage {
       <NavigationBar
         onLayout={this.nponLayout}
         // hidden={this.props.navBarHidden}
+        statusBarStyle={this.props.statusBarStyle}
         style={this.props.style}
         title={this.renderNavigationTitle()}
         leftView={this.renderNavigationLeftView()}

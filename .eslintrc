@@ -1,3 +1,7 @@
 {
-  "extends": ["react-native"]
+  "extends": ["react-native"],
+  "rules": {
+    "no-invalid-this": 0,
+    "babel/no-invalid-this": 1
+  }
 }

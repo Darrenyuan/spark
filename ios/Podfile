@@ -55,6 +55,9 @@ target 'spark' do
 
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
+  # CodePush plugin dependency
+  pod 'CodePush', :path => '../node_modules/react-native-code-push'
+
   target 'sparkTests' do
     inherit! :search_paths
     # Pods for testing

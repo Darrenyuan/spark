@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { TabView, NavigationBar } from 'teaset';
 import Nearby from '../pages/nearby/Nearby';
+import Pins from '../pages/pins/Pins';
 import { Icon } from 'react-native-elements';
 import styleUtil from '../common/styleUtil';
 import PublishEntrance from '../pages/publish/PublishEntrance';
@@ -137,7 +138,6 @@ class TabNavBar extends React.Component {
       let _this = this;
       // 添加定位监听函数
       addLocationListener(location => {
-        console.log('listener:invoker', location);
         let coordsStr = _this.coordsToString(location);
         registerLocation({
           latitude: location.latitude,
@@ -200,6 +200,7 @@ class TabNavBar extends React.Component {
   }
   render() {
     const { loginInfo } = this.props;
+
     if (!loginInfo.loginToken) {
       return <LoginEnterPhone />;
     }
@@ -232,7 +233,7 @@ class TabNavBar extends React.Component {
           icon={<Image source={require('../assets/image/tabbar_pin.png')} />}
           activeIcon={<Image source={require('../assets/image/tabbar_pin_highlight.png')} />}
         >
-          <Nearby
+          <Pins
             leftHidden
             renderRightView={
               <NavigationBar.Button
@@ -263,14 +264,16 @@ class TabNavBar extends React.Component {
           icon={<Image source={require('../assets/image/tabbar_mine.png')} />}
           activeIcon={<Image source={require('../assets/image/tabbar_mine_highlight.png')} />}
         >
-          <Profile style={{ backgroundColor: 'transparent', borderBottomWidth: 0 }} />
+          <Profile
+            style={{ backgroundColor: 'transparent', borderBottomWidth: 0 }}
+            // statusBarStyle={'light-content'}
+          />
         </TabView.Sheet>
       </TabView>
     );
   }
 }
 function mapStateToProps(state, ownProps) {
-  console.log('ownProps=====', JSON.stringify(ownProps));
   const { loginInfo } = state;
   return {
     loginInfo,

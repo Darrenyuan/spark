@@ -368,9 +368,9 @@ export function apiEditMyInfo(args = {}) {
   );
 }
 export function apiFetchContentList(args = {}) {
-  return instance.post(
-    baseUrl + 'SubjectCService.y?cmd=list',
-    jsonToQueryString({
+  let param = {};
+  if (args.userAuid === undefined || args.userAuid === '') {
+    param = {
       sjType: args.sjType,
       collectFlag: args.collectFlag,
       keyword: args.keyword,
@@ -382,6 +382,27 @@ export function apiFetchContentList(args = {}) {
       M3: args.M3,
       M8: args.M8,
       M9: args.M9,
+    };
+  } else {
+    param = {
+      sjType: args.sjType,
+      userAuid: args.userAuid,
+      collectFlag: args.collectFlag,
+      keyword: args.keyword,
+      page: args.page,
+      pageRow: args.pageSize,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
+    };
+  }
+  return instance.post(
+    baseUrl + 'SubjectCService.y?cmd=list',
+    jsonToQueryString({
+      ...param,
     }),
     config,
   );
@@ -403,22 +424,9 @@ export function apiFetchNearByDetail(args = {}) {
   );
 }
 
-export function apiAgreeList(args = {}) {
+export function apiFetchAgreeList(args = {}) {
   return instance.post(
-    baseUrl + 'HICService.y?cmd=agreeList',
-    jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
-      sjid: args.sjid,
-    }),
-    config,
-  );
-}
-
-export function apiFetchCommentList(args = {}) {
-  return instance.post(
-    baseUrl + 'SubjectCService.y?cmd=commentList',
+    baseUrl + 'SubjectCService.y?cmd=agreeList',
     jsonToQueryString({
       sjid: args.sjid,
       page: args.page,
@@ -434,14 +442,73 @@ export function apiFetchCommentList(args = {}) {
   );
 }
 
-export function apiCollectList(args = {}) {
-  return instance.post(
-    baseUrl + 'HICService.y?cmd=collectList',
-    jsonToQueryString({
-      ...defaultArgs,
-      auid: args.auid,
-      M2: args.M2,
+export function apiFetchCommentList(args = {}) {
+  let param = {};
+  if (args.replyID === undefined || args.replyID === '') {
+    param = {
       sjid: args.sjid,
+      page: args.page,
+      pageRow: args.pageSize,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
+    };
+  } else {
+    param = {
+      sjid: args.sjid,
+      replyID: args.replyID,
+      page: args.page,
+      pageRow: args.pageSize,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
+    };
+  }
+  return instance.post(
+    baseUrl + 'SubjectCService.y?cmd=commentList',
+    jsonToQueryString({
+      ...param,
+    }),
+    config,
+  );
+}
+
+export function apiFetchCollectList(args = {}) {
+  return instance.post(
+    baseUrl + 'SubjectCService.y?cmd=collectList',
+    jsonToQueryString({
+      sjid: args.sjid,
+      page: args.page,
+      pageRow: args.pageSize,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
+    }),
+    config,
+  );
+}
+
+export function apiCollect(args = {}) {
+  return instance.post(
+    baseUrl + 'SubjectCService.y?cmd=collect',
+    jsonToQueryString({
+      sjid: args.sjid,
+      collectFlag: args.collectFlag,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
     }),
     config,
   );
@@ -489,23 +556,6 @@ export function apiCommentAgree(args = {}) {
       sjid: args.sjid,
       commentDataid: args.commentDataid,
       agreeFlag: args.agreeFlag,
-      auid: args.auid,
-      M0: args.M0,
-      M2: args.M2,
-      M3: args.M3,
-      M8: args.M8,
-      M9: args.M9,
-    }),
-    config,
-  );
-}
-
-export function apiCollect(args = {}) {
-  return instance.post(
-    baseUrl + 'SubjectCService.y?cmd=colllect',
-    jsonToQueryString({
-      sjid: args.sjid,
-      collectFlag: args.collectFlag,
       auid: args.auid,
       M0: args.M0,
       M2: args.M2,

@@ -61,6 +61,15 @@ export function reducer(state, action) {
         ...state,
         userInfo: {},
         loginInfo: {},
+        addList: {
+          searchTerms: [],
+          items: [],
+          page: 1,
+          pageSize: 10,
+          total: 0,
+          byId: {},
+          listNeedReload: false,
+        },
         logoutPending: false,
         logoutError: null,
       };

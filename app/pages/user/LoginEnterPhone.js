@@ -25,8 +25,11 @@ import md5 from 'react-native-md5';
 export default class LoginEnterPhone extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
-    navBarHidden: true,
+    navBarHidden: false,
+    statusBarStyle: 'light-content',
     navigationBarInsets: false,
+    showBackButton: false,
+    style: { backgroundColor: 'transparent', borderBottomWidth: 0 },
     scene: navigate.sceneConfig.FloatFromBottom,
   };
 

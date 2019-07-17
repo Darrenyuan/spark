@@ -11,13 +11,16 @@ import {
   Animated,
   FlatList,
   StatusBar,
+  Platform,
+  RefreshControl,
 } from 'react-native';
+import md5 from 'react-native-md5';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
 import LoadingMore from '../../components/load/LoadingMore';
 import OverlayModal from '../../components/OverlayModal';
 import { Avatar, Icon } from 'react-native-elements';
-import { NavigationBar } from 'teaset';
+import { NavigationBar, ActionSheet } from 'teaset';
 import config from '../../common/config';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import navigate from '../../screens/navigate';
@@ -31,107 +34,96 @@ import Settings from '../settings/Settings';
 import UserQRCode from '../message/UserQRCode';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import md5 from 'react-native-md5';
 import * as actions from '../../services/redux/actions';
 import { getApiVersion } from 'react-native-wechat';
 
 class Profile extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
-    navBarHidden: true,
     navigationBarInsets: false,
+    navBarHidden: false,
+    statusBarStyle: 'light-content',
+    leftView: (
+      <NavigationBar.Button onPress={() => navigate.pushNotNavBar(UserQRCode)}>
+        <FontAwesome name={'qrcode'} color={'white'} size={22} />
+      </NavigationBar.Button>
+    ),
+    rightView: (
+      <NavigationBar.Button onPress={() => navigate.pushNotNavBar(Settings)}>
+        <SimpleLineIcons name={'settings'} color={'white'} size={22} />
+      </NavigationBar.Button>
+    ),
   };
 
   constructor(props) {
-    super(props);
+    super({ ...props, statusBarStyle: 'light-content' });
     this.state = {
       nickName: '',
       birthday: '',
       markersArr: [],
       male: true,
+      page: 1,
+      pageSize: 10,
+      another: false,
       scrollY: new Animated.Value(0),
-      list: [{ name: 'haha' }, { name: 'haha' }, { name: 'haha' }, { name: 'haha' }],
+      isRefreshing: false,
+      displaySjType: '所有',
+      sjType: '',
     };
   }
 
   _btnStyle = bool => (bool ? styleUtil.themeColor : styleUtil.disabledColor);
   componentDidMount() {
-    // const { loginInfo, locationInfo } = this.props;
-    // let auid = loginInfo.auid;
-    // let M8 = md5.str_md5(auid + new Date().getTime());
-    // this.props.actions
-    //   .applyLogon({
-    //     auid: auid,
-    //     M2: loginInfo.loginToken,
-    //     M3: locationInfo.coordsStr,
-    //     M8: M8,
-    //   })
-    //   .then(res => {
-    //     console.log(res);
-    //     console.log('res res___________________');
-    //   });
-
-    let { markers } = this.props.userInfo;
-    let expansionMarkerTypes = [];
-    this.props.configInfo.markerTypes.map(item => {
-      item.childs.map(item => {
-        expansionMarkerTypes.push(item);
-      });
-    });
-    let arr = [];
-    if (markers.length > 1 && expansionMarkerTypes.length > 0) {
-      expansionMarkerTypes.map(item => {
-        markers.split(',').map(v => {
-          item.typeID == v && arr.push(item);
+    this.fetchData();
+  }
+  componentDidUpdate(preProps) {
+    if (preProps !== this.props) {
+      let { markers } = this.props.userInfo;
+      let expansionMarkerTypes = [];
+      this.props.configInfo.markerTypes.map(item => {
+        item.childs.map(item => {
+          expansionMarkerTypes.push(item);
         });
       });
+      let arr = [];
+      if (markers && markers.length > 1 && expansionMarkerTypes.length > 0) {
+        expansionMarkerTypes.map(item => {
+          markers.split(',').map(v => {
+            item.typeID == v && arr.push(item);
+          });
+        });
+      }
+      this.setState({ markersArr: arr });
     }
-    this.setState({ markersArr: arr });
   }
-  openCamera = type => {
-    ImageCropPicker.openCamera({
-      cropping: true,
-      // compressImageQuality: 1
-    }).then(image => {
-      // console.log(image.path);
-      // this._upload(image, type)
+  getSearchTerm = () => {
+    const { sjType, pageSize } = this.state;
+    let searchTerm = `search__${sjType}_${pageSize}`;
+    return searchTerm;
+  };
+  fetchData = () => {
+    const { locationInfo, fetchAddList, loginInfo } = this.props;
+    const { auid, loginToken } = loginInfo;
+    const { page, pageSize, sjType } = this.state;
+    let searchTerm = this.getSearchTerm();
+    let M9 = new Date().getTime();
+    let M8 = md5.hex_md5(auid + new Date().getTime());
+    fetchAddList({
+      sjType: sjType,
+      collectFlag: '',
+      keyword: '',
+      page: page,
+      pageSize: pageSize,
+      userAuid: auid,
+      auid: auid,
+      M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
+      M2: loginToken,
+      M3: locationInfo.coordsStr,
+      M8: M8,
+      M9: M9,
+      searchTerm: searchTerm,
     });
   };
-
-  selectLibrary = type => {
-    ImageCropPicker.openPicker({
-      multiple: false,
-      // cropping: true,
-      mediaType: 'photo',
-      compressImageQuality: Platform.OS === 'ios' ? 0 : 1,
-      minFiles: 1,
-      maxFiles: 1,
-    })
-      .then(image => {
-        // this._upload(image, type)
-      })
-      .catch(err => {
-        if (err.code === 'E_PICKER_CANCELLED') {
-          return;
-        }
-        alert('出错啦~');
-      });
-  };
-
-  showAction = (type = 'avatar') => {
-    let items = [
-      {
-        title: '拍照',
-        onPress: _ => config.loadData(_ => this.openCamera(type)),
-      },
-      {
-        title: '从相册中选取',
-        onPress: _ => config.loadData(_ => this.selectLibrary(type)),
-      },
-    ];
-    config.showAction(items);
-  };
-
   showDatePicker = () => {
     let birthday = this.state.birthday;
     let arr = birthday.split('-');
@@ -147,34 +139,36 @@ class Profile extends NavigatorPage {
       />,
     );
   };
-
-  _renderNavBar = () => {
-    return (
-      <NavBar
-        style={{
-          position: 'absolute',
-          backgroundColor: 'transparent',
-          borderBottomWidth: 0,
-        }}
-        renderLeftView={
-          <NavigationBar.Button onPress={() => navigate.pushNotNavBar(UserQRCode)}>
-            <FontAwesome name={'qrcode'} color={'white'} size={22} />
-          </NavigationBar.Button>
-        }
-        renderRightView={
-          <NavigationBar.Button onPress={() => navigate.pushNotNavBar(Settings)}>
-            <SimpleLineIcons name={'settings'} color={'white'} size={22} />
-          </NavigationBar.Button>
-        }
-      />
-    );
+  _showPopOver = () => {
+    let items = [
+      {
+        title: '所有 ',
+        onPress: () => this.setState({ sjType: '', displaySjType: '所有' }, this.fetchData),
+      },
+      {
+        title: '话题',
+        onPress: () => this.setState({ sjType: '200004', displaySjType: '话题' }, this.fetchData),
+      },
+      {
+        title: '一起',
+        onPress: () => this.setState({ sjType: '200001', displaySjType: '一起' }, this.fetchData),
+      },
+      {
+        title: '二手',
+        onPress: () => this.setState({ sjType: '200002', displaySjType: '二手' }, this.fetchData),
+      },
+      {
+        title: '时刻',
+        onPress: () => this.setState({ sjType: '200003', displaySjType: '时刻' }, this.fetchData),
+      },
+    ];
+    let cancelItem = { title: '取消' };
+    ActionSheet.show(items, cancelItem);
   };
-
-  _renderHeader = () => {
-    let { scrollY, markersArr } = this.state;
+  _renderHeader = v => {
+    let { scrollY, markersArr, displaySjType } = this.state;
     let windowHeight = styleUtil.window.width * (218.0 / 375.0);
     const { userInfo, configInfo } = this.props;
-
     return (
       <View
         style={{
@@ -279,76 +273,109 @@ class Profile extends NavigatorPage {
             alignItems: 'center',
           }}
         >
-          <Text
+          <TouchableOpacity
+            onPress={_ => {
+              this._showPopOver();
+            }}
             style={{
-              fontSize: 18,
-              color: '#333333',
-              fontWeight: '700',
-              marginRight: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
             }}
           >
-            {'所有'}
-          </Text>
-          <Icon name={'ios-arrow-down'} type={'ionicon'} color={'#BABABA'} size={20} />
-          <Text style={{ fontSize: 14, color: '#333333', marginLeft: 15 }}>{'23天，0个时刻'}</Text>
+            <Text
+              style={{
+                fontSize: 18,
+                color: '#333333',
+                fontWeight: '700',
+                marginRight: 10,
+              }}
+            >
+              {displaySjType}
+            </Text>
+            <Icon name={'ios-arrow-down'} type={'ionicon'} color={'#BABABA'} size={20} />
+          </TouchableOpacity>
+          <Text style={{ fontSize: 14, color: '#333333', marginLeft: 15 }}>23天，{v}个时刻</Text>
         </View>
       </View>
     );
   };
 
   _renderRows = ({ item, separators, index }) => {
-    return <NearbyItem item={item} another={this.state.another} />;
+    const byId = this.props.addList.byId;
+    return (
+      <NearbyItem item={item} byId={byId} first={!index} key={item} another={this.state.another} />
+    );
   };
-
+  _hasMore = () => {
+    const { page, pageSize, sjType } = this.state;
+    const { addList } = this.props;
+    let currentTotal = page * pageSize;
+    let searchTerm = this.getSearchTerm();
+    let totalCount = 0;
+    if (addList[searchTerm] !== undefined) {
+      totalCount = addList[searchTerm].totalCount;
+    }
+    return currentTotal < totalCount;
+  };
+  _fetchMoreData = () => {
+    if (this._hasMore()) {
+      let page = this.state.page + 1;
+      this.setState({ page: page }, this.fetchData);
+    }
+  };
   renderPage() {
-    const { nickName, birthday, male, scrollY } = this.state;
-    console.log(this.props.configInfo);
-    console.log(this.props.userInfo);
+    const { nickName, birthday, male, scrollY, page, pageSize } = this.state;
+    const { addList, fetchAddListPending } = this.props;
+    const { byId } = addList;
+    const searchTerm = this.getSearchTerm();
+    const allPages = addList[searchTerm];
+    console.log(allPages);
+    console.log(searchTerm);
+    console.log(addList);
+    let items = [];
+    if (allPages !== undefined) {
+      for (i = 1; i <= page; i++) {
+        if (allPages[i] && allPages[i].items) {
+          allPages[i].items.forEach(item => {
+            items.push(item);
+          });
+        }
+      }
+    }
     return (
       <View style={styleUtil.container}>
+        {/* <StatusBar barStyle={'light-content'} /> */}
+        {this._renderHeader(allPages !== undefined ? allPages.totalCount : 0)}
         <FlatList
           // extraData={this.state}
-          // data={this.state.list}
+          data={items}
           renderItem={this._renderRows}
-          initialNumToRender={config.pageSize} //一开始渲染的元素数量
-          // keyExtractor={(item, index) => index.toString()}
           onEndReached={this._fetchMoreData}
-          onEndReachedThreshold={0.3}
-          onRefresh={this._fetchDataWithRefreshing} //下拉刷新
-          refreshing={this.state.isRefreshing}
-          ListHeaderComponent={this._renderHeader}
+          onEndReachedThreshold={0.1}
           ListEmptyComponent={<Blank title={'在这，记录你的存在'} />}
-          ListFooterComponent={this._renderFooter}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={1}
-          onScroll={Animated.event([
-            {
-              nativeEvent: {
-                contentOffset: {
-                  y: this.state.scrollY,
-                },
-              },
-            },
-          ])}
+          showsVerticalScrollIndicator={true}
+          // scrollEventThrottle={1}
         />
-        {this._renderNavBar()}
       </View>
     );
   }
 }
 function mapStateToProps(state) {
+  const { userInfo, configInfo, addList, locationInfo, loginInfo, fetchAddListPending } = state;
   return {
-    userInfo: state.userInfo,
-    configInfo: state.configInfo,
-    loginInfo: state.loginInfo,
-    locationInfo: state.locationInfo,
+    userInfo,
+    loginInfo,
+    configInfo,
+    locationInfo,
+    fetchAddListPending,
+    addList,
   };
 }
 
 /* istanbul ignore next */
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ ...actions }, dispatch),
+    fetchAddList: bindActionCreators({ ...actions }, dispatch).fetchAddList,
   };
 }
 
@@ -380,7 +407,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: 'transparent',
     borderBottomWidth: styleUtil.borderSeparator,
-    // borderWidth: styleUtil.borderSeparator,
     borderColor: styleUtil.borderColor,
   },
   buttonBox: {

@@ -66,4 +66,12 @@ export default {
   },
   grayColor: '#e5e5e5',
   contentPaddingStyles: { paddingTop: 15, paddingHorizontal: 15 },
+  searchInput: {
+    borderWidth: 0,
+    width: Dimensions.get('window').width * 0.8,
+    backgroundColor: '#F6F6F6',
+    alignSelf: 'center',
+    marginTop: 15,
+    borderRadius: 10,
+  },
 };

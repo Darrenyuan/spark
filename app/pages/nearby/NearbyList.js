@@ -39,14 +39,13 @@ class NearbyList extends NavigatorPage {
       another: false,
       isLoading: false, //上拉加载
       isRefreshing: false, //下拉刷新
-      collectFlag: '1',
+      collectFlag: '0',
       sjType: sjType,
       page: 1,
       pageSize: 10,
       keyword: keyword,
       prevSearchText: '',
     };
-    this._isMounted = false;
   }
 
   filter = (byId, keyword, sjType) => {
@@ -73,7 +72,6 @@ class NearbyList extends NavigatorPage {
   componentDidMount() {
     // config.removeUser()
     this.fetchData();
-    this._isMounted = true;
   }
 
   componentWillUnmount() {}
@@ -90,7 +88,6 @@ class NearbyList extends NavigatorPage {
     let M3 = locationInfo.coordsStr;
     let M8 = md5.hex_md5(auid + new Date().getTime());
     let M9 = new Date().getTime();
-    console.log('fetchData In near by list:M2:', M2, ':auid:', auid);
     let searchTerm = this.getSearchTerm();
     fetchContentList({
       sjType: sjType,
@@ -126,7 +123,9 @@ class NearbyList extends NavigatorPage {
       this.setState({ page: page }, this.fetchData);
     }
   };
-
+  onRefresh = () => {
+    this.setState({ page: 1 }, this.fetchData);
+  };
   _renderFooter = () => {
     return <LoadingMore hasMore={this._hasMore()} />;
   };
@@ -162,12 +161,14 @@ class NearbyList extends NavigatorPage {
     return searchTerm;
   };
   render() {
-    console.log(JSON.stringify(this.props));
     const { fetchContentListPending, nearBys } = this.props;
     const { sjType, keyword, page, pageSize } = this.state;
     const { byId } = nearBys;
     const searchTerm = this.getSearchTerm();
     const allPages = nearBys[searchTerm];
+    console.log(allPages);
+    console.log(nearBys);
+    console.log(searchTerm);
     let items = [];
     if (allPages !== undefined) {
       for (i = 1; i <= page; i++) {
@@ -190,7 +191,7 @@ class NearbyList extends NavigatorPage {
       <View style={styleUtil.container}>
         <SearchInput
           placeholder="搜索"
-          style={styles.searchInput}
+          style={styleUtil.searchInput}
           onChangeText={text => this.setState({ keyword: text })}
           onBlur={this.handleSearch}
           value={this.state.keyword}
@@ -203,8 +204,8 @@ class NearbyList extends NavigatorPage {
           // keyExtractor={(item, index) => index.toString()}
           onEndReached={this._fetchMoreData}
           onEndReachedThreshold={0.2}
-          // onRefresh={this._fetchDataWithRefreshing}
-          // refreshing={this.state.isRefreshing}
+          onRefresh={this.onRefresh}
+          refreshing={fetchContentListPending}
           // ListHeaderComponent={this._renderHeader}
           ListFooterComponent={this._renderFooter}
           showsVerticalScrollIndicator={true}
@@ -236,14 +237,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(NearbyList);
-
-const styles = StyleSheet.create({
-  searchInput: {
-    borderWidth: 0,
-    width: WIDTH * 0.8,
-    backgroundColor: '#F6F6F6',
-    alignSelf: 'center',
-    marginTop: 15,
-    borderRadius: 10,
-  },
-});

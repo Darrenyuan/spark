@@ -155,9 +155,14 @@ class SettingsEditProfile extends NavigatorPage {
           console.log(res);
           toast.success('修改成功！');
           navigate.pop();
-          this.props.actions.applyLogon({
-            ...M,
-          });
+          this.props.actions
+            .applyLogon({
+              ...M,
+            })
+            .then(res => {
+              console.log(res);
+              console.log('res_______________');
+            });
         },
         err => {
           toast.modalLoadingHide();
@@ -223,7 +228,7 @@ class SettingsEditProfile extends NavigatorPage {
           rounded
           source={
             avatar === ''
-              ? require('../../assets/image/avatar.png')
+              ? require('../../assets/image/login_default_avatar.png')
               : {
                   uri: avatar && avatar.replace(/cs.png/g, '.png'),
                 }

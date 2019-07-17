@@ -30,8 +30,7 @@ target 'spark' do
 
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
 
-  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
-
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec' 
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
   pod 'RSKImageCropper', git: 'https://gitee.com/littleboer/RSKImageCropper.git', tag: '1.6.2'
@@ -51,6 +50,8 @@ target 'spark' do
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
+
+  pod 'react-native-amap3d', :path => '../node_modules/react-native-amap3d/lib/ios'
 
   target 'sparkTests' do
     inherit! :search_paths

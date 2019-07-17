@@ -27,6 +27,8 @@ export default class LoginEnterInfo extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
     navigationBarInsets: false,
+    navBarHidden: false,
+    statusBarStyle: 'light-content',
     style: { backgroundColor: 'transparent', borderBottomWidth: 0 },
     scene: navigate.sceneConfig.PushFromRight,
     leftView: (

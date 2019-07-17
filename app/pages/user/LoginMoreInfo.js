@@ -84,13 +84,6 @@ class LoginMoreInfo extends NavigatorPage {
     navigate.pushNotNavBar(LoginEnterPassword, { phone: this.props.phone });
   }
   _netApplyLogin = () => {
-    // toast.modalLoading();
-    // request.post(config.api.applyLogon, {}).then(res => {
-    //   toast.modalLoadingHide();
-    //   if (res.code === 1) {
-    //     config.setUserToStorage(res.data.user);
-    //   }
-    // });
     this._toLogin();
   };
 

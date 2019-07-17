@@ -87,7 +87,7 @@ export default class NearbyItem extends React.Component {
   render() {
     const { item, byId } = this.state;
     const simpleData = byId[item];
-    console.log(JSON.stringify(simpleData));
+
     const { another, first = false } = this.props;
     const price = simpleData.price;
     const havePrice = simpleData.price !== undefined && simpleData.price !== '';
@@ -159,7 +159,11 @@ export default class NearbyItem extends React.Component {
                   navigate.pushNotNavBar(Profile);
                 }}
               >
-                <Avatar size={36} rounded source={{ uri: simpleData.userFace }} />
+                <Avatar
+                  size={36}
+                  rounded
+                  source={{ uri: simpleData.userFace.replace(/cs.png/g, '.png') }}
+                />
               </TouchableOpacity>
               <Text
                 numberOfLines={2}

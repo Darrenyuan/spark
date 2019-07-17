@@ -32,8 +32,19 @@ const initialState = {
     byId: {},
     listNeedReload: false,
   },
+  addList: {
+    searchTerms: [],
+    items: [],
+    page: 1,
+    pageSize: 10,
+    total: 0,
+    byId: {},
+    listNeedReload: false,
+  },
   fetchContentListPending: false,
   fetchContentListError: null,
+  fetchAddListPending: false,
+  fetchAddListError: null,
   nearByDetails: {
     byId: {},
     items: [],
@@ -47,6 +58,20 @@ const initialState = {
   },
   fetchCommentListPengding: false,
   fetchCommentListError: null,
+  agreeList: {
+    byId: {},
+    items: [],
+    searchTerms: [],
+  },
+  fetchAgreeListPending: false,
+  fetchAgreeListError: null,
+  collectList: {
+    byId: {},
+    items: [],
+    searchTerms: [],
+  },
+  fetchCollectListPengding: false,
+  fetchCollectListError: null,
 };
 
 export default initialState;

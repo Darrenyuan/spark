@@ -32,7 +32,8 @@ import LocationService from '../../screens/LocationService';
 class LoginSetPassword extends NavigatorPage {
   static defaultProps = {
     ...NavigatorPage.navigatorStyle,
-    // navBarHidden: true,
+    navBarHidden: false,
+    statusBarStyle: 'light-content',
     navigationBarInsets: false,
     style: { backgroundColor: 'transparent', borderBottomWidth: 0 },
     scene: navigate.sceneConfig.PushFromRight,

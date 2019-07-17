@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import ImageCropPicker from 'react-native-image-crop-picker';
@@ -221,7 +222,7 @@ class Publish extends NavigatorPage {
 
   _renderLine1Input = (placeholder1, placeholder2) => {
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <KeyboardAvoidingView style={{ flexDirection: 'row' }}>
         <TextInput
           placeholder={placeholder1}
           placeholderTextColor="#E5E5E5"
@@ -255,24 +256,26 @@ class Publish extends NavigatorPage {
             />
           </View>
         )}
-      </View>
+      </KeyboardAvoidingView>
     );
   };
 
   _renderLine2Input = placeholder => {
     return (
-      <TextInput
-        placeholder={placeholder}
-        placeholderTextColor="#E5E5E5"
-        autoCorrect={false}
-        underlineColorAndroid="transparent"
-        style={[styles.input2Field]}
-        value={this.state.content}
-        multiline={true}
-        onChangeText={text => {
-          this.setState({ content: text });
-        }}
-      />
+      <KeyboardAvoidingView>
+        <TextInput
+          placeholder={placeholder}
+          placeholderTextColor="#E5E5E5"
+          autoCorrect={false}
+          underlineColorAndroid="transparent"
+          style={[styles.input2Field]}
+          value={this.state.content}
+          multiline={true}
+          onChangeText={text => {
+            this.setState({ content: text });
+          }}
+        />
+      </KeyboardAvoidingView>
     );
   };
 

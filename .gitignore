@@ -65,3 +65,5 @@ buck-out/
 /android/app/gradle/
 /android/app/gradlew
 /android/app/gradlew.bat
+*.apk
+releaseStaging

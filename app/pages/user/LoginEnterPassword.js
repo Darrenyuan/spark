@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard,
+  Platform,
 } from 'react-native';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
@@ -75,12 +76,23 @@ class LoginEnterPassword extends NavigatorPage {
     toast.modalLoading();
     let auid = '';
     let M2 = '';
-    let M3 = LocationService.getLocationString();
+    let M3 =
+      LocationService.getLocationString() === null ? '' : LocationService.getLocationString();
     let M8 = md5.str_md5(auid + new Date().getTime());
     let phone = this.props.phone;
     let encoded = CryptoJS.MD5(this.state.password);
+    let M9 = new Date().getTime();
     this.props.actions
-      .login({ phone, auid, M2, M3, M8, password: encoded })
+      .login({
+        phone,
+        password: encoded,
+        auid,
+        M0: Platform.OS === 'ios' ? 'IMMC' : 'MMC',
+        M2,
+        M3,
+        M8,
+        M9,
+      })
       .then(res => {
         toast.modalLoadingHide();
         if (res.data.code === 1) {

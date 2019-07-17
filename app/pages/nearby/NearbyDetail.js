@@ -38,7 +38,8 @@ class NearbyDetail extends NavigatorPage {
     super(props);
     this.replyRef = {};
     this.state = {
-      // H: styleUtil.window.height * 0.06,
+      // H: styleUtil.window.height * 0.0,
+      keyboardHeight: 0,
       sjid: props.sjid,
       simpleData: props.simpleData,
       nearByType: this.getNearByDetailType(props.sjType),
@@ -472,6 +473,9 @@ class NearbyDetail extends NavigatorPage {
         </View>
       );
     }
+    if (Boolean(this.state.keyboardHeight === 0)) {
+      return <Input autoFocus style={{ borderWidth: 0 }} />;
+    }
 
     return (
       <View style={{ flex: 1 }}>
@@ -635,6 +639,7 @@ class NearbyDetail extends NavigatorPage {
   _keyboardDidShow(e) {
     this.setState({
       isShowKeyboard: true,
+      keyboardHeight: e.endCoordinates.height,
     });
   }
 
@@ -722,7 +727,6 @@ class NearbyDetail extends NavigatorPage {
           <View
             style={{
               flexDirection: 'row',
-
               justifyContent: 'center',
               alignItems: 'center',
             }}
@@ -905,7 +909,9 @@ class NearbyDetail extends NavigatorPage {
                   position: 'absolute',
                   left: 0,
                   right: 0,
-                  bottom: 0,
+                  flex: 1,
+                  bottom: this.state.keyboardHeight,
+                  justifyContent: 'flex-end',
                   width: styleUtil.window.width,
                   backgroundColor: 'white',
                 }}
@@ -937,16 +943,23 @@ class NearbyDetail extends NavigatorPage {
                 >
                   <Input
                     style={{
-                      flex: 1,
+                      borderWidth: 0,
+                      borderRadius: 20,
                       backgroundColor: '#F5F5F5',
                       marginLeft: 10,
-                      marginRight: 10,
-                      radius: '20',
+                      width: styleUtil.window.width * 0.8,
+                      height: styleUtil.window.height * 0.06,
+                      fontSize: 17,
+                      paddingLeft: 10,
+                      // maxHeight: styleUtil.window.height * 0.07,
                     }}
+                    multiline
                     rounded
                     size="sm"
                     // value={this.state.replyText}
                     onChangeText={text => this.setState({ replyText: text })}
+                    onContentSizeChange={this.onContentSizeChange}
+                    onChange={this.onChange}
                     placeholder="写回复"
                     autoFocus
                   />
@@ -961,14 +974,15 @@ class NearbyDetail extends NavigatorPage {
                       console.log('hide overlayView');
                       Overlay.hide(this.popViewKey);
                       this._sendReply(data.dataid);
-                      if (callback) {
+                      if (Boolean(callback) && typeof callback === 'function') {
                         callback();
                       }
                     }}
                   >
                     <Label
                       style={{
-                        color: 'grey',
+                        color: this.state.replyText.length > 0 ? styleUtil.themeColor : 'grey',
+                        fontSize: 17,
                       }}
                       text="发布"
                     />
@@ -988,7 +1002,7 @@ class NearbyDetail extends NavigatorPage {
       ];
     }
     const cancelItem = { title: '取消' };
-    ActionSheet.show(items, cancelItem);
+    this.setState({ isInPopUpView: true }, () => ActionSheet.show(items, cancelItem));
   };
 
   _renderReplyRows = ({ item, separators, index }) => {

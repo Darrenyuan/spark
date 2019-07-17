@@ -147,15 +147,17 @@ export function apiSendCodeToPhone(args = {}) {
 }
 
 export function apiLogin(args = {}) {
-  let defaultArgs = getDefaultArgs(args);
   return instance.post(
     baseUrl + 'HICService.y?cmd=login',
     jsonToQueryString({
-      ...defaultArgs,
-      M0: DeviceInfo.getUniqueID(),
-      M9: new Date().getTime(),
       phone: args.phone,
       password: args.password,
+      auid: args.auid,
+      M0: args.M0,
+      M2: args.M2,
+      M3: args.M3,
+      M8: args.M8,
+      M9: args.M9,
     }),
     config,
   );

@@ -122,6 +122,10 @@ export default class NearbyItem extends React.Component {
               <View
                 style={{
                   height: 23,
+
+
+
+
                   width: 0.5,
                   backgroundColor: first ? 'white' : '#D8D8D8',
                   marginBottom: 2,

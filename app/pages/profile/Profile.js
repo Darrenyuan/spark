@@ -353,7 +353,8 @@ class Profile extends NavigatorPage {
           onEndReached={this._fetchMoreData}
           onEndReachedThreshold={0.1}
           ListEmptyComponent={<Blank title={'在这，记录你的存在'} />}
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator={false}
+
           // scrollEventThrottle={1}
         />
       </View>

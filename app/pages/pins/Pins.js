@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
+import Blank from '../../components/Blank';
 import NearbyItem from '../nearby/NearbyItem';
 import config from '../../common/config';
 import LoadingMore from '../../components/load/LoadingMore';
@@ -27,12 +28,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { NavigationBar, SearchInput, ActionSheet } from 'teaset';
 
 class Pins extends NavigatorPage {
-  static defaultProps = {
-    ...NavigatorPage.navigatorStyle,
-    navigationBarInsets: false,
-    navBarHidden: false,
-    statusBarStyle: 'default',
-  };
+  // static defaultProps = {
+  //   ...NavigatorPage.navigatorStyle,
+  //   navigationBarInsets: false,
+  //   navBarHidden: false,
+  //   statusBarStyle: 'default',
+  // };
   constructor(props) {
     super(props);
     this.state = {
@@ -105,6 +106,9 @@ class Pins extends NavigatorPage {
       page: page,
       pageSize: pageSize,
       searchTerm: searchTerm,
+    }).then(res => {
+      console.log(res);
+      console.log('res_____________');
     });
   };
   _hasMore = () => {
@@ -246,24 +250,25 @@ class Pins extends NavigatorPage {
       );
     }
     return (
-      <View style={{ flex: 1, marginTop: styleUtil.navBarHeight }}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <FlatList
-            // extraData={this.state}
-            data={items}
-            renderItem={this._renderRows}
-            // initialNumToRender={config.pageSize}
-            // keyExtractor={(item, index) => index.toString()}
-            onEndReached={this._fetchMoreData}
-            onEndReachedThreshold={0.2}
-            onRefresh={this.onRefresh}
-            refreshing={this.props.fetchContentListPending}
-            // ListHeaderComponent={this._renderHeader}
-            ListFooterComponent={this._renderFooter}
-            showsVerticalScrollIndicator={true}
-            // onViewableItemsChanged={this._onViewableItemsChanged}
-          />
-        </TouchableWithoutFeedback>
+      <View style={{ flex: 1 }}>
+        {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+        <FlatList
+          // extraData={this.state}
+          data={items}
+          renderItem={this._renderRows}
+          // initialNumToRender={config.pageSize}
+          // keyExtractor={(item, index) => index.toString()}
+          onEndReached={this._fetchMoreData}
+          onEndReachedThreshold={0.2}
+          onRefresh={this.onRefresh}
+          refreshing={this.props.fetchContentListPending}
+          // ListHeaderComponent={this._renderHeader}
+          // ListFooterComponent={this._renderFooter}
+          ListEmptyComponent={<Blank title={'在这，不错过身边的美好'} />}
+          showsVerticalScrollIndicator={false}
+          // onViewableItemsChanged={this._onViewableItemsChanged}
+        />
+        {/* </TouchableWithoutFeedback> */}
       </View>
     );
   }

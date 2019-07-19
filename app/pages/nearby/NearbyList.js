@@ -213,7 +213,7 @@ class NearbyList extends NavigatorPage {
           refreshing={fetchContentListPending}
           ListHeaderComponent={this.renderSearchBar}
           ListFooterComponent={this._renderFooter}
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator={false}
           // onViewableItemsChanged={this._onViewableItemsChanged}
         />
       </View>

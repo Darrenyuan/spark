@@ -9,6 +9,7 @@ import ReactNative, {
   Platform,
   Keyboard,
   KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
 import styleUtil from '../../common/styleUtil';
 import NavigatorPage from '../../components/NavigatorPage';
@@ -38,7 +39,7 @@ class NearbyDetail extends NavigatorPage {
     super(props);
     this.replyRef = {};
     this.state = {
-      // H: styleUtil.window.height * 0.0,
+      replyID: '',
       keyboardHeight: 0,
       sjid: props.sjid,
       simpleData: props.simpleData,
@@ -276,7 +277,6 @@ class NearbyDetail extends NavigatorPage {
     const { nearByType } = this.state;
     const nearByDetail = nearByDetails.byId[sjid];
     if (!nearByDetail) {
-      //Loading View while data is loading
       return (
         <View style={{ flex: 1, paddingTop: 20 }}>
           <ActivityIndicator />
@@ -292,6 +292,36 @@ class NearbyDetail extends NavigatorPage {
     const location = nearByDetail.location || '';
     const picfile = nearByDetail.picfile || '';
     const havePrice = nearByDetail.price === undefined;
+    const flagArr = [
+      {
+        nearByType: '一起',
+        bgColor: '#3AE3B8',
+        uri: require('../../assets/image/publish_together.png'),
+      },
+      {
+        nearByType: '话题',
+        bgColor: '#B1B1F2',
+        uri: require('../../assets/image/publish_topic.png'),
+      },
+      {
+        nearByType: '二手',
+        bgColor: '#FF005E',
+        uri: require('../../assets/image/publish_second_hand.png'),
+      },
+      {
+        nearByType: '时刻',
+        bgColor: '#91DA47',
+        uri: require('../../assets/image/publish_dynamic.png'),
+      },
+    ];
+    let bgColor, uri;
+    flagArr.map(item => {
+      if (item.nearByType == nearByType) {
+        bgColor = item.bgColor;
+        uri = item.uri;
+        return;
+      }
+    });
     return (
       <View
         style={{
@@ -325,13 +355,27 @@ class NearbyDetail extends NavigatorPage {
           <View
             style={{
               height: 24,
-              paddingHorizontal: 10,
-              backgroundColor: '#828282',
+              paddingHorizontal: 5,
+              backgroundColor: bgColor,
               justifyContent: 'center',
+              alignItems: 'center',
               borderRadius: 12,
+              flexDirection: 'row',
             }}
           >
-            <Text style={{ color: 'white' }}>{nearByType}</Text>
+            <Image
+              style={{ marginRight: 5, height: 20, width: 20 }}
+              resizeMode={'contain'}
+              source={uri}
+            />
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 18,
+              }}
+            >
+              {nearByType}
+            </Text>
           </View>
           <Text
             style={{
@@ -339,7 +383,7 @@ class NearbyDetail extends NavigatorPage {
               marginLeft: 10,
               fontSize: 22,
               lineHeight: 25,
-              fontWeight: '700',
+              fontWeight: 'bold',
             }}
           >
             {title}
@@ -466,22 +510,24 @@ class NearbyDetail extends NavigatorPage {
   _renderDetails = () => {
     const { fetchNearByDetailPending } = this.props;
     if (fetchNearByDetailPending) {
-      //Loading View while data is loading
       return (
         <View style={{ flex: 1, paddingTop: 20 }}>
           <ActivityIndicator />
         </View>
       );
     }
-    if (Boolean(this.state.keyboardHeight === 0)) {
-      return <Input autoFocus style={{ borderWidth: 0 }} />;
-    }
-
     return (
       <View style={{ flex: 1 }}>
         <View onLayout={this._onLayoutContainer}>
-          {this._renderNearByContent()}
-          {this._renderCommunityTab()}
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={_ => {
+              Keyboard.dismiss();
+            }}
+          >
+            {this._renderNearByContent()}
+            {this._renderCommunityTab()}
+          </TouchableOpacity>
         </View>
         {this._renderCommunityContent()}
         {Boolean(this.state.type === 0) && this._renderOperationBar()}
@@ -492,9 +538,9 @@ class NearbyDetail extends NavigatorPage {
     const { x, y, width, height } = event.nativeEvent.layout;
     this.setState({ containerHeight: height });
   };
-  _sendReply = replyID => {
+  _sendReply = () => {
     const { loginInfo, locationInfo, fetchNearByDetail, sjid } = this.props;
-    const { replyText } = this.state;
+    const { replyText, replyID } = this.state;
     let auid = '';
     let M2 = '';
     if (loginInfo !== undefined) {
@@ -518,7 +564,7 @@ class NearbyDetail extends NavigatorPage {
       .then(res => {
         if (res.data.code === 1) {
           toast.success('发表评论成功');
-          this.setState({ replyText: '', commentPage: 1 });
+          this.setState({ replyText: '', commentPage: 1, replyID: '' });
           this._reloadAllData();
         } else {
           toast.fail('发表评论失败');
@@ -647,6 +693,12 @@ class NearbyDetail extends NavigatorPage {
     this.setState({
       isShowKeyboard: false,
     });
+    if (this.state.replyText === '') {
+      this.setState({
+        replyID: '',
+      });
+    }
+    // this.myTextInput.blur();
   }
   componentWillUnmount() {
     this.keyboardDidShowListener.remove();
@@ -662,7 +714,6 @@ class NearbyDetail extends NavigatorPage {
       this._keyboardDidHide.bind(this),
     );
   }
-
   _renderOperationBar = () => {
     const { sjid, nearByDetails, agreeList } = this.props;
     const { nearByType, isShowKeyboard, replyText } = this.state;
@@ -681,9 +732,8 @@ class NearbyDetail extends NavigatorPage {
           right: 0,
           bottom: 0,
           width: styleUtil.window.width,
-          paddingBottom: 14,
-          paddingTop: 14,
-          // minHeight: styleUtil.window.height * 0.08,
+          paddingBottom: styleUtil.window.height * 0.01,
+          paddingTop: styleUtil.window.height * 0.01,
           backgroundColor: 'white',
           zIndex: 99999999,
           flexDirection: 'row',
@@ -693,27 +743,26 @@ class NearbyDetail extends NavigatorPage {
           borderTopWidth: 1,
         }}
       >
-        <Input
+        <TextInput
           style={{
-            borderWidth: 0,
-            borderRadius: 20,
+            borderRadius: 18,
             backgroundColor: '#F5F5F5',
             marginLeft: 10,
             width: isShowKeyboard ? styleUtil.window.width * 0.8 : styleUtil.window.width * 0.6,
-            height: styleUtil.window.height * 0.06,
+            // minHeight: styleUtil.window.height * 0.03,
             fontSize: 17,
             paddingLeft: 10,
-            // maxHeight: styleUtil.window.height * 0.07,
           }}
           multiline
+          ref={ref => {
+            this.myTextInput = ref;
+          }}
           value={replyText}
-          onContentSizeChange={this.onContentSizeChange}
-          onChange={this.onChange}
           onChangeText={text => this.setState({ replyText: text })}
           placeholder="写回复"
         />
         {isShowKeyboard && (
-          <Button type="link" size="sm" onPress={() => this._sendReply('')}>
+          <Button type="link" size="sm" onPress={() => this._sendReply()}>
             <Label
               style={{
                 color: replyText.length > 0 ? styleUtil.themeColor : 'grey',
@@ -749,7 +798,7 @@ class NearbyDetail extends NavigatorPage {
                 source={
                   isCollected === 0
                     ? require('../../assets/image/pin.png')
-                    : require('../../assets/image/tabbar_pin_highlight.png')
+                    : require('../../assets/image/pin_highlight.png')
                 }
               />
             </TouchableOpacity>
@@ -868,27 +917,29 @@ class NearbyDetail extends NavigatorPage {
         break;
     }
     return (
-      <FlatList
-        ref={ref => (this.flatListRef = ref)}
-        style={{
-          backgroundColor: 'white',
-          // flex: 1,
-          width: styleUtil.window.width,
-          height: styleUtil.window.height * 0.95 - this.state.containerHeight,
-        }}
-        contentInset={{ bottom: 60 }}
-        extraData={this.state}
-        data={list}
-        renderItem={renderItem}
-        initialNumToRender={initialNum}
-        keyExtractor={(item, index) => index.toString()}
-        onEndReached={onEndReachedAction}
-        onEndReachedThreshold={0.3}
-        ListFooterComponent={renderFooter}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        // onViewableItemsChanged={this._onViewableItemsChanged}
-      />
+      <View style={styleUtil.container}>
+        <FlatList
+          ref={ref => (this.flatListRef = ref)}
+          // style={{
+          //   backgroundColor: 'white',
+          //   flex: 1,
+          //   width: styleUtil.window.width,
+          //   // height: styleUtil.window.height * 0.95 - this.state.containerHeight,
+          // }}
+          // contentInset={{ bottom: 60 }}
+          extraData={this.state}
+          data={list}
+          renderItem={renderItem}
+          initialNumToRender={initialNum}
+          keyExtractor={(item, index) => index.toString()}
+          onEndReached={onEndReachedAction}
+          onEndReachedThreshold={0.3}
+          ListFooterComponent={renderFooter}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: styleUtil.window.height * 0.082 }}
+          onViewableItemsChanged={this._onViewableItemsChanged}
+        />
+      </View>
     );
   };
 
@@ -903,94 +954,12 @@ class NearbyDetail extends NavigatorPage {
         {
           title: '回复',
           onPress: () => {
-            const overlayView = (
-              <Overlay.PopView
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  flex: 1,
-                  bottom: this.state.keyboardHeight,
-                  justifyContent: 'flex-end',
-                  width: styleUtil.window.width,
-                  backgroundColor: 'white',
-                }}
-              >
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    paddingHorizontal: 15,
-                    paddingTop: 10,
-                    backgroundColor: 'white',
-                  }}
-                >
-                  <Avatar
-                    large
-                    rounded
-                    source={{ uri: data.userFace.replace(/cs.png/g, '.png') }}
-                  />
-                  <Text style={{ marginLeft: 10 }}>{data.content}</Text>
-                </View>
-                <Divider style={{ marginTop: 10, marginBottom: 10 }} />
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    backgroundColor: 'white',
-                  }}
-                >
-                  <Input
-                    style={{
-                      borderWidth: 0,
-                      borderRadius: 20,
-                      backgroundColor: '#F5F5F5',
-                      marginLeft: 10,
-                      width: styleUtil.window.width * 0.8,
-                      height: styleUtil.window.height * 0.06,
-                      fontSize: 17,
-                      paddingLeft: 10,
-                      // maxHeight: styleUtil.window.height * 0.07,
-                    }}
-                    multiline
-                    rounded
-                    size="sm"
-                    // value={this.state.replyText}
-                    onChangeText={text => this.setState({ replyText: text })}
-                    onContentSizeChange={this.onContentSizeChange}
-                    onChange={this.onChange}
-                    placeholder="写回复"
-                    autoFocus
-                  />
-                  <Button
-                    style={{
-                      marginRight: 10,
-                      color: '#F5F5F5',
-                    }}
-                    type="link"
-                    size="sm"
-                    onPress={() => {
-                      console.log('hide overlayView');
-                      Overlay.hide(this.popViewKey);
-                      this._sendReply(data.dataid);
-                      if (Boolean(callback) && typeof callback === 'function') {
-                        callback();
-                      }
-                    }}
-                  >
-                    <Label
-                      style={{
-                        color: this.state.replyText.length > 0 ? styleUtil.themeColor : 'grey',
-                        fontSize: 17,
-                      }}
-                      text="发布"
-                    />
-                  </Button>
-                </View>
-              </Overlay.PopView>
-            );
-            this.popViewKey = Overlay.show(overlayView);
+            this.setState({
+              replyID: data.dataid,
+            });
+            this.myTextInput.focus();
+            console.log(data);
+            console.log('data___________________');
           },
         },
         {
@@ -1175,17 +1144,7 @@ class NearbyDetail extends NavigatorPage {
         </View>
       );
     }
-    return (
-      <TouchableOpacity
-        style={styleUtil.container}
-        activeOpacity={1}
-        onPress={_ => {
-          Keyboard.dismiss();
-        }}
-      >
-        {this._renderDetails()}
-      </TouchableOpacity>
-    );
+    return <View style={styleUtil.container}>{this._renderDetails()}</View>;
   }
   _showPopOverRightView = () => {
     const items = [

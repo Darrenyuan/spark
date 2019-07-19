@@ -307,9 +307,9 @@ class NearbyChildrenReply extends NavigatorPage {
               keyExtractor={(item, index) => index.toString()}
               onEndReached={this.onEndReachedAction}
               onEndReachedThreshold={0.3}
-              ListFooterComponent={this._renderFooter}
+              // ListFooterComponent={this._renderFooter}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 80 }}
+              // contentContainerStyle={{ paddingBottom: 80 }}
               // onViewableItemsChanged={this._onViewableItemsChanged}
             />
           </View>

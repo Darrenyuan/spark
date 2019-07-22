@@ -40,7 +40,7 @@ class NearbyDetail extends NavigatorPage {
     this.replyRef = {};
     this.state = {
       replyID: '',
-      keyboardHeight: 0,
+      // keyboardHeight: 0,
       sjid: props.sjid,
       simpleData: props.simpleData,
       nearByType: this.getNearByDetailType(props.sjType),
@@ -191,6 +191,8 @@ class NearbyDetail extends NavigatorPage {
       M8,
       M9,
       searchTerm,
+    }).then(res => {
+      console.log(res);
     });
   };
   _hasMoreComment = () => {
@@ -541,6 +543,7 @@ class NearbyDetail extends NavigatorPage {
   _sendReply = () => {
     const { loginInfo, locationInfo, fetchNearByDetail, sjid } = this.props;
     const { replyText, replyID } = this.state;
+    console.log(replyID);
     let auid = '';
     let M2 = '';
     if (loginInfo !== undefined) {
@@ -685,7 +688,6 @@ class NearbyDetail extends NavigatorPage {
   _keyboardDidShow(e) {
     this.setState({
       isShowKeyboard: true,
-      keyboardHeight: e.endCoordinates.height,
     });
   }
 
@@ -698,7 +700,6 @@ class NearbyDetail extends NavigatorPage {
         replyID: '',
       });
     }
-    // this.myTextInput.blur();
   }
   componentWillUnmount() {
     this.keyboardDidShowListener.remove();
@@ -958,8 +959,6 @@ class NearbyDetail extends NavigatorPage {
               replyID: data.dataid,
             });
             this.myTextInput.focus();
-            console.log(data);
-            console.log('data___________________');
           },
         },
         {
@@ -988,6 +987,8 @@ class NearbyDetail extends NavigatorPage {
     const { commentList } = this.props;
     const byId = commentList.byId;
     const data = byId[item];
+    console.log(byId[item]);
+    console.log(item);
     const commentId = item;
     const childNum = data.replyNum;
     const hasChildData = childNum && childNum > 0;
@@ -1065,7 +1066,6 @@ class NearbyDetail extends NavigatorPage {
                       dataid: commentId,
                       auid,
                       _onPressLikeForComment: this._onPressLikeForComment,
-                      _showPopOver: this._showPopOver,
                     })
                   }
                 >

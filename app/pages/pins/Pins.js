@@ -256,7 +256,7 @@ class Pins extends NavigatorPage {
           // extraData={this.state}
           data={items}
           renderItem={this._renderRows}
-          // initialNumToRender={config.pageSize}
+          initialNumToRender={config.pageSize}
           // keyExtractor={(item, index) => index.toString()}
           onEndReached={this._fetchMoreData}
           onEndReachedThreshold={0.2}

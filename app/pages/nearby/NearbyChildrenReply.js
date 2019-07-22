@@ -170,7 +170,7 @@ class NearbyChildrenReply extends NavigatorPage {
             {item.isAgreed === 0 ? (
               <TouchableOpacity
                 onPress={() => {
-                  _onPressLikeForComment(commentId, item.isAgreed === 0 ? 1 : 0),
+                  _onPressLikeForComment(item.dataid, item.isAgreed === 0 ? 1 : 0),
                     this.fetchCommentListData();
                 }}
               >
@@ -179,7 +179,7 @@ class NearbyChildrenReply extends NavigatorPage {
             ) : (
               <TouchableOpacity
                 onPress={() => {
-                  _onPressLikeForComment(commentId, item.isAgreed === 0 ? 1 : 0);
+                  _onPressLikeForComment(item.dataid, item.isAgreed === 0 ? 1 : 0);
                   this.fetchCommentListData();
                 }}
               >

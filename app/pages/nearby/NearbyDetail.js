@@ -298,22 +298,22 @@ class NearbyDetail extends NavigatorPage {
       {
         nearByType: '一起',
         bgColor: '#3AE3B8',
-        uri: require('../../assets/image/publish_together.png'),
+        uri: require('../../assets/image/yiqi.png'),
       },
       {
         nearByType: '话题',
         bgColor: '#B1B1F2',
-        uri: require('../../assets/image/publish_topic.png'),
+        uri: require('../../assets/image/huati.png'),
       },
       {
         nearByType: '二手',
         bgColor: '#FF005E',
-        uri: require('../../assets/image/publish_second_hand.png'),
+        uri: require('../../assets/image/ershou.png'),
       },
       {
         nearByType: '时刻',
         bgColor: '#91DA47',
-        uri: require('../../assets/image/publish_dynamic.png'),
+        uri: require('../../assets/image/shike.png'),
       },
     ];
     let bgColor, uri;
@@ -366,14 +366,14 @@ class NearbyDetail extends NavigatorPage {
             }}
           >
             <Image
-              style={{ marginRight: 5, height: 20, width: 20 }}
+              style={{ marginRight: 3, height: 20, width: 20 }}
               resizeMode={'contain'}
               source={uri}
             />
             <Text
               style={{
                 color: 'white',
-                fontSize: 18,
+                fontSize: 20,
               }}
             >
               {nearByType}

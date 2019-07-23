@@ -57,7 +57,7 @@ export default class LoginEnterInfo extends NavigatorPage {
   _netRegisterInfo1 = () => {
     const { face, nickName, birth, sex } = this.state;
     if (face === null) {
-      toast.info('请选择图像哦！');
+      toast.info('请选择头像哦！');
       return;
     }
     const auid = '';

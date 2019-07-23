@@ -13,6 +13,7 @@ import {
   ScrollView,
   Dimensions,
   KeyboardAvoidingView,
+  TouchableWithoutFeedback,
   StatusBar,
   Animated,
   Keyboard,
@@ -170,8 +171,8 @@ class NearbyChildrenReply extends NavigatorPage {
             {item.isAgreed === 0 ? (
               <TouchableOpacity
                 onPress={() => {
-                  _onPressLikeForComment(item.dataid, item.isAgreed === 0 ? 1 : 0),
-                    this.fetchCommentListData();
+                  _onPressLikeForComment(item.dataid, item.isAgreed === 0 ? 1 : 0);
+                  this.fetchCommentListData();
                 }}
               >
                 <Image style={{ marginRight: 8 }} source={require('../../assets/image/like.png')} />
@@ -233,7 +234,7 @@ class NearbyChildrenReply extends NavigatorPage {
         if (res.data.code === 1) {
           toast.success('发表评论成功');
           this.myTextInput.blur();
-          this.setState({ replyText: '', commentPage: 1, replyID: '' });
+          this.setState({ replyText: '', commentPage: 1, replyID: this.props.dataid });
           this.fetchCommentListData();
         } else {
           toast.fail('发表评论失败');
@@ -357,8 +358,14 @@ class NearbyChildrenReply extends NavigatorPage {
           paddingTop: 10,
           backgroundColor: 'white',
           flex: 1,
+          // paddingBottom: styleUtil.window.height * 0.08,
         }}
       >
+        {/* <TouchableWithoutFeedback
+          onPress={_ => {
+            Keyboard.dismiss();
+          }}
+        > */}
         <View style={{ flexDirection: 'row' }}>
           <Avatar large rounded source={{ uri: data.userFace.replace(/cs.png/g, '.png') }} />
           <View
@@ -366,8 +373,8 @@ class NearbyChildrenReply extends NavigatorPage {
               marginLeft: 10,
               paddingBottom: 10,
               flex: 1,
-              borderBottomWidth: 0.5,
-              borderBottomColor: '#D8D8D8',
+              // borderBottomWidth: 0.5,
+              // borderBottomColor: '#D8D8D8',
             }}
           >
             <Text style={{ marginTop: 10, color: '#252525', fontSize: 14 }}>{data.content}</Text>
@@ -408,10 +415,11 @@ class NearbyChildrenReply extends NavigatorPage {
             <FlatList
               style={{
                 paddingLeft: 8,
-                paddingVertical: 8,
+                paddingTop: 8,
                 backgroundColor: '#f8f8f8',
-                borderRadius: 0,
+                borderRadius: 2,
                 marginTop: 10,
+                marginBottom: styleUtil.window.height * 0.15,
               }}
               // contentInset={{ bottom: 60 }}
               extraData={this.state}
@@ -423,7 +431,7 @@ class NearbyChildrenReply extends NavigatorPage {
               onEndReachedThreshold={0.3}
               // ListFooterComponent={this._renderFooter}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 120 }}
+              contentContainerStyle={{ paddingBottom: 30 }}
               // onViewableItemsChanged={this._onViewableItemsChanged}
             />
           </View>
